@@ -7,14 +7,6 @@ async function signout() {
   const { error } = await supabase.auth.signOut()
   navigateTo('/');
 }
-
-// onMounted(() => {
-//   watchEffect(() => {
-//     if(user.value) {
-//       console.log('user now has a value');
-//     }
-//   })
-// })
 </script>
 
 <template>
