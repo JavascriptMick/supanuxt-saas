@@ -1,4 +1,4 @@
-# Nuxt 3 Minimal Starter
+# Nuxt 3 Minimal Starter + Supabase + OAuth
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
@@ -41,8 +41,8 @@ npm run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
-# GENESIS STEPS
-This is what I did to create the boilerplate, it is here for your interest and for my memory, you don't need to repeat these.
+# Steps to Create
+This is what I did to create the project including all the extra fiddly stuff.  Putting this here so I don't forget.
 
 Follow instructions from here https://nuxt.com/docs/getting-started/installation
 
@@ -69,3 +69,5 @@ modules: ['@nuxtjs/supabase']
 ```
 
 Follow these instructions to add google oath https://supabase.com/docs/guides/auth/social-login/auth-google
+
+Then I frigged around trying to get the nuxt-supabase module to work properly for the oauth flow.  It's a bit of a mess TBH.
