@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int       @id @default(autoincrement())
+  supabase_uid          String
+  display_name          String?
+
+  membership            Membership?
+
+  @@map("users")
+}
+
+model Membership {
+  id                      Int         @id @default(autoincrement())
+  user_id                 Int         @unique
+  account_id              Int
+  account                 Account     @relation(fields: [account_id], references: [id])
+  user                    User        @relation(fields: [user_id], references: [id])
+
+  @@map("membership")
+}
+
+model Account {
+  id                      Int         @id @default(autoincrement())
+  name                    String
+  current_period_ends     DateTime    @default(now()) 
+  features                String[]
+  plan_id                 Int
+  plan                    Plan        @relation(fields: [plan_id], references: [id])
+  members                 Membership[]
+  notes                   Note[]
+
+  @@map("account")
+}
+
+model Plan {
+  id                      Int        @id @default(autoincrement())
+  name                    String
+  features                String[]
+  accounts                Account[]
+
+  @@map("plan")
+}
+
+model Note {
+  id                      Int        @id @default(autoincrement())
+  account_id              Int?
+  account                 Account?     @relation(fields: [account_id], references: [id])
+
+  note_text               String
+
+  @@map("note")
+}

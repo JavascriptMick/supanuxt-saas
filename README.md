@@ -70,4 +70,25 @@ modules: ['@nuxtjs/supabase']
 
 Follow these instructions to add google oath https://supabase.com/docs/guides/auth/social-login/auth-google
 
-Then I frigged around trying to get the nuxt-supabase module to work properly for the oauth flow.  It's a bit of a mess TBH.
+Then I frigged around trying to get the nuxt-supabase module to work properly for the oauth flow.  It's a bit of a mess TBH. Eventually I looked at the demo https://github.com/nuxt-modules/supabase/tree/main/demo like a chump and got it working
+
+Integrating Prisma... 
+This was a tricky decision I think.  the Subabase client has some pseudo sql Ormy sort of features already
+but Prisma has this awesome schema management support and autogeneration of a typed client.... and I already had a schema lying
+around that was nearly what I needed and it was nice to be able to re-use it.
+
+```
+npm install prisma --save-dev
+npx prisma init
+```
+go to Supabase -> settings -> database -> connection string -> URI.. and copy the URI into the 
+DATABASE_URL setting created with prisma init.
+still in database, go to 'Database password' and reset/set it and copy the password into the [YOUR-PASSWORD] placeholder in the URI
+
+Then I manually hand coded the schema.prisma file based on something else I already had.
+
+```
+npx prisma db push
+npm install @prisma/client --save-dev
+npx prisma generate
+```
