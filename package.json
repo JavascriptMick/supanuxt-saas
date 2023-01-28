@@ -8,9 +8,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/supabase": "^0.3.0",
     "nuxt": "^3.1.1"
-  },
-  "dependencies": {
-    "@nuxtjs/supabase": "^0.3.0"
   }
 }
