@@ -1,6 +1,6 @@
 <script setup lang="ts">
   const user = useSupabaseUser()
-  const supabase = useSupabaseClient();
+  const supabase = useSupabaseAuthClient();
   watchEffect(() => {
     if (user.value) {
       navigateTo('/dashboard', {replace: true})

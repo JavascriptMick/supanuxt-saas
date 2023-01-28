@@ -1,6 +1,6 @@
 <script setup lang="ts">
 console.log('AppHeader.vuew - setup script');
-const supabase = useSupabaseClient();
+const supabase = useSupabaseAuthClient();
 const user = useSupabaseUser();
 
 async function signout() {

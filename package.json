@@ -11,6 +11,6 @@
     "nuxt": "^3.1.1"
   },
   "dependencies": {
-    "@nuxtjs/supabase": "^0.2.0-7"
+    "@nuxtjs/supabase": "^0.3.0"
   }
 }
