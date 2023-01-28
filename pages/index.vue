@@ -1,17 +1,15 @@
 <script setup lang="ts">
-  definePageMeta({
-    middleware: ['auth'],
-  });
-
-  //horrible horrible kludge from https://github.com/nuxt-modules/supabase/issues/28#issuecomment-1353070523
-  const user = useSupabaseUser();
-  watchEffect(async () => {
-    if (user.value) await navigateTo("dashboard");
-  });  
+  const user = useSupabaseUser()
+  const supabase = useSupabaseClient();
+  watchEffect(() => {
+    if (user.value) {
+      navigateTo('/dashboard', {replace: true})
+    }
+  })
 </script>
 <template>
   <div>
     <h3>Index</h3>
-    <NuxtLink to="/login">Login</NuxtLink>
+    <button @click="supabase.auth.signInWithOAuth({provider: 'google'})">Sign In with Google</button>
   </div>
 </template>
