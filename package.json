@@ -12,5 +12,11 @@
     "@prisma/client": "^4.9.0",
     "nuxt": "^3.1.1",
     "prisma": "^4.9.0"
+  },
+  "dependencies": {
+    "@trpc/client": "^10.9.0",
+    "@trpc/server": "^10.9.0",
+    "trpc-nuxt": "^0.5.0",
+    "zod": "^3.20.2"
   }
 }
