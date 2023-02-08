@@ -15,19 +15,28 @@ model User {
   supabase_uid          String
   display_name          String?
 
-  membership            Membership?
+  memberships            Membership[]
 
   @@map("users")
 }
 
+enum ACCOUNT_ACCESS {
+  READ_ONLY
+  READ_WRITE
+  ADMIN
+  OWNER
+}
+
 model Membership {
   id                      Int         @id @default(autoincrement())
-  user_id                 Int         @unique
+  user_id                 Int
   account_id              Int
   account                 Account     @relation(fields: [account_id], references: [id])
   user                    User        @relation(fields: [user_id], references: [id])
+  access                  ACCOUNT_ACCESS    @default(READ_ONLY)
 
   @@map("membership")
+  @@unique([user_id, account_id])
 }
 
 model Account {
@@ -39,6 +48,7 @@ model Account {
   plan                    Plan        @relation(fields: [plan_id], references: [id])
   members                 Membership[]
   notes                   Note[]
+  max_notes               Int         @default(100)
 
   @@map("account")
 }
@@ -48,6 +58,7 @@ model Plan {
   name                    String
   features                String[]
   accounts                Account[]
+  max_notes               Int         @default(100)
 
   @@map("plan")
 }

@@ -4,7 +4,7 @@ import { H3Event } from 'h3';
 import { serverSupabaseClient } from '#supabase/server';
 import SupabaseClient from '@supabase/supabase-js/dist/module/SupabaseClient';
 import { User } from '@supabase/supabase-js';
-import UserService from '~~/lib/services/user.service';
+import UserAccountService from '~~/lib/services/user.account.service';
 
 let prisma: PrismaClient | undefined
 let supabase: SupabaseClient | undefined
@@ -22,7 +22,7 @@ export async function createContext(event: H3Event){
     prisma = new PrismaClient()
   }
   if (!dbUser && user) {
-    const userService = new UserService(prisma);
+    const userService = new UserAccountService(prisma);
     dbUser = await userService.getUserBySupabaseId(user.id);
     
     if (!dbUser && user) {

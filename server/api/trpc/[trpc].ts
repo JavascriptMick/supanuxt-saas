@@ -3,26 +3,15 @@
  * On a bigger app, you will probably want to split this file up into multiple files.
  */
 import { createNuxtApiHandler } from 'trpc-nuxt'
-import { z } from 'zod'
 
 import { publicProcedure, router } from '~/server/trpc/trpc'
 import { createContext } from '~~/server/trpc/context';
-import NotesService from '~~/lib/services/notes.service';
+import { notesRouter } from '~~/server/trpc/routers/notes.router';
+import { userAccountRouter } from '~~/server/trpc/routers/user.account.router';
 
 export const appRouter = router({
-  notes: publicProcedure
-    .input(
-      z.object({
-        text: z.string().nullish(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const notesService = new NotesService(ctx.prisma);
-      const notes = await notesService.getNotesForAccountId(ctx.dbUser.membership?.account_id);
-      return {
-        notes,
-      }
-    }),
+  notes: notesRouter,
+  userAccount: userAccountRouter,
 })
 
 // export only the type definition of the API
