@@ -73,9 +73,9 @@ Follow these instructions to add google oath https://supabase.com/docs/guides/au
 Then I frigged around trying to get the nuxt-supabase module to work properly for the oauth flow.  It's a bit of a mess TBH. Eventually I looked at the demo https://github.com/nuxt-modules/supabase/tree/main/demo like a chump and got it working
 
 Integrating Prisma... 
-This was a tricky decision I think.  the Subabase client has some pseudo sql Ormy sort of features already
-but Prisma has this awesome schema management support and autogeneration of a typed client.... and I already had a schema lying
-around that was nearly what I needed and it was nice to be able to re-use it.
+This felt like a difficult decision at first.  the Subabase client has some pseudo sql Ormy sort of features already
+but Prisma has this awesome schema management support and autogeneration of a typed client works great and reduces errors.
+I already had a schema lying around based on this (https://blog.checklyhq.com/building-a-multi-tenant-saas-data-model/) that was nearly what I needed and it was nice to be able to re-use it.
 
 ```
 npm install prisma --save-dev
