@@ -3,10 +3,17 @@ import { protectedProcedure, router } from '../trpc'
 import { ACCOUNT_ACCESS } from '@prisma/client';
 
 export const userAccountRouter = router({
+  getDBUser: protectedProcedure
+    .query(({ ctx }) => {
+      return {
+        dbUser: ctx.dbUser,
+      }
+    }),  
   changeAccountPlan: protectedProcedure
     .query(async ({ ctx }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      const account = await uaService.changeAccountPlan(ctx.dbUser.memberships[0].account_id, 2); // todo - plan should be an in put param
+      // TODO - account id and plan should be an input param and then the ternary removed
+      const account = (ctx.dbUser?.memberships[0].account_id)?await uaService.changeAccountPlan(ctx.dbUser?.memberships[0].account_id, 2):null;
       return {
         account,
       }
@@ -14,7 +21,7 @@ export const userAccountRouter = router({
   joinUserToAccount: protectedProcedure
     .query(async ({ ctx }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      const membership = await uaService.joinUserToAccount(ctx.dbUser.id, 5); // todo - account should be an input param
+      const membership = (ctx.dbUser?.id)?await uaService.joinUserToAccount(ctx.dbUser?.id, 5):null; // todo - account should be an input param and remove this shit
       return {
         membership,
       }

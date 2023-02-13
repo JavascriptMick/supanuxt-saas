@@ -1,4 +1,4 @@
-import { ACCOUNT_ACCESS, PrismaClient } from '@prisma/client';
+import { ACCOUNT_ACCESS, PrismaClient, User as DBUser, Membership } from '@prisma/client';
 import { UtilService } from './util.service';
 
 const TRIAL_PLAN_NAME = '3 Month Trial';  // TODO - some sort of config.. this will change for every use of the boilerplate
@@ -10,7 +10,7 @@ export default class UserAccountService {
     this.prisma = prisma;
   }
 
-  async getUserBySupabaseId(supabase_uid: string) {
+  async getUserBySupabaseId(supabase_uid: string): Promise<(DBUser & { memberships: Membership[]; }) | null> {
     return this.prisma.user.findFirst({ where: { supabase_uid }, include: { memberships: true } });
   }
 

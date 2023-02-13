@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import type { inferAsyncReturnType } from '@trpc/server'
+import { Membership, PrismaClient, User as DBUser } from '@prisma/client';
+import { inferAsyncReturnType, TRPCError } from '@trpc/server'
 import { H3Event } from 'h3';
 import { serverSupabaseClient } from '#supabase/server';
 import SupabaseClient from '@supabase/supabase-js/dist/module/SupabaseClient';
@@ -8,8 +8,8 @@ import UserAccountService from '~~/lib/services/user.account.service';
 
 let prisma: PrismaClient | undefined
 let supabase: SupabaseClient | undefined
-let user: User | null = null;
-let dbUser: any | undefined
+let user: User | null;
+let dbUser: (DBUser & { memberships: Membership[]; }) | null
 
 export async function createContext(event: H3Event){
   if (!supabase) {
@@ -31,6 +31,13 @@ export async function createContext(event: H3Event){
     }
   }
 
+  if(!supabase || !user || !prisma || !dbUser) {
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'Unable to fetch user data, please try again later.',
+    });
+  }
+  
   // TODO - This seems excessive, trim context when I have figured out what I actually need
   return {
     supabase,

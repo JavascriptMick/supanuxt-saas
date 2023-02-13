@@ -1,12 +1,13 @@
 import NotesService from '~~/lib/services/notes.service';
-import { protectedProcedure, router } from '../trpc'
+import { protectedProcedure, router } from '../trpc';
+import { z } from 'zod';
 
 export const notesRouter = router({
   getForCurrentUser: protectedProcedure
-    .query(async ({ ctx }) => {
+    .input(z.object({ account_id: z.number() }))
+    .query(async ({ ctx, input }) => {
       const notesService = new NotesService(ctx.prisma);
-      console.log(`fetching notes for account_id: ${ctx.dbUser.memberships[0].account_id}`);
-      const notes = await notesService.getNotesForAccountId(ctx.dbUser.memberships[0].account_id);
+      const notes = await notesService.getNotesForAccountId(input.account_id); 
       return {
         notes,
       }
