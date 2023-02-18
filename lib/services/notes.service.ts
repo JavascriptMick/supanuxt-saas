@@ -11,6 +11,10 @@ export default class NotesService {
     return this.prisma.note.findMany();
   }
 
+  async getNoteById(id: number) {
+    return this.prisma.note.findUniqueOrThrow({ where: { id } });
+  }
+
   async getNotesForAccountId(account_id: number) {
     return this.prisma.note.findMany({ where: { account_id } });
   }

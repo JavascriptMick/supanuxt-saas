@@ -1,16 +1,14 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+
 const supabase = useSupabaseAuthClient();
 const user = useSupabaseUser();
-const theAppState = appState();
+const store = useAppStore()
+const { activeMembership } = storeToRefs(store);
 
 const { $client } = useNuxtApp();
 
 const { data: dbUser } = await $client.userAccount.getDBUser.useQuery();
-
-if(!theAppState.value.activeMembership && dbUser.value?.dbUser.memberships && dbUser.value?.dbUser.memberships.length > 0) {
-  const defaultMembership = dbUser.value?.dbUser.memberships[0];
-  theAppState.value.activeMembership = defaultMembership;
-}
 
 async function signout() {
   await supabase.auth.signOut();
@@ -23,8 +21,7 @@ async function signout() {
     <h3>Nuxt 3 Boilerplate - AppHeader</h3>
     <div v-if="user">logged in as: {{ user.email }}: <button @click="signout()">Sign Out</button></div>
     <div v-if="!user">Not Logged in</div>
-    <button v-for="membership in dbUser?.dbUser.memberships" @click="theAppState.activeMembership = membership">{{ membership.account_id }}</button>
-    <p>Active ->{{ theAppState.activeMembership?.account_id }}</p>
+    <button v-for="membership in dbUser?.dbUser.memberships" @click="store.changeActiveMembership(membership)">{{ membership.account_id }}<span v-if="membership.account_id === activeMembership?.account_id">*</span></button>
     <hr>
   </div>
 </template>

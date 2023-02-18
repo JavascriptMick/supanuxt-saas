@@ -6,5 +6,8 @@ export default defineNuxtConfig({
   typescript: {
     shim: false
   },
-  modules: ['@nuxtjs/supabase'],
+  modules: ['@nuxtjs/supabase', '@pinia/nuxt'],
+  imports: {
+    dirs: ['./stores'],
+  },
 })
