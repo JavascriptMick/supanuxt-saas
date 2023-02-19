@@ -1,6 +1,7 @@
 import UserAccountService from '~~/lib/services/user.account.service';
 import { protectedProcedure, router } from '../trpc'
 import { ACCOUNT_ACCESS } from '@prisma/client';
+import { z } from 'zod';
 
 export const userAccountRouter = router({
   getDBUser: protectedProcedure
@@ -10,10 +11,10 @@ export const userAccountRouter = router({
       }
     }),  
   changeAccountPlan: protectedProcedure
-    .query(async ({ ctx }) => {
+    .input(z.object({ account_id: z.number(), plan_id: z.number() }))
+    .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      // TODO - account id and plan should be an input param and then the ternary removed
-      const account = (ctx.dbUser?.memberships[0].account_id)?await uaService.changeAccountPlan(ctx.dbUser?.memberships[0].account_id, 2):null;
+      const account = await uaService.changeAccountPlan(input.account_id, input.plan_id);
       return {
         account,
       }

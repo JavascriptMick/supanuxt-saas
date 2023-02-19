@@ -1,7 +1,10 @@
-import { ACCOUNT_ACCESS, PrismaClient, User as DBUser, Membership } from '@prisma/client';
+import { ACCOUNT_ACCESS, PrismaClient, User, Membership, Account } from '@prisma/client';
 import { UtilService } from './util.service';
 
 const TRIAL_PLAN_NAME = '3 Month Trial';  // TODO - some sort of config.. this will change for every use of the boilerplate
+
+export type MembershipWithAccount = (Membership & {account: Account});
+export type FullDBUser = (User & { memberships: MembershipWithAccount[]; });
 
 export default class UserAccountService {
   private prisma: PrismaClient;
@@ -10,15 +13,34 @@ export default class UserAccountService {
     this.prisma = prisma;
   }
 
-  async getUserBySupabaseId(supabase_uid: string): Promise<(DBUser & { memberships: Membership[]; }) | null> {
-    return this.prisma.user.findFirst({ where: { supabase_uid }, include: { memberships: true } });
+  async getUserBySupabaseId(supabase_uid: string): Promise<FullDBUser | null> {
+    return this.prisma.user.findFirst({ 
+      where: { supabase_uid }, 
+      include: { memberships: {include: {
+        account: true
+      }}} 
+    });
   }
 
-  async getUserById(user_id: number) {
-    return this.prisma.user.findFirstOrThrow({ where: { id: user_id }, include: { memberships: true } });
+  async getFullUserBySupabaseId(supabase_uid: string): Promise<FullDBUser | null> {
+    return this.prisma.user.findFirst({ 
+      where: { supabase_uid }, 
+      include: { memberships: {include: {
+        account: true
+      }}}
+    });
   }
 
-  async createUser( supabase_uid: string, display_name: string ) {
+  async getUserById(user_id: number): Promise<FullDBUser | null> {
+    return this.prisma.user.findFirstOrThrow({ 
+      where: { id: user_id }, 
+      include: { memberships: {include: {
+        account: true
+      }}} 
+    });
+  }
+
+  async createUser( supabase_uid: string, display_name: string ): Promise<FullDBUser | null> {
     const trialPlan = await this.prisma.plan.findFirstOrThrow({ where: { name: TRIAL_PLAN_NAME}});
     return this.prisma.user.create({
       data:{
@@ -39,7 +61,9 @@ export default class UserAccountService {
           }
         }
       },
-      include: { memberships: true },
+      include: { memberships: {include: {
+        account: true
+      }}} 
     });
   }
 

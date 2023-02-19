@@ -1,15 +1,15 @@
-import { Membership, PrismaClient, User as DBUser } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { inferAsyncReturnType, TRPCError } from '@trpc/server'
 import { H3Event } from 'h3';
 import { serverSupabaseClient } from '#supabase/server';
 import SupabaseClient from '@supabase/supabase-js/dist/module/SupabaseClient';
 import { User } from '@supabase/supabase-js';
-import UserAccountService from '~~/lib/services/user.account.service';
+import UserAccountService, { FullDBUser } from '~~/lib/services/user.account.service';
 
 let prisma: PrismaClient | undefined
 let supabase: SupabaseClient | undefined
 let user: User | null;
-let dbUser: (DBUser & { memberships: Membership[]; }) | null
+let dbUser: FullDBUser | null
 
 export async function createContext(event: H3Event){
   if (!supabase) {
@@ -23,7 +23,7 @@ export async function createContext(event: H3Event){
   }
   if (!dbUser && user) {
     const userService = new UserAccountService(prisma);
-    dbUser = await userService.getUserBySupabaseId(user.id);
+    dbUser = await userService.getFullUserBySupabaseId(user.id);
     
     if (!dbUser && user) {
       dbUser = await userService.createUser( user.id, user.user_metadata.full_name );

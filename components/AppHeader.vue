@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {  MembershipWithAccount } from '~~/lib/services/user.account.service';
 import { storeToRefs } from 'pinia';
 
 const supabase = useSupabaseAuthClient();
@@ -19,9 +20,18 @@ async function signout() {
 <template>
   <div>
     <h3>Nuxt 3 Boilerplate - AppHeader</h3>
+    <!-- logged in & sign out -->
     <div v-if="user">logged in as: {{ user.email }}: <button @click="signout()">Sign Out</button></div>
     <div v-if="!user">Not Logged in</div>
-    <button v-for="membership in dbUser?.dbUser.memberships" @click="store.changeActiveMembership(membership)">{{ membership.account_id }}<span v-if="membership.account_id === activeMembership?.account_id">*</span></button>
+
+    <!-- Account Switching -->
+    <p v-if="(dbUser?.dbUser?.memberships) && (dbUser.dbUser.memberships.length > 0)">
+      <span>Switch Account.. </span>
+      <button v-for="membership in dbUser?.dbUser.memberships" @click="store.changeActiveMembership(((membership as unknown) as MembershipWithAccount))"> <!-- This cast is infuriating -->
+        {{ membership.account.name }}
+        <span v-if="membership.account_id === activeMembership?.account_id">*</span>
+      </button>
+    </p>
     <hr>
   </div>
 </template>

@@ -14,11 +14,6 @@
     await store.initUser();
   })
 
-  async function changeAccountPlan(){
-    const { data: account } = await $client.userAccount.changeAccountPlan.useQuery();
-    console.log(`account with updated plan: ${JSON.stringify(account)}`);
-  }
-
   async function joinUserToAccount(){
     const { data: membership } = await $client.userAccount.joinUserToAccount.useQuery();
     console.log(`added membership on current account: ${JSON.stringify(membership)}`);
@@ -39,7 +34,7 @@
     <h3>Notes Dashboard</h3>
     <p v-for="note in notes">{{ note.note_text }}</p>
 
-    <button @click.prevent="changeAccountPlan()">Change Account Plan</button>
+    <button @click.prevent="store.changeAccountPlan(2)">Change Account Plan to 2</button>
     <button @click.prevent="joinUserToAccount()">Join user to account</button>
     <button @click.prevent="changeUserAccessWithinAccount()">Change user access within account</button>
     <button @click.prevent="claimOwnershipOfAccount()">Claim Account Ownership</button>

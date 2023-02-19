@@ -1,10 +1,10 @@
 import { Membership, Note, User } from ".prisma/client"
 import { defineStore } from "pinia"
-export type DBUser = User & { memberships: Membership[]; }
+import { FullDBUser, MembershipWithAccount } from "~~/lib/services/user.account.service"
 
 interface State {
-  dbUser?: DBUser
-  activeMembership: Membership | null
+  dbUser?: FullDBUser
+  activeMembership: MembershipWithAccount | null
   notes: Note[]
 }
 
@@ -28,9 +28,7 @@ export const useAppStore = defineStore('app', {
       }
     },
     async fetchNotesForCurrentUser() {
-      if(!this.activeMembership) {
-        return; 
-      }
+      if(!this.activeMembership) { return; }
 
       const { $client } = useNuxtApp();
       const { data: foundNotes } = await $client.notes.getForCurrentUser.useQuery({account_id: this.activeMembership.account_id});
@@ -38,11 +36,19 @@ export const useAppStore = defineStore('app', {
         this.notes = foundNotes.value.notes;
       }  
     },
-    async changeActiveMembership(membership: Membership) {
+    async changeActiveMembership(membership: MembershipWithAccount) {
       if(membership !== this.activeMembership){
         this.activeMembership = membership;
         await this.fetchNotesForCurrentUser();
       }
-    }, 
+    },
+    async changeAccountPlan(plan_id: number){
+      if(!this.activeMembership) { return; }
+      const { $client } = useNuxtApp();
+      const { data: account } = await $client.userAccount.changeAccountPlan.useQuery({account_id: this.activeMembership.account_id, plan_id});
+      if(account.value?.account){
+        this.activeMembership.account = account.value.account;
+      }
+    }
   }
 });
