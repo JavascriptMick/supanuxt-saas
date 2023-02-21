@@ -63,7 +63,7 @@ export default class UserAccountService {
       },
       include: { memberships: {include: {
         account: true
-      }}} 
+      }}}
     });
   }
 
@@ -71,11 +71,14 @@ export default class UserAccountService {
     return this.prisma.user.delete({ where: { id: user_id } });
   }
 
-  async joinUserToAccount(user_id: number, account_id: number) {
+  async joinUserToAccount(user_id: number, account_id: number): Promise<MembershipWithAccount> {
     return this.prisma.membership.create({
       data: {
         user_id: user_id,
         account_id: account_id
+      },
+      include: {
+        account: true
       }
     });
   }
@@ -144,6 +147,9 @@ export default class UserAccountService {
       },
       data: {
         access: ACCOUNT_ACCESS.OWNER,
+      },
+      include: {
+        account: true
       }
     });
   }
@@ -176,6 +182,9 @@ export default class UserAccountService {
       },
       data: {
         access: access,
+      },
+      include: {
+        account: true
       }
     });
   }

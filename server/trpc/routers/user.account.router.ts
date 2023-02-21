@@ -20,25 +20,28 @@ export const userAccountRouter = router({
       }
     }),
   joinUserToAccount: protectedProcedure
-    .query(async ({ ctx }) => {
+    .input(z.object({ account_id: z.number() }))
+    .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      const membership = (ctx.dbUser?.id)?await uaService.joinUserToAccount(ctx.dbUser?.id, 5):null; // todo - account should be an input param and remove this shit
+      const membership = (ctx.dbUser?.id)?await uaService.joinUserToAccount(ctx.dbUser?.id, input.account_id):null;
       return {
         membership,
       }
     }),
   changeUserAccessWithinAccount: protectedProcedure // TODO - should be protectedAdmin (i.e. ctx.dbUser.id should be admin within the session account)
-    .query(async ({ ctx }) => {
+    .input(z.object({ user_id: z.number(), account_id: z.number(), access: z.enum([ACCOUNT_ACCESS.ADMIN, ACCOUNT_ACCESS.OWNER, ACCOUNT_ACCESS.READ_ONLY, ACCOUNT_ACCESS.READ_WRITE]) }))
+    .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      const membership = await uaService.changeUserAccessWithinAccount(3, 5, ACCOUNT_ACCESS.ADMIN); // todo - member and access should be an input param (from UI) account should be the session account
+      const membership = await uaService.changeUserAccessWithinAccount(input.user_id, input.account_id, input.access);
       return {
         membership,
       }
     }),
   claimOwnershipOfAccount: protectedProcedure // TODO - should be protectedAdmin (i.e. ctx.dbUser.id should be admin within the session account)
-    .query(async ({ ctx }) => {
+    .input(z.object({ account_id: z.number() }))
+    .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      const membership = await uaService.claimOwnershipOfAccount(3, 5); // todo - member should be an input param (from UI) account should be the session account
+      const membership = await uaService.claimOwnershipOfAccount(ctx.dbUser?.id, input.account_id);
       return {
         membership,
       }

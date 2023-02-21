@@ -1,4 +1,4 @@
-import { Membership, Note, User } from ".prisma/client"
+import { ACCOUNT_ACCESS, Note } from ".prisma/client"
 import { defineStore } from "pinia"
 import { FullDBUser, MembershipWithAccount } from "~~/lib/services/user.account.service"
 
@@ -48,6 +48,30 @@ export const useAppStore = defineStore('app', {
       const { data: account } = await $client.userAccount.changeAccountPlan.useQuery({account_id: this.activeMembership.account_id, plan_id});
       if(account.value?.account){
         this.activeMembership.account = account.value.account;
+      }
+    },
+    async joinUserToAccount(account_id: number){
+      if(!this.activeMembership) { return; }
+      const { $client } = useNuxtApp();
+      const { data: membership } = await $client.userAccount.joinUserToAccount.useQuery({account_id});
+      if(membership.value?.membership){
+        this.activeMembership = membership.value.membership;
+      }
+    },
+    async changeUserAccessWithinAccount(user_id: number,account_id: number, access: ACCOUNT_ACCESS){
+      if(!this.activeMembership) { return; }
+      const { $client } = useNuxtApp();
+      const { data: membership } = await $client.userAccount.changeUserAccessWithinAccount.useQuery({user_id, account_id, access});
+      if(membership.value?.membership){
+        this.activeMembership = membership.value.membership;
+      }
+    },
+    async claimOwnershipOfAccount(account_id: number){
+      if(!this.activeMembership) { return; }
+      const { $client } = useNuxtApp();
+      const { data: membership } = await $client.userAccount.claimOwnershipOfAccount.useQuery({account_id});
+      if(membership.value?.membership){
+        this.activeMembership = membership.value.membership;
       }
     }
   }
