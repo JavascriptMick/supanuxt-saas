@@ -17,9 +17,10 @@
     <h3>Notes Dashboard</h3>
     <p v-for="note in notes">{{ note.note_text }}</p>
 
-    <button @click.prevent="store.changeAccountPlan(2)">Change Account Plan to 2</button>
-    <button @click.prevent="store.joinUserToAccount(5)">Join user to account 5</button>
-    <button @click.prevent="store.changeUserAccessWithinAccount(4, 5, 'ADMIN')">Change user 4 access within account 5 to ADMIN</button>
-    <button @click.prevent="store.claimOwnershipOfAccount(5)">Claim Account 5 Ownership for current user</button>
+    <button @click.prevent="store.changeAccountPlan(2)">Change active Account Plan to 2</button>
+    <button @click.prevent="store.joinUserToAccount(4)">Join user 4 to active account</button>
+    <button @click.prevent="store.changeUserAccessWithinAccount(4, 'OWNER')">Change user 4 access within account 5 to OWNER (SHOULD FAIL)</button>
+    <button @click.prevent="store.changeUserAccessWithinAccount(4, 'ADMIN')">Change user 4 access within account 5 to ADMIN</button>
+    <button @click.prevent="store.claimOwnershipOfAccount()">Claim Account 5 Ownership for current user</button>
   </div>
 </template>

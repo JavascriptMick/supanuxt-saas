@@ -50,26 +50,26 @@ export const useAppStore = defineStore('app', {
         this.activeMembership.account = account.value.account;
       }
     },
-    async joinUserToAccount(account_id: number){
+    async joinUserToAccount(user_id: number){
       if(!this.activeMembership) { return; }
       const { $client } = useNuxtApp();
-      const { data: membership } = await $client.userAccount.joinUserToAccount.useQuery({account_id});
+      const { data: membership } = await $client.userAccount.joinUserToAccount.useQuery({account_id: this.activeMembership.account_id, user_id});
       if(membership.value?.membership){
         this.activeMembership = membership.value.membership;
       }
     },
-    async changeUserAccessWithinAccount(user_id: number,account_id: number, access: ACCOUNT_ACCESS){
+    async changeUserAccessWithinAccount(user_id: number, access: ACCOUNT_ACCESS){
       if(!this.activeMembership) { return; }
       const { $client } = useNuxtApp();
-      const { data: membership } = await $client.userAccount.changeUserAccessWithinAccount.useQuery({user_id, account_id, access});
+      const { data: membership } = await $client.userAccount.changeUserAccessWithinAccount.useQuery({account_id: this.activeMembership.account_id, user_id, access});
       if(membership.value?.membership){
         this.activeMembership = membership.value.membership;
       }
     },
-    async claimOwnershipOfAccount(account_id: number){
+    async claimOwnershipOfAccount(){
       if(!this.activeMembership) { return; }
       const { $client } = useNuxtApp();
-      const { data: membership } = await $client.userAccount.claimOwnershipOfAccount.useQuery({account_id});
+      const { data: membership } = await $client.userAccount.claimOwnershipOfAccount.useQuery({account_id: this.activeMembership.account_id});
       if(membership.value?.membership){
         this.activeMembership = membership.value.membership;
       }

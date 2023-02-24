@@ -1,5 +1,5 @@
 import UserAccountService from '~~/lib/services/user.account.service';
-import { protectedProcedure, router } from '../trpc'
+import { protectedProcedure, router, adminProcedure } from '../trpc'
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import { z } from 'zod';
 
@@ -10,7 +10,7 @@ export const userAccountRouter = router({
         dbUser: ctx.dbUser,
       }
     }),  
-  changeAccountPlan: protectedProcedure
+  changeAccountPlan: adminProcedure
     .input(z.object({ account_id: z.number(), plan_id: z.number() }))
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
@@ -19,16 +19,16 @@ export const userAccountRouter = router({
         account,
       }
     }),
-  joinUserToAccount: protectedProcedure
-    .input(z.object({ account_id: z.number() }))
+  joinUserToAccount: adminProcedure
+    .input(z.object({ account_id: z.number(), user_id: z.number() }))
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      const membership = (ctx.dbUser?.id)?await uaService.joinUserToAccount(ctx.dbUser?.id, input.account_id):null;
+      const membership = (ctx.dbUser?.id)?await uaService.joinUserToAccount(input.user_id, input.account_id):null;
       return {
         membership,
       }
     }),
-  changeUserAccessWithinAccount: protectedProcedure // TODO - should be protectedAdmin (i.e. ctx.dbUser.id should be admin within the session account)
+  changeUserAccessWithinAccount: adminProcedure
     .input(z.object({ user_id: z.number(), account_id: z.number(), access: z.enum([ACCOUNT_ACCESS.ADMIN, ACCOUNT_ACCESS.OWNER, ACCOUNT_ACCESS.READ_ONLY, ACCOUNT_ACCESS.READ_WRITE]) }))
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
@@ -37,7 +37,7 @@ export const userAccountRouter = router({
         membership,
       }
     }),
-  claimOwnershipOfAccount: protectedProcedure // TODO - should be protectedAdmin (i.e. ctx.dbUser.id should be admin within the session account)
+  claimOwnershipOfAccount: adminProcedure
     .input(z.object({ account_id: z.number() }))
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);

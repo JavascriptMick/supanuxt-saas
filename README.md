@@ -96,8 +96,22 @@ npx prisma generate
 # TODO
 - add role to membership and have methods for changing role, making sure one owner etc (done)
 - remove @unique so users can have multiple accounts (done)
-- add concept of 'current' account for user.. maybe put account on context or session. maybe just on DB...'current' boolean on membership? (done but app state is messy)
+- add concept of 'current' account for user.. (done)
 - add max_notes property to plan and account as an example of a 'limit' property (done)
 - add spinup script somehow to create plans???.... should I use some sort of generator like sidebase?
-- team invitation thingy
+- team invitation thingy (not required, admins can add new members to team)
+- actions which mutate the current user account should update the context... service methods should maybe return whole user so it can be placed on context.
 - integration with stripe including web hooks.
+
+# Admin Functions Scenario (shitty test)
+Pre-condition
+User 3 (encumbent id=3) - Owner of own single user account.  Admin of Team account
+User 4 (noob id = 4) - Owner of own single user account.  
+
+User 3...
+- joins user 4 to team account (expect user is a read only member of team account)
+- upgrades user 4 to owner (should fail)
+- upgrades user 4 to admin
+- claims ownership of team account
+
+

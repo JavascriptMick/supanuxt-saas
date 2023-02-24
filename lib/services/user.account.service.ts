@@ -75,7 +75,8 @@ export default class UserAccountService {
     return this.prisma.membership.create({
       data: {
         user_id: user_id,
-        account_id: account_id
+        account_id: account_id,
+        access: ACCOUNT_ACCESS.READ_ONLY
       },
       include: {
         account: true
