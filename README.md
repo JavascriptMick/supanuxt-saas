@@ -100,7 +100,7 @@ npx prisma generate
 - add max_notes property to plan and account as an example of a 'limit' property (done)
 - add spinup script somehow to create plans???.... should I use some sort of generator like sidebase?
 - team invitation thingy (not required, admins can add new members to team)
-- actions which mutate the current user account should update the context... service methods should maybe return whole user so it can be placed on context.
+- actions which mutate the current user account should update the context... (done)
 - integration with stripe including web hooks.
 
 # Admin Functions Scenario (shitty test)
