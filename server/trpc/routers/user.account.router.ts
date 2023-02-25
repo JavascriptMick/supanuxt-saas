@@ -15,6 +15,11 @@ export const userAccountRouter = router({
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
       const account = await uaService.changeAccountPlan(input.account_id, input.plan_id);
+
+      if(account){
+        ctx.dbUser.memberships = ctx.dbUser.memberships.map(m => m.account_id !== account.id ? m : { ...m, account });
+      }
+
       return {
         account,
       }
@@ -33,6 +38,11 @@ export const userAccountRouter = router({
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
       const membership = await uaService.changeUserAccessWithinAccount(input.user_id, input.account_id, input.access);
+      
+      if(membership && ctx.dbUser?.id == input.user_id){
+        ctx.dbUser.memberships = ctx.dbUser.memberships.map(m => m.id !== membership.id ? m : membership);
+      }
+      
       return {
         membership,
       }
@@ -41,7 +51,12 @@ export const userAccountRouter = router({
     .input(z.object({ account_id: z.number() }))
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService(ctx.prisma);
-      const membership = await uaService.claimOwnershipOfAccount(ctx.dbUser?.id, input.account_id);
+      const membership = await uaService.claimOwnershipOfAccount(ctx.dbUser.id, input.account_id);
+      
+      if(membership && ctx.dbUser){
+        ctx.dbUser.memberships = ctx.dbUser.memberships.map(m => m.id !== membership.id ? m : membership);
+      }
+
       return {
         membership,
       }

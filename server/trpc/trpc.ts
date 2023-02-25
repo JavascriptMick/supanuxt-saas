@@ -15,7 +15,7 @@ import { ACCOUNT_ACCESS } from '@prisma/client';
 const t = initTRPC.context<Context>().create()
 
 /**
- * auth middleware
+ * auth middlewares
  **/
 const isAuthed = t.middleware(({ next, ctx }) => {
   if (!ctx.user) {
@@ -45,7 +45,7 @@ const isAdminForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
 });
 
 /**
- * Unprotected procedure
+ * Procedures
  **/
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
