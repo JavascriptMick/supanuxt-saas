@@ -8,10 +8,11 @@ import UserAccountService, { FullDBUser } from '~~/lib/services/user.account.ser
 
 let prisma: PrismaClient | undefined
 let supabase: SupabaseClient | undefined
-let user: User | null;
-let dbUser: FullDBUser | null
 
 export async function createContext(event: H3Event){
+  let user: User | null = null;
+  let dbUser: FullDBUser | null = null;
+  
   if (!supabase) {
     supabase = serverSupabaseClient(event)
   }

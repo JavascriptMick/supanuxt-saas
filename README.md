@@ -102,6 +102,8 @@ npx prisma generate
 - team invitation thingy (not required, admins can add new members to team)
 - actions which mutate the current user account should update the context... (done)
 - integration with stripe including web hooks.
+-- add email to user record... capture from login same as user name
+-- add a pricing page....should be the default redirect from signup if the user has no active plan.. not sure whether to use a 'blank' plan or make plan nullable
 
 # Admin Functions Scenario (shitty test)
 Pre-condition
