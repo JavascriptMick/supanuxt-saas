@@ -11,8 +11,11 @@ import { initTRPC, TRPCError } from '@trpc/server'
 import { Context } from './context';
 import { z } from 'zod';
 import { ACCOUNT_ACCESS } from '@prisma/client';
+import superjson from 'superjson';
 
-const t = initTRPC.context<Context>().create()
+const t = initTRPC.context<Context>().create({
+  transformer: superjson,
+})
 
 /**
  * auth middlewares

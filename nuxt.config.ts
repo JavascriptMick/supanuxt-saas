@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  debug: true,
   build: {
     transpile: ['trpc-nuxt']
   },
@@ -10,4 +11,12 @@ export default defineNuxtConfig({
   imports: {
     dirs: ['./stores'],
   },
+  runtimeConfig:{
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripeEndpointSecret: process.env.STRIPE_ENDPOINT_SECRET,
+    subscriptionGraceDays: 3,
+    public: {
+      debugMode: true,
+    }
+  }
 })

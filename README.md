@@ -103,7 +103,9 @@ npx prisma generate
 - actions which mutate the current user account should update the context... (done)
 - integration with stripe including web hooks.
 -- add email to user record... capture from login same as user name
--- add a pricing page....should be the default redirect from signup if the user has no active plan.. not sure whether to use a 'blank' plan or make plan nullable
+-- initial user should be created with an expired plan
+-- add a pricing page....should be the default redirect from signup if the user has no active plan.. not sure whether to use a 'blank' plan or make plan nullable  (basic pricing page is done)
+-- figure out what to do with Plan Name.  Could add Plan Name to account record and copy over at time of account creation or updation.  could pull from the Plan record for display.... but makes it difficult to change... should be loosely coupled, maybe use first approach
 
 # Admin Functions Scenario (shitty test)
 Pre-condition

@@ -17,13 +17,16 @@ export const useAppStore = defineStore('app', {
   },
   actions: {
     async initUser() {
-      const { $client } = useNuxtApp();
-      const { data: dbUser } = await $client.userAccount.getDBUser.useQuery();
-      if(dbUser.value?.dbUser){
-        this.dbUser = dbUser.value.dbUser;
-        if(dbUser.value.dbUser.memberships.length > 0){
-          this.activeMembership = dbUser.value.dbUser.memberships[0];
-          await this.fetchNotesForCurrentUser();
+      if(!this.dbUser || !this.activeMembership){
+        const { $client } = useNuxtApp();
+        const { dbUser } = await $client.userAccount.getDBUser.query();
+
+        if(dbUser){
+          this.dbUser = dbUser;
+          if(dbUser.memberships.length > 0){
+            this.activeMembership = dbUser.memberships[0];
+            await this.fetchNotesForCurrentUser();
+          }
         }
       }
     },
@@ -31,9 +34,9 @@ export const useAppStore = defineStore('app', {
       if(!this.activeMembership) { return; }
 
       const { $client } = useNuxtApp();
-      const { data: foundNotes } = await $client.notes.getForCurrentUser.useQuery({account_id: this.activeMembership.account_id});
-      if(foundNotes.value?.notes){
-        this.notes = foundNotes.value.notes;
+      const { notes } = await $client.notes.getForCurrentUser.query({account_id: this.activeMembership.account_id});
+      if(notes){
+        this.notes = notes;
       }  
     },
     async changeActiveMembership(membership: MembershipWithAccount) {

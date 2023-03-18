@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import {  MembershipWithAccount } from '~~/lib/services/user.account.service';
-import { storeToRefs } from 'pinia';
+  import {  MembershipWithAccount } from '~~/lib/services/user.account.service';
+  import { storeToRefs } from 'pinia';
 
-const supabase = useSupabaseAuthClient();
-const user = useSupabaseUser();
-const store = useAppStore()
-const { activeMembership } = storeToRefs(store);
+  const supabase = useSupabaseAuthClient();
+  const user = useSupabaseUser();
+  const store = useAppStore()
+  const { activeMembership } = storeToRefs(store);
 
-const { $client } = useNuxtApp();
+  const { $client } = useNuxtApp();
 
-const { data: dbUser } = await $client.userAccount.getDBUser.useQuery();
+  const { data: dbUser } = await $client.userAccount.getDBUser.useQuery();
 
-async function signout() {
-  await supabase.auth.signOut();
-  navigateTo('/', {replace: true});
-}
+  onMounted(async () => {
+    await store.initUser();
+  });
+
+  async function signout() {
+    await supabase.auth.signOut();
+    navigateTo('/', {replace: true});
+  }
 </script>
 
 <template>
@@ -23,6 +27,12 @@ async function signout() {
     <!-- logged in & sign out -->
     <div v-if="user">logged in as: {{ user.email }}: <button @click="signout()">Sign Out</button></div>
     <div v-if="!user">Not Logged in</div>
+    <div>
+      <NuxtLink to="/">Boilerplate</NuxtLink>&nbsp;
+      |&nbsp;<NuxtLink to="/dashboard">Dashboard</NuxtLink>&nbsp;
+      |&nbsp;<NuxtLink to="/pricing">Pricing</NuxtLink>&nbsp;
+      |&nbsp;<NuxtLink to="/account">Account</NuxtLink>
+    </div>
 
     <!-- Account Switching -->
     <p v-if="(dbUser?.dbUser?.memberships) && (dbUser.dbUser.memberships.length > 0)">

@@ -8,9 +8,6 @@
   const store = useAppStore();
   const { notes } = storeToRefs(store);  // ensure the notes list is reactive
 
-  onMounted(async () => {
-    await store.initUser();
-  })
 </script>
 <template>
   <div>

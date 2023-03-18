@@ -49,6 +49,8 @@ model Account {
   members                 Membership[]
   notes                   Note[]
   max_notes               Int         @default(100)
+  stripe_subscription_id  String?
+  stripe_customer_id      String?
 
   @@map("account")
 }

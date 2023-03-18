@@ -40,6 +40,34 @@ export default class UserAccountService {
     });
   }
 
+  async getAccountById(account_id: number): Promise<Account> {
+    return this.prisma.account.findFirstOrThrow({ 
+      where: { id: account_id },
+    });
+  }
+
+  async updateAccountStipeCustomerId (account_id: number, stripe_customer_id: string){
+    return await this.prisma.account.update({
+      where: { id: account_id },
+      data: {
+        stripe_customer_id,
+      }
+    })
+  }
+
+  async updateStripeSubscriptionDetailsForAccount (stripe_customer_id: string, stripe_subscription_id: string, current_period_ends: Date){
+    const account = await this.prisma.account.findFirstOrThrow({
+      where: {stripe_customer_id}
+    });
+    return await this.prisma.account.update({
+      where: { id: account.id },
+      data: {
+        stripe_subscription_id,
+        current_period_ends
+      }
+    })
+  }
+
   async createUser( supabase_uid: string, display_name: string ): Promise<FullDBUser | null> {
     const trialPlan = await this.prisma.plan.findFirstOrThrow({ where: { name: TRIAL_PLAN_NAME}});
     return this.prisma.user.create({
