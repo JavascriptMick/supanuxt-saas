@@ -1,20 +1,16 @@
-import { ACCOUNT_ACCESS, PrismaClient, User, Membership, Account } from '@prisma/client';
+import { ACCOUNT_ACCESS, User, Membership, Account } from '@prisma/client';
+import prisma_client from '~~/prisma/prisma.client';
 import { UtilService } from './util.service';
 const config = useRuntimeConfig();
 
 
 export type MembershipWithAccount = (Membership & {account: Account});
 export type FullDBUser = (User & { memberships: MembershipWithAccount[]; });
-
+export type MembershipWithUser = (Membership & { user: User});
+export type AccountWithMembers = (Account & {members: MembershipWithUser[]});
 export default class UserAccountService {
-  private prisma: PrismaClient;
-
-  constructor( prisma: PrismaClient) {
-    this.prisma = prisma;
-  }
-
   async getUserBySupabaseId(supabase_uid: string): Promise<FullDBUser | null> {
-    return this.prisma.user.findFirst({ 
+    return prisma_client.user.findFirst({ 
       where: { supabase_uid }, 
       include: { memberships: {include: {
         account: true
@@ -23,7 +19,7 @@ export default class UserAccountService {
   }
 
   async getFullUserBySupabaseId(supabase_uid: string): Promise<FullDBUser | null> {
-    return this.prisma.user.findFirst({ 
+    return prisma_client.user.findFirst({ 
       where: { supabase_uid }, 
       include: { memberships: {include: {
         account: true
@@ -32,7 +28,7 @@ export default class UserAccountService {
   }
 
   async getUserById(user_id: number): Promise<FullDBUser | null> {
-    return this.prisma.user.findFirstOrThrow({ 
+    return prisma_client.user.findFirstOrThrow({ 
       where: { id: user_id }, 
       include: { memberships: {include: {
         account: true
@@ -40,14 +36,17 @@ export default class UserAccountService {
     });
   }
 
-  async getAccountById(account_id: number): Promise<Account> {
-    return this.prisma.account.findFirstOrThrow({ 
+  async getAccountById(account_id: number): Promise<AccountWithMembers> {
+    return prisma_client.account.findFirstOrThrow({ 
       where: { id: account_id },
+      include: { members: {include: {
+        user: true
+      }} }
     });
   }
 
   async updateAccountStipeCustomerId (account_id: number, stripe_customer_id: string){
-    return await this.prisma.account.update({
+    return await prisma_client.account.update({
       where: { id: account_id },
       data: {
         stripe_customer_id,
@@ -56,10 +55,10 @@ export default class UserAccountService {
   }
 
   async updateStripeSubscriptionDetailsForAccount (stripe_customer_id: string, stripe_subscription_id: string, current_period_ends: Date){
-    const account = await this.prisma.account.findFirstOrThrow({
+    const account = await prisma_client.account.findFirstOrThrow({
       where: {stripe_customer_id}
     });
-    return await this.prisma.account.update({
+    return await prisma_client.account.update({
       where: { id: account.id },
       data: {
         stripe_subscription_id,
@@ -68,12 +67,13 @@ export default class UserAccountService {
     })
   }
 
-  async createUser( supabase_uid: string, display_name: string ): Promise<FullDBUser | null> {
-    const trialPlan = await this.prisma.plan.findFirstOrThrow({ where: { name: config.trialPlanName}});
-    return this.prisma.user.create({
+  async createUser( supabase_uid: string, display_name: string, email: string ): Promise<FullDBUser | null> {
+    const trialPlan = await prisma_client.plan.findFirstOrThrow({ where: { name: config.initialPlanName}});
+    return prisma_client.user.create({
       data:{
         supabase_uid: supabase_uid,
         display_name: display_name,
+        email: email,
         memberships: {
           create: {
             account: {
@@ -81,8 +81,9 @@ export default class UserAccountService {
                 plan_id: trialPlan.id,  
                 name: display_name,
                 features: trialPlan.features, //copy in features from the plan, plan_id is a loose association and settings can change independently
-                current_period_ends: UtilService.addMonths(new Date(),3),
+                current_period_ends: UtilService.addMonths(new Date(), config.initialPlanActiveMonths),
                 max_notes: trialPlan.max_notes,
+                plan_name: trialPlan.name,
               }
             },
             access: ACCOUNT_ACCESS.OWNER
@@ -96,11 +97,11 @@ export default class UserAccountService {
   }
 
   async deleteUser(user_id: number) {
-    return this.prisma.user.delete({ where: { id: user_id } });
+    return prisma_client.user.delete({ where: { id: user_id } });
   }
 
   async joinUserToAccount(user_id: number, account_id: number): Promise<MembershipWithAccount> {
-    return this.prisma.membership.create({
+    return prisma_client.membership.create({
       data: {
         user_id: user_id,
         account_id: account_id,
@@ -113,8 +114,8 @@ export default class UserAccountService {
   }
 
   async changeAccountPlan(account_id: number, plan_id: number) {
-    const plan = await this.prisma.plan.findFirstOrThrow({ where: {id: plan_id}});
-    return this.prisma.account.update({
+    const plan = await prisma_client.plan.findFirstOrThrow({ where: {id: plan_id}});
+    return prisma_client.account.update({
       where: { id: account_id},
       data: {
         plan_id: plan_id,
@@ -130,7 +131,7 @@ export default class UserAccountService {
   // Existing OWNER memberships are downgraded to ADMIN
   // In future, some sort of Billing/Stripe tie in here e.g. changing email details on the Account, not sure.
   async claimOwnershipOfAccount(user_id: number, account_id: number) {
-    const membership = await this.prisma.membership.findUniqueOrThrow({
+    const membership = await prisma_client.membership.findUniqueOrThrow({
       where: {
         user_id_account_id: {
           user_id: user_id,
@@ -145,7 +146,7 @@ export default class UserAccountService {
       throw new Error('UNAUTHORISED: only Admins can claim ownership');
     }
 
-    const existing_owner_memberships = await this.prisma.membership.findMany({
+    const existing_owner_memberships = await prisma_client.membership.findMany({
       where: {
         account_id: account_id,
         access: ACCOUNT_ACCESS.OWNER,
@@ -153,7 +154,7 @@ export default class UserAccountService {
     });
 
     for(const existing_owner_membership of existing_owner_memberships) {
-      await this.prisma.membership.update({
+      await prisma_client.membership.update({
         where: {
           user_id_account_id: {
             user_id: existing_owner_membership.user_id,
@@ -167,7 +168,7 @@ export default class UserAccountService {
     }
 
     // finally update the ADMIN member to OWNER
-    return this.prisma.membership.update({
+    return prisma_client.membership.update({
       where: {
         user_id_account_id: {
           user_id: user_id,
@@ -189,7 +190,7 @@ export default class UserAccountService {
       throw new Error('UNABLE TO UPDATE MEMBERSHIP: use claimOwnershipOfAccount method to change ownership');
     }
 
-    const membership = await this.prisma.membership.findUniqueOrThrow({
+    const membership = await prisma_client.membership.findUniqueOrThrow({
       where: {
         user_id_account_id: {
           user_id: user_id,
@@ -202,7 +203,7 @@ export default class UserAccountService {
       throw new Error('UNABLE TO UPDATE MEMBERSHIP: use claimOwnershipOfAccount method to change ownership');
     }
 
-    return this.prisma.membership.update({
+    return prisma_client.membership.update({
       where: {
         user_id_account_id: {
           user_id: user_id,

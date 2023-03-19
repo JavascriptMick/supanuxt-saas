@@ -13,6 +13,7 @@ datasource db {
 model User {
   id                    Int       @id @default(autoincrement())
   supabase_uid          String
+  email                 String
   display_name          String?
 
   memberships            Membership[]
@@ -46,6 +47,7 @@ model Account {
   features                String[]
   plan_id                 Int
   plan                    Plan        @relation(fields: [plan_id], references: [id])
+  plan_name               String
   members                 Membership[]
   notes                   Note[]
   max_notes               Int         @default(100)

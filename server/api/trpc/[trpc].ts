@@ -22,5 +22,5 @@ export type AppRouter = typeof appRouter;
 export default createNuxtApiHandler({
   router: appRouter,
   createContext: createContext,
-  onError({ error}) { console.error(error)}, // TODO - logging and reporting  
+  onError({ error}) { console.error(error)}, 
 })

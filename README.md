@@ -53,6 +53,13 @@ npm run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
+## Config
+### .env
+Most of the .env settings are self explanatory and are usually secrets.
+
+### Trial Plan
+If you want a 'free trial period' set initialPlanName to an appropriate plan name in the DB and initialPlanActiveMonths to a positive value.  If you don't want a free trial, set initialPlanName to an appropriate 'No Plan' plan in the DB and set the initialPlanActiveMonths to -1.
+
 # Steps to Create
 This is what I did to create the project including all the extra fiddly stuff.  Putting this here so I don't forget.
 
@@ -127,10 +134,10 @@ I set up a Stripe account with a couple of 'Products' with a single price each t
 - team invitation thingy (not required, admins can add new members to team)
 - actions which mutate the current user account should update the context... (done)
 - integration with stripe including web hooks (basics done).
--- add email to user record... capture from login same as user name
--- initial user should be created with an expired plan
--- add a pricing page....should be the default redirect from signup if the user has no active plan.. not sure whether to use a 'blank' plan or make plan nullable  (basic pricing page is done)
--- figure out what to do with Plan Name.  Could add Plan Name to account record and copy over at time of account creation or updation.  could pull from the Plan record for display.... but makes it difficult to change... should be loosely coupled, maybe use first approach
+-- add email to user record... capture from login same as user name (done)
+-- initial user should be created with an expired plan (done, initial plan and plan period now controled via config to allow either a trial plan or a 'No Plan' for initial users)
+-- add a pricing page....should be the default redirect from signup if the user has no active plan.. not sure whether to use a 'blank' plan or make plan nullable  (basic pricing page is done - decided on 'no plan' plan)
+-- figure out what to do with Plan Name.  Could add Plan Name to account record and copy over at time of account creation or updation.  could pull from the Plan record for display.... but makes it difficult to change... should be loosely coupled, maybe use first approach (done)
 -- figure out when/how plan changes.. is it triggered by webhook?
 # Admin Functions Scenario (shitty test)
 Pre-condition

@@ -6,7 +6,7 @@ export const notesRouter = router({
   getForCurrentUser: protectedProcedure
     .input(z.object({ account_id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const notesService = new NotesService(ctx.prisma);
+      const notesService = new NotesService();
       const notes = await notesService.getNotesForAccountId(input.account_id); 
       return {
         notes,
@@ -15,7 +15,7 @@ export const notesRouter = router({
     getById: publicProcedure
     .input(z.object({ note_id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const notesService = new NotesService(ctx.prisma);
+      const notesService = new NotesService();
       const note = await notesService.getNoteById(input.note_id); 
       return {
         note,

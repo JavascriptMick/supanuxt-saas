@@ -1,6 +1,5 @@
 import Stripe from 'stripe';
 import UserAccountService from '~~/lib/services/user.account.service';
-import prisma_client from '~~/prisma/prisma.client';
 
 const config = useRuntimeConfig();
 const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
@@ -22,15 +21,15 @@ export default defineEventHandler(async (event) => {
   }
   catch (err) {
     console.log(err);
-    throw createError({ statusCode: 400, statusMessage: `Webhook Error` }); // ${(err as Error).message}
+    throw createError({ statusCode: 400, statusMessage: `Error validating Webhook Event` });
   }
 
-  console.log(`****** Web Hook Recieved (${stripeEvent.type}) ******`);
-  
   if(stripeEvent.type && stripeEvent.type.startsWith('customer.subscription')){
+    console.log(`****** Web Hook Recieved (${stripeEvent.type}) ******`);
+
     let subscription  = stripeEvent.data.object as Stripe.Subscription;
 
-    const userService = new UserAccountService(prisma_client);
+    const userService = new UserAccountService();
     
     let current_period_ends: Date = new Date(subscription.current_period_end * 1000);
     current_period_ends.setDate(current_period_ends.getDate() + config.subscriptionGraceDays);
