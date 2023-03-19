@@ -1,7 +1,7 @@
 import { ACCOUNT_ACCESS, PrismaClient, User, Membership, Account } from '@prisma/client';
 import { UtilService } from './util.service';
+const config = useRuntimeConfig();
 
-const TRIAL_PLAN_NAME = '3 Month Trial';  // TODO - some sort of config.. this will change for every use of the boilerplate
 
 export type MembershipWithAccount = (Membership & {account: Account});
 export type FullDBUser = (User & { memberships: MembershipWithAccount[]; });
@@ -69,7 +69,7 @@ export default class UserAccountService {
   }
 
   async createUser( supabase_uid: string, display_name: string ): Promise<FullDBUser | null> {
-    const trialPlan = await this.prisma.plan.findFirstOrThrow({ where: { name: TRIAL_PLAN_NAME}});
+    const trialPlan = await this.prisma.plan.findFirstOrThrow({ where: { name: config.trialPlanName}});
     return this.prisma.user.create({
       data:{
         supabase_uid: supabase_uid,

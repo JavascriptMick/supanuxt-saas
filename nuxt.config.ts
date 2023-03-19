@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     stripeEndpointSecret: process.env.STRIPE_ENDPOINT_SECRET,
     subscriptionGraceDays: 3,
+    trialPlanName: '3 Month Trial',
     public: {
       debugMode: true,
     }
