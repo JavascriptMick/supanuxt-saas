@@ -35,7 +35,7 @@
     </div>
 
     <!-- Account Switching -->
-    <p v-if="(dbUser?.dbUser?.memberships) && (dbUser.dbUser.memberships.length > 0)">
+    <p v-if="(dbUser?.dbUser?.memberships) && (dbUser.dbUser.memberships.length > 1)">
       <span>Switch Account.. </span>
       <button v-for="membership in dbUser?.dbUser.memberships" @click="store.changeActiveMembership(((membership as unknown) as MembershipWithAccount))"> <!-- This cast is infuriating -->
         {{ membership.account.name }}

@@ -1,4 +1,4 @@
-import { ACCOUNT_ACCESS, User, Membership, Account } from '@prisma/client';
+import { ACCOUNT_ACCESS, User, Membership, Account, Plan } from '@prisma/client';
 import prisma_client from '~~/prisma/prisma.client';
 import { UtilService } from './util.service';
 const config = useRuntimeConfig();
@@ -54,17 +54,40 @@ export default class UserAccountService {
     })
   }
 
-  async updateStripeSubscriptionDetailsForAccount (stripe_customer_id: string, stripe_subscription_id: string, current_period_ends: Date){
+  async updateStripeSubscriptionDetailsForAccount (stripe_customer_id: string, stripe_subscription_id: string, current_period_ends: Date, stripe_product_id: string){
     const account = await prisma_client.account.findFirstOrThrow({
       where: {stripe_customer_id}
     });
-    return await prisma_client.account.update({
-      where: { id: account.id },
-      data: {
-        stripe_subscription_id,
-        current_period_ends
-      }
-    })
+
+    const paid_plan = await prisma_client.plan.findFirstOrThrow({ 
+      where: { stripe_product_id }, 
+    });
+
+    if(paid_plan.id == account.plan_id){
+      // only update sub and period info
+      return await prisma_client.account.update({
+        where: { id: account.id },
+        data: {
+          stripe_subscription_id,
+          current_period_ends,
+        }
+      });
+    } else {
+      // plan upgrade/downgrade... update everything, copying over plan features and perks
+      return await prisma_client.account.update({
+        where: { id: account.id },
+        data: {
+          stripe_subscription_id,
+          current_period_ends,
+          plan_id: paid_plan.id,
+          features: paid_plan.features,
+          max_notes: paid_plan.max_notes,
+          max_members: paid_plan.max_members,
+          plan_name: paid_plan.name,
+        }
+      });
+    }
+
   }
 
   async createUser( supabase_uid: string, display_name: string, email: string ): Promise<FullDBUser | null> {
@@ -78,11 +101,12 @@ export default class UserAccountService {
           create: {
             account: {
               create: {
-                plan_id: trialPlan.id,  
                 name: display_name,
-                features: trialPlan.features, //copy in features from the plan, plan_id is a loose association and settings can change independently
                 current_period_ends: UtilService.addMonths(new Date(), config.initialPlanActiveMonths),
+                plan_id: trialPlan.id,  
+                features: trialPlan.features,
                 max_notes: trialPlan.max_notes,
+                max_members: trialPlan.max_members,
                 plan_name: trialPlan.name,
               }
             },
@@ -101,6 +125,20 @@ export default class UserAccountService {
   }
 
   async joinUserToAccount(user_id: number, account_id: number): Promise<MembershipWithAccount> {
+    const account = await prisma_client.account.findUnique({
+        where: {
+          id: account_id,
+        },
+        include:{
+          members: true,
+        }
+      }
+    )
+
+    if(account?.members && account?.members?.length >= account?.max_members){
+      throw new Error(`Too Many Members, Account only permits ${account?.max_members} members.`);
+    }
+
     return prisma_client.membership.create({
       data: {
         user_id: user_id,

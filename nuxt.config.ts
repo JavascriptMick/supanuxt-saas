@@ -16,8 +16,8 @@ export default defineNuxtConfig({
     stripeEndpointSecret: process.env.STRIPE_ENDPOINT_SECRET,
     stripeCallbackUrl: process.env.STRIPE_CALLBACK_URL,
     subscriptionGraceDays: 3,
-    initialPlanName: '3 Month Trial',
-    initialPlanActiveMonths: 3,
+    initialPlanName: 'Free Trial',
+    initialPlanActiveMonths: 1,
     public: {
       debugMode: true,
     }

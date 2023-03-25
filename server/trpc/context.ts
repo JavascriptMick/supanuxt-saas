@@ -30,7 +30,7 @@ export async function createContext(event: H3Event){
   if(!user || !dbUser) {
     throw new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
-      message: `Unable to fetch user data, please try again later. Missing ->[user:${(!user)},dbUser:${(!dbUser)}]`,
+      message: `Unable to fetch user data, please try again later. Missing ->[supabase:${(!supabase)},user:${(!user)},dbUser:${(!dbUser)}]`,
     });
   }
   

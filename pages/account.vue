@@ -16,7 +16,9 @@
     <p>Current Period Ends: {{ formatDate(activeMembership?.account.current_period_ends) }}</p>
     <p>Permitted Features: {{ activeMembership?.account.features }}</p>
     <p>Maximum Notes: {{ activeMembership?.account.max_notes }}</p>
+    <p>Maximum Members: {{ activeMembership?.account.max_members }}</p>
     <p>Access Level: {{ activeMembership?.access }}</p>
+    <p>Plan: {{ activeMembership?.account.plan_name }}</p>
     
     <template v-if="config.public.debugMode">
       <p>******* Debug *******</p>

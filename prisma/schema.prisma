@@ -53,6 +53,7 @@ model Account {
   max_notes               Int         @default(100)
   stripe_subscription_id  String?
   stripe_customer_id      String?
+  max_members             Int        @default(1)
 
   @@map("account")
 }
@@ -63,6 +64,8 @@ model Plan {
   features                String[]
   accounts                Account[]
   max_notes               Int         @default(100)
+  stripe_product_id       String?
+  max_members             Int        @default(1)
 
   @@map("plan")
 }

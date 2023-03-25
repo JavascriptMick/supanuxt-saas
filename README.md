@@ -138,7 +138,9 @@ I set up a Stripe account with a couple of 'Products' with a single price each t
 -- initial user should be created with an expired plan (done, initial plan and plan period now controled via config to allow either a trial plan or a 'No Plan' for initial users)
 -- add a pricing page....should be the default redirect from signup if the user has no active plan.. not sure whether to use a 'blank' plan or make plan nullable  (basic pricing page is done - decided on 'no plan' plan)
 -- figure out what to do with Plan Name.  Could add Plan Name to account record and copy over at time of account creation or updation.  could pull from the Plan record for display.... but makes it difficult to change... should be loosely coupled, maybe use first approach (done)
--- figure out when/how plan changes.. is it triggered by webhook?
+-- figure out when/how plan changes.. is it triggered by webhook? (Done, webhook looks up product info on plan record and updates plan info)
+-- Plan info is all over the place... product id is on the plan record in the db, pricing id's are on the pricing page template. would it be too crazy to have an admin page to administer pricing and plan/product info?
+-- What to do with pricing page? should probably change depending on current account information i.e. buttons say 'upgrade' for plans > current and maybe 'downgrade' for plans < current?
 # Admin Functions Scenario (shitty test)
 Pre-condition
 User 3 (encumbent id=3) - Owner of own single user account.  Admin of Team account

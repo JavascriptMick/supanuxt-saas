@@ -10,6 +10,6 @@
 <template>
   <div>
     <h3>Index</h3>
-    <button @click="supabase.auth.signInWithOAuth({provider: 'google'})">Sign In with Google</button>
+    <button @click="supabase.auth.signInWithOAuth({provider: 'google'})">Connect with Google</button>
   </div>
 </template>

@@ -30,7 +30,6 @@ export default defineEventHandler(async (event) => {
     line_items: [
       {
         price: price_id,
-        // For metered billing, do not pass quantity
         quantity: 1,
       },
     ],
