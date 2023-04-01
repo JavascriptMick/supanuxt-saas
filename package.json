@@ -8,7 +8,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@nuxtjs/supabase": "^0.3.0",
+    "@nuxtjs/supabase": "^0.3.1",
     "@prisma/client": "^4.9.0",
     "nuxt": "^3.1.1",
     "prisma": "^4.9.0"
@@ -20,7 +20,7 @@
     "pinia": "^2.0.30",
     "stripe": "^11.12.0",
     "superjson": "^1.12.2",
-    "trpc-nuxt": "^0.5.0",
+    "trpc-nuxt": "^0.8.0",
     "zod": "^3.20.2"
   },
   "overrides": {

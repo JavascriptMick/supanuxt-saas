@@ -1,5 +1,7 @@
 <template>
   <div>
-    <h3>Nuxt 3 Boilerplate - AppFooter</h3>
+    <hr/>
+    <span><NuxtLink to="/terms">Terms Of Service</NuxtLink></span>
+    <span>&nbsp;|&nbsp;<NuxtLink to="/privacy">Privacy</NuxtLink></span>
   </div>
 </template>

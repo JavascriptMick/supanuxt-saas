@@ -23,15 +23,15 @@
 
 <template>
   <div>
-    <h3>Nuxt 3 Boilerplate - AppHeader</h3>
-    <!-- logged in & sign out -->
-    <div v-if="user">logged in as: {{ user.email }}: <button @click="signout()">Sign Out</button></div>
-    <div v-if="!user">Not Logged in</div>
+    <h3>Nuxt 3 Boilerplate - To the Moon!</h3>
     <div>
-      <NuxtLink to="/">Boilerplate</NuxtLink>&nbsp;
-      |&nbsp;<NuxtLink to="/dashboard">Dashboard</NuxtLink>&nbsp;
-      |&nbsp;<NuxtLink to="/pricing">Pricing</NuxtLink>&nbsp;
-      |&nbsp;<NuxtLink to="/account">Account</NuxtLink>
+      <span v-if="!user"><NuxtLink to="/">Nuxt 3 Boilerplate</NuxtLink>&nbsp;|&nbsp;</span>
+      <span><NuxtLink to="/pricing">Pricing</NuxtLink></span>
+      <span v-if="user">&nbsp;|&nbsp;<NuxtLink to="/dashboard">Dashboard</NuxtLink></span>
+      <span v-if="user">&nbsp;|&nbsp;<NuxtLink to="/account">Account</NuxtLink></span>
+      <span v-if="!user">&nbsp;|&nbsp;<NuxtLink to="/signin">Sign In</NuxtLink></span>
+      <span v-if="user">&nbsp;|&nbsp;<a href="#" @click.prevent="signout()">Sign out</a></span>
+      <span v-if="user">&nbsp;|&nbsp;logged in as: {{ user.email }}</span>
     </div>
 
     <!-- Account Switching -->

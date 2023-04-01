@@ -142,7 +142,7 @@ export default class UserAccountService {
     return prisma_client.membership.create({
       data: {
         user_id: user_id,
-        account_id: account_id,
+        account_id,
         access: ACCOUNT_ACCESS.READ_ONLY
       },
       include: {

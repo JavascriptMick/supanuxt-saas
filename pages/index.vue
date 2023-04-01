@@ -1,6 +1,5 @@
 <script setup lang="ts">
   const user = useSupabaseUser()
-  const supabase = useSupabaseAuthClient();
   watchEffect(() => {
     if (user.value) {
       navigateTo('/dashboard', {replace: true})
@@ -10,6 +9,6 @@
 <template>
   <div>
     <h3>Index</h3>
-    <button @click="supabase.auth.signInWithOAuth({provider: 'google'})">Connect with Google</button>
+    Nuxt 3 (SAAS) Boilerplate is very nice, why don't you <NuxtLink to="/signup">Get Started</NuxtLink>
   </div>
 </template>
