@@ -1,5 +1,6 @@
 # Nuxt 3 (SAAS) Boilerplate
 
+
 ## Not Production Ready
 Please don't hitch your wagon to this star just yet... I'm coding this in the open and the TODO list is verrrrrry long.
 
@@ -7,9 +8,76 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - Nuxt 3 (I like it, shut up)
 - Supabase (Auth including OAuth + Postgresql instance)
 - Prisma (Schema management + Strongly typed client)
-- TRPC (Server/Client communication with Strong types)
+- TRPC (Server/Client communication with Strong types, SSR compatible)
 - Pinia (State Store.  I liked vuex a lot, in particular explicit mutations but gotta go with the cool crowd)
 - Stripe (Payments including Webhook integration)
+
+
+## Features
+### User Management
+- [x] User authentication via Supabase including Social Signon (e.g. google) Email/Password (TODO) and Magic Link
+- [x] Full list of available [providers](https://supabase.com/docs/guides/auth#providers)
+- [x] User roles and permissions (admin, regular user, etc. roles defined in the [Prisma Schema](/prisma/schema.prisma))
+- [x] User Email captured on initial login
+- [x] Initial plan and plan period controled via config to allow either a trial plan or a 'No Plan' for initial users
+- [ ] Edit Account Name from Account Page
+
+### Schema and DB Management
+- [x] Prisma based Schema Management
+- [x] Supabase integration for DB
+- [ ] Smart DB initialisation script including Plan and Stripe Product information, maybe templated
+
+### Config Management and Env integration
+- [x] [Config](/nuxt.config.ts) for Stripe Keys
+- [x] [Env](/.env_example) keys for Supabase and Stripe
+- [x] Config Switches for free trial - If you want a 'free trial period' set initialPlanName to an appropriate plan name in the DB and initialPlanActiveMonths to a positive value.  If you don't want a free trial, set initialPlanName to an appropriate 'No Plan' plan in the DB and set the initialPlanActiveMonths to -1.
+
+### Multi-Modal State Management
+- [x] SPA type pages (e.g. [Dashboard](/pages/dashboard.vue)) - postgresql(supabase) -> Prisma -> Service Layer for Business Logic -> TRPC -> Pinia -> UI
+- [x] SSR type pages (e.g. [Note](/pages/notes/[note_id].vue)) - postgresql(supabase) -> Prisma -> Service Layer for Business Logic -> TRPC -> UI
+
+### Multi User Accounts (Teams)
+- [x] Allow users to upgrade their accounts fron individual accounts to multi-user accounts (Teams).
+- [x] Allow users to switch between Teams and view/edit data from the selected Team.
+- [x] All features, billing and limits is controlled at the Account (Team) level (not the user level)
+- [ ] Team administrators and owners can administer the permissions (roles) of other team members on the Accounts page
+- [ ] Gen/Regen an invite link to allow users to join a team
+
+### Plans and Pricing
+- [x] Manage multiple Plans each with specific Feature flags and Plan limits
+- [x] Plan features copied to Accounts upon successfull subscription
+- [x] Loose coupling between Plan and Account Features to allow ad-hoc account tweaks without creating custom plans
+- [x] Pricing page appropriately reacts to users with/without account and current plan.
+- [ ] Plan features and Limits available in an object structure in Server methods and with method annotations or similar
+
+### Stripe (Payments) Integration
+- [x] Each plan is configured with Stripe Product ID so that multiple Stripe Prices can be created for each plan but subscriptions (via Webhook) will still activate the correct plan.
+- [x] Support basic (customer.subscription) flows for Subscription payments via Webhook
+- [ ] Support additional Stripe flows for things like failed payments, imminent subscription expiry (send email?) etc.....
+
+### Support
+- [ ] Help desk support (ticketing system, live chat, etc.)
+- [ ] Knowledge base with FAQs and tutorials
+
+### Look and Feel, Design System and Customisation
+- [x] Very Crap default UI
+- [ ] Not Crap UI
+- [ ] Integrated Design system (Bootstrap? Tailwind?)
+- [ ] Branding options (logo, color scheme, etc.)
+
+### Demo Software (Notes)
+- [x] Simple Text based Notes functionality
+- [x] Read only Notes Dashboard
+- [x] SSR Rendered (SEO Optimised) [Note](/pages/notes/[note_id].vue) Display
+- [x] Max Notes limit property on Plan 
+- [ ] Max Notes enforced
+- [ ] Optional public SSR Rendered public notes index page
+- [ ] Add, Delete, edit notes on Dashboard
+
+### Mobile App
+- [ ] Flutter App Demo integrating with API endpoints, Auth etc
+- [ ] Mobile-friendly web interface.
+
 
 ## Special Mention
 This https://blog.checklyhq.com/building-a-multi-tenant-saas-data-model/ Article by https://twitter.com/tim_nolet was my inspiration for the user/account/subscription schema.  Tim was also generous with his time and answered some of my stoopid questions on the https://www.reddit.com/r/SaaS/ Subreddit.
@@ -131,22 +199,6 @@ I set up a Stripe account with a couple of 'Products' with a single price each t
 - You need to need to pre-emptively create a Stripe user *before* you send them to the checkout page so that you know who they are when the webhook comes back.
 - There are like a Billion Fricking Webhooks you *can* subscribe to but for an MVP, you just need the *customer.subscription* events and you basically treat them all the same.
 
-# TODO
-- add role to membership and have methods for changing role, making sure one owner etc (done)
-- remove @unique so users can have multiple accounts (done)
-- add concept of 'current' account for user.. (done)
-- add max_notes property to plan and account as an example of a 'limit' property (done)
-- add spinup script somehow to create plans???.... should I use some sort of generator like sidebase?
-- team invitation thingy (not required, admins can add new members to team)
-- actions which mutate the current user account should update the context... (done)
-- integration with stripe including web hooks (basics done).
--- add email to user record... capture from login same as user name (done)
--- initial user should be created with an expired plan (done, initial plan and plan period now controled via config to allow either a trial plan or a 'No Plan' for initial users)
--- add a pricing page....should be the default redirect from signup if the user has no active plan.. not sure whether to use a 'blank' plan or make plan nullable  (basic pricing page is done - decided on 'no plan' plan)
--- figure out what to do with Plan Name.  Could add Plan Name to account record and copy over at time of account creation or updation.  could pull from the Plan record for display.... but makes it difficult to change... should be loosely coupled, maybe use first approach (done)
--- figure out when/how plan changes.. is it triggered by webhook? (Done, webhook looks up product info on plan record and updates plan info)
--- Plan info is all over the place... product id is on the plan record in the db, pricing id's are on the pricing page template. would it be too crazy to have an admin page to administer pricing and plan/product info? (scratch, current system works ok)
--- What to do with pricing page? should probably change depending on current account information i.e. buttons say 'upgrade' for plans > current and maybe 'downgrade' for plans < current? (Add an 'order' to the plan... basically an integer indicating how 'good' the plan is so that if your current account plan order (yes it's also copied onto the account), is lower than the plan on the pricing page, it says 'upgrade', otherwise 'downgrade'... on second thought, maybe just use plan name and if it's not == to your current plan, say 'switch to plan')
 # Admin Functions Scenario (shitty test)
 Pre-condition
 User 3 (encumbent id=3) - Owner of own single user account.  Admin of Team account
