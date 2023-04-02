@@ -23,7 +23,7 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 ### Schema and DB Management
 - [x] Prisma based Schema Management
 - [x] Supabase integration for DB
-- [ ] Smart DB initialisation script including Plan and Stripe Product information, maybe templated
+- [x] DB Seed Script to setup plan information including Plan and Stripe Product information
 
 ### Config Management and Env integration
 - [x] [Config](/nuxt.config.ts) for Stripe Keys
@@ -100,32 +100,33 @@ This solution uses Supabase for Auth and to provide a DB.  In addition to Magic 
 5) Go to Project Settings -> API and copy Project URL and Project API Key to SUPABASE_URL and SUPABASE_KEY settings respectively in your [.env](/.env) file
 6) Go to Project Settings -> Database -> Connection String -> URI and copy the uri value into the DATABASE_URL setting in your [.env](/.env) file, remembering to replace ```[YOUR-PASSWORD]``` with the password you provided when you setup the project.
 
+### Stripe
+This solution uses Stripe for Subscription payments.
+
+1) Go to [Stripe](https://stripe.com) and setup your business (Free Tier is fine to start)
+2) Create 2 products ('Team Plan' and 'Individual Plan') each with a single price and note the Product ID's and Price ID's
+3) Edit the [seed.ts](/prisma/seed.ts) file and replace the stripe_product_id values with the Product ID's from 2)
+``` typescript
+    create: {
+      name: 'Team Plan',
+      .....
+      stripe_product_id: '[Your Product ID from Stripe]'
+    },
+```
+4) Edit the Pricing [pricing](/pages/pricing.vue) page and put your Price ID's from 2) into the appropriate hidden ```price_id``` form fields...
+``` html
+<input type="hidden" name="price_id" value="[Your Price ID from Stripe]" />
+```
+
 ### Setup Database (Prisma)
 This solution uses Prisma to both manage changes and connect to the Postgresql database provided by Supabase.  Your Supabase DB will be empty by default so you need to hydrate the schema and re-generate the local prisma client.
 ```
 npx prisma db push
 npx prisma generate
 npm install @prisma/client --save-dev
+npx prisma db seed
 ```
-...you should now have a bunch of empty tables in your Supabase DB
-
-### Stripe
-This solution uses Stripe for Subscription payments.
-
-1) Go to [Stripe](https://stripe.com) and setup your business (Free Tier is fine to start)
-2) Create 2 products ('Team Plan' and 'Individual Plan') each with a single price and note the Product ID's and Price ID's
-3) Manually edit the Plan table in Supabase and add 3 rows as shown below making sure to replace the ```stripe_product_id``` fields with the appropriate values
-
-| id | name            | features                                                             | max_notes | stripe_product_id   | max_members |
-| -- | --------------- | -------------------------------------------------------------------- | --------- | ------------------- | ----------- |
-| 1  | Free Trial      | ADD_NOTES,EDIT_NOTES,VIEW_NOTES                                      | 10        |                     | 1           |
-| 2  | Individual Plan | ADD_NOTES,EDIT_NOTES,VIEW_NOTES,SPECIAL_FEATURE                      | 100       | [your product id]   | 1           |
-| 3  | Team Plan       | ADD_NOTES,EDIT_NOTES,VIEW_NOTES,SPECIAL_FEATURE,SPECIAL_TEAM_FEATURE | 200       | [your other product id]   | 10          |
-
-4) Edit the Pricing [pricing](/pages/pricing.vue) page and put your Price ID's into the appropriate hidden ```price_id``` form fields...
-``` html
-<input type="hidden" name="price_id" value="[Your Price ID from Stripe]" />
-```
+...you should now have a a Plan table with 3 rows and a bunch of empty tables in your Supabase DB
 
 ## Developement Setup
 

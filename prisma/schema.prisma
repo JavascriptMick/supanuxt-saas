@@ -60,7 +60,7 @@ model Account {
 
 model Plan {
   id                      Int        @id @default(autoincrement())
-  name                    String
+  name                    String     @unique
   features                String[]
   accounts                Account[]
   max_notes               Int         @default(100)
