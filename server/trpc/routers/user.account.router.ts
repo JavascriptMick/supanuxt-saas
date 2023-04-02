@@ -10,6 +10,16 @@ export const userAccountRouter = router({
         dbUser: ctx.dbUser,
       }
     }),  
+  changeAccountName: adminProcedure
+    .input(z.object({ account_id: z.number(), new_name: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const uaService = new UserAccountService();
+      const account = await uaService.changeAccountName(input.account_id, input.new_name);
+
+      return {
+        account,
+      }
+    }),
   changeAccountPlan: adminProcedure
     .input(z.object({ account_id: z.number(), plan_id: z.number() }))
     .query(async ({ ctx, input }) => {

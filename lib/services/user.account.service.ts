@@ -151,6 +151,15 @@ export default class UserAccountService {
     });
   }
 
+  async changeAccountName(account_id: number, new_name: string) {
+    return prisma_client.account.update({
+      where: { id: account_id},
+      data: {
+        name: new_name,
+      }
+    });
+  }
+
   async changeAccountPlan(account_id: number, plan_id: number) {
     const plan = await prisma_client.plan.findFirstOrThrow({ where: {id: plan_id}});
     return prisma_client.account.update({

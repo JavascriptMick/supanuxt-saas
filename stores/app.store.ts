@@ -45,6 +45,14 @@ export const useAppStore = defineStore('app', {
         await this.fetchNotesForCurrentUser();
       }
     },
+    async changeAccountName(new_name: string){
+      if(!this.activeMembership) { return; }
+      const { $client } = useNuxtApp();
+      const { data: account } = await $client.userAccount.changeAccountName.useQuery({account_id: this.activeMembership.account_id, new_name});
+      if(account.value?.account){
+        this.activeMembership.account = account.value.account;
+      }
+    },
     async changeAccountPlan(plan_id: number){
       if(!this.activeMembership) { return; }
       const { $client } = useNuxtApp();

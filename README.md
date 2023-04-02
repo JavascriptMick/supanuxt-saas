@@ -18,7 +18,7 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] User roles and permissions (admin, regular user, etc. roles defined in the [Prisma Schema](/prisma/schema.prisma))
 - [x] User Email captured on initial login
 - [x] Initial plan and plan period controled via config to allow either a trial plan or a 'No Plan' for initial users
-- [ ] Edit Account Name from Account Page
+- [x] Edit Account Name from Account Page
 
 ### Schema and DB Management
 - [x] Prisma based Schema Management

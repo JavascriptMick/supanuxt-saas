@@ -1,8 +1,11 @@
 <script setup lang="ts">
   import { storeToRefs } from 'pinia';
+  import { ACCOUNT_ACCESS } from '@prisma/client';
+
   const store = useAppStore();
   const { activeMembership } = storeToRefs(store);
   const config = useRuntimeConfig();
+  const newAccountName = ref("");
 
   function formatDate(date: Date | undefined){
     if(!date){ return ""; }
@@ -12,7 +15,7 @@
 <template>
   <div>
     <h3>Account</h3>
-    <p>Name: {{ activeMembership?.account.name }}</p>
+    <p>Name: {{ activeMembership?.account.name }} <span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access !== ACCOUNT_ACCESS.ADMIN)"><input v-model="newAccountName" placeholder="Enter New Name"/><button @click.prevent="store.changeAccountName(newAccountName)">Change Name</button></span></p>
     <p>Current Period Ends: {{ formatDate(activeMembership?.account.current_period_ends) }}</p>
     <p>Permitted Features: {{ activeMembership?.account.features }}</p>
     <p>Maximum Notes: {{ activeMembership?.account.max_notes }}</p>
