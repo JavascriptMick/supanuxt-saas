@@ -1,6 +1,5 @@
 # Nuxt 3 (SAAS) Boilerplate
 
-
 ## Not Production Ready
 Please don't hitch your wagon to this star just yet... I'm coding this in the open and the TODO list is verrrrrry long.
 
@@ -11,7 +10,6 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - TRPC (Server/Client communication with Strong types, SSR compatible)
 - Pinia (State Store.  I liked vuex a lot, in particular explicit mutations but gotta go with the cool crowd)
 - Stripe (Payments including Webhook integration)
-
 
 ## Features
 ### User Management
@@ -78,13 +76,60 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [ ] Flutter App Demo integrating with API endpoints, Auth etc
 - [ ] Mobile-friendly web interface.
 
+### Testing
+- [ ] Unit tests for server functions
+- [ ] Integration tests around subscription scenarios
 
 ## Special Mention
 This https://blog.checklyhq.com/building-a-multi-tenant-saas-data-model/ Article by https://twitter.com/tim_nolet was my inspiration for the user/account/subscription schema.  Tim was also generous with his time and answered some of my stoopid questions on the https://www.reddit.com/r/SaaS/ Subreddit.
 
-## Setup
+## Externals Setup
+Things you gotta do that aren't code (and are therefore not very interesting)
 
-Make sure to install the dependencies:
+### Env
+Copy the [.env_example](/.env_example) file to create [.env](/.env) 
+Note) This file is for development convenience, is .gitignored by default and should *not* be added to source control
+
+### Supabase
+This solution uses Supabase for Auth and to provide a DB.  In addition to Magic Link and email/password login via Supabase, it also supports Google OAuth via Supabase.
+
+1) Go to [Supabase](https://supabase.com/) and 'Start your Project'
+2) Setup your org and project (Free tier is fine to start)
+3) Update the project's email template
+4) Choose an OAuth provider.  I have chosen Google using these [Instructions](https://supabase.com/docs/guides/auth/social-login/auth-google) for the purposes of demonstration but they all should work.
+5) Go to Project Settings -> API and copy Project URL and Project API Key to SUPABASE_URL and SUPABASE_KEY settings respectively in your [.env](/.env) file
+6) Go to Project Settings -> Database -> Connection String -> URI and copy the uri value into the DATABASE_URL setting in your [.env](/.env) file, remembering to replace ```[YOUR-PASSWORD]``` with the password you provided when you setup the project.
+
+### Setup Database (Prisma)
+This solution uses Prisma to both manage changes and connect to the Postgresql database provided by Supabase.  Your Supabase DB will be empty by default so you need to hydrate the schema and re-generate the local prisma client.
+```
+npx prisma db push
+npx prisma generate
+npm install @prisma/client --save-dev
+```
+...you should now have a bunch of empty tables in your Supabase DB
+
+### Stripe
+This solution uses Stripe for Subscription payments.
+
+1) Go to [Stripe](https://stripe.com) and setup your business (Free Tier is fine to start)
+2) Create 2 products ('Team Plan' and 'Individual Plan') each with a single price and note the Product ID's and Price ID's
+3) Manually edit the Plan table in Supabase and add 3 rows as shown below making sure to replace the ```stripe_product_id``` fields with the appropriate values
+
+| id | name            | features                                                             | max_notes | stripe_product_id   | max_members |
+| -- | --------------- | -------------------------------------------------------------------- | --------- | ------------------- | ----------- |
+| 1  | Free Trial      | ADD_NOTES,EDIT_NOTES,VIEW_NOTES                                      | 10        |                     | 1           |
+| 2  | Individual Plan | ADD_NOTES,EDIT_NOTES,VIEW_NOTES,SPECIAL_FEATURE                      | 100       | [your product id]   | 1           |
+| 3  | Team Plan       | ADD_NOTES,EDIT_NOTES,VIEW_NOTES,SPECIAL_FEATURE,SPECIAL_TEAM_FEATURE | 200       | [your other product id]   | 10          |
+
+4) Edit the Pricing [pricing](/pages/pricing.vue) page and put your Price ID's into the appropriate hidden ```price_id``` form fields...
+``` html
+<input type="hidden" name="price_id" value="[Your Price ID from Stripe]" />
+```
+
+## Developement Setup
+
+### Dependencies
 
 ```bash
 # yarn
@@ -97,9 +142,11 @@ npm install
 pnpm install --shamefully-hoist
 ```
 
-## Development Server
 
-Start the Stripe thingy
+
+### Webhook Forwarding
+This makes sure that you can debug subscription workflows locally
+
 
 ```bash
 stripe listen --forward-to localhost:3000/webhook
@@ -126,88 +173,4 @@ npm run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## Config
-### .env
-Most of the .env settings are self explanatory and are usually secrets.
-
-### Trial Plan
-If you want a 'free trial period' set initialPlanName to an appropriate plan name in the DB and initialPlanActiveMonths to a positive value.  If you don't want a free trial, set initialPlanName to an appropriate 'No Plan' plan in the DB and set the initialPlanActiveMonths to -1.
-
-# Steps to Create
-This is what I did to create the project including all the extra fiddly stuff.  Putting this here so I don't forget.
-
-## Setup Nuxt
-Follow instructions from here https://nuxt.com/docs/getting-started/installation
-
-```bash
-# install node
-n lts
-npx nuxi init nuxt3-boilerplate
-code nuxt3-boilerplate/
-npm install
-npm run dev -- -o
-```
-## Setup Supabase
-
-To setup supabase and middleware, loosely follow instructions from https://www.youtube.com/watch?v=IcaL1RfnU44
-remember to update email template
-Supabase - new account (free tier), used github oath for supabase account
-
-```
-npm install  @nuxtjs/supabase
-```
-
-add this to nuxt.config.ts
-```
-modules: ['@nuxtjs/supabase']
-```
-## Setup Google OAuth
-
-Follow these instructions to add google oath https://supabase.com/docs/guides/auth/social-login/auth-google
-
-## Nuxt-Supabase
-Then I frigged around trying to get the nuxt-supabase module to work properly for the oauth flow.  It's a bit of a mess TBH. Eventually I looked at the demo https://github.com/nuxt-modules/supabase/tree/main/demo like a chump and got it working
-
-## Integrating Prisma
-This felt like a difficult decision at first.  the Subabase client has some pseudo sql Ormy sort of features already
-but Prisma has this awesome schema management support and autogeneration of a typed client works great and reduces errors.
-I already had a schema lying around based on this (https://blog.checklyhq.com/building-a-multi-tenant-saas-data-model/) that was nearly what I needed and it was nice to be able to re-use it.
-
-```
-npm install prisma --save-dev
-npx prisma init
-```
-go to Supabase -> settings -> database -> connection string -> URI.. and copy the URI into the 
-DATABASE_URL setting created with prisma init.
-still in database, go to 'Database password' and reset/set it and copy the password into the [YOUR-PASSWORD] placeholder in the URI
-
-Then I manually hand coded the schema.prisma file based on something else I already had.
-
-```
-npx prisma db push
-npm install @prisma/client --save-dev
-npx prisma generate
-```
-
-## Stripe Integration
-This was a royal pain in the butt.  Got some tips from https://github.com/jurassicjs/nuxt3-fullstack-tutorial and https://www.youtube.com/watch?v=A24aKCQ-rf4&t=895s  Official docs try to be helpful but succeed only in confusing things https://stripe.com/docs/billing/quickstart
-
-I set up a Stripe account with a couple of 'Products' with a single price each to represent my different plans.  These price id's are embedded into the Pricing page.
-
-### Key things I learned
-- You need to need to pre-emptively create a Stripe user *before* you send them to the checkout page so that you know who they are when the webhook comes back.
-- There are like a Billion Fricking Webhooks you *can* subscribe to but for an MVP, you just need the *customer.subscription* events and you basically treat them all the same.
-
-# Admin Functions Scenario (shitty test)
-Pre-condition
-User 3 (encumbent id=3) - Owner of own single user account.  Admin of Team account
-User 4 (noob id = 4) - Owner of own single user account.  
-
-User 3...
-- joins user 4 to team account (expect user is a read only member of team account)
-- upgrades user 4 to owner (should fail)
-- upgrades user 4 to admin
-- claims ownership of team account
-
 
