@@ -2,8 +2,8 @@
   import { storeToRefs } from 'pinia';
   import { ACCOUNT_ACCESS } from '@prisma/client';
 
-  const store = useAppStore()
-  const { activeMembership } = storeToRefs(store);
+  const authStore = useAuthStore()
+  const { activeMembership } = storeToRefs(authStore);
 
 </script>
 <template>

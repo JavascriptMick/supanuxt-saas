@@ -4,14 +4,16 @@
  */
 import { createNuxtApiHandler } from 'trpc-nuxt'
 
-import { publicProcedure, router } from '~/server/trpc/trpc'
+import { router } from '~/server/trpc/trpc'
 import { createContext } from '~~/server/trpc/context';
 import { notesRouter } from '~~/server/trpc/routers/notes.router';
-import { userAccountRouter } from '~~/server/trpc/routers/user.account.router';
+import { authRouter } from '~~/server/trpc/routers/auth.router';
+import { accountRouter } from '~~/server/trpc/routers/account.router';
 
 export const appRouter = router({
   notes: notesRouter,
-  userAccount: userAccountRouter,
+  auth: authRouter,
+  account: accountRouter,
 })
 
 // export only the type definition of the API

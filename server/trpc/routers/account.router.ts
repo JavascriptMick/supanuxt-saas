@@ -1,15 +1,9 @@
 import UserAccountService from '~~/lib/services/user.account.service';
-import { protectedProcedure, router, adminProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import { z } from 'zod';
 
-export const userAccountRouter = router({
-  getDBUser: protectedProcedure
-    .query(({ ctx }) => {
-      return {
-        dbUser: ctx.dbUser,
-      }
-    }),  
+export const accountRouter = router({
   changeAccountName: adminProcedure
     .input(z.object({ account_id: z.number(), new_name: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -49,7 +43,7 @@ export const userAccountRouter = router({
         membership,
       }
     }),
-  claimOwnershipOfAccount: adminProcedure
+    claimOwnershipOfAccount: adminProcedure
     .input(z.object({ account_id: z.number() }))
     .query(async ({ ctx, input }) => {
       const uaService = new UserAccountService();
@@ -57,6 +51,16 @@ export const userAccountRouter = router({
 
       return {
         membership,
+      }
+    }),
+    getAccountMembers: adminProcedure
+    .input(z.object({ account_id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const uaService = new UserAccountService();
+      const memberships = await uaService.getAccountMembers(input.account_id);
+
+      return {
+        memberships,
       }
     }),
 })

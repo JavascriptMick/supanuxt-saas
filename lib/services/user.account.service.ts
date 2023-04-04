@@ -45,6 +45,15 @@ export default class UserAccountService {
     });
   }
 
+  async getAccountMembers(account_id: number): Promise<MembershipWithUser[]> {
+    return prisma_client.membership.findMany({ 
+      where: { account_id },
+      include: {
+        user: true
+      }
+    });
+  }  
+
   async updateAccountStipeCustomerId (account_id: number, stripe_customer_id: string){
     return await prisma_client.account.update({
       where: { id: account_id },

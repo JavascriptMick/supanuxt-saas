@@ -4,15 +4,15 @@
 
   const supabase = useSupabaseAuthClient();
   const user = useSupabaseUser();
-  const store = useAppStore()
-  const { activeMembership } = storeToRefs(store);
+  const authStore = useAuthStore()
+  const { activeMembership } = storeToRefs(authStore);
 
   const { $client } = useNuxtApp();
 
-  const { data: dbUser } = await $client.userAccount.getDBUser.useQuery();
+  const { data: dbUser } = await $client.auth.getDBUser.useQuery();
 
   onMounted(async () => {
-    await store.initUser();
+    await authStore.initUser();
   });
 
   async function signout() {
@@ -37,7 +37,7 @@
     <!-- Account Switching -->
     <p v-if="(dbUser?.dbUser?.memberships) && (dbUser.dbUser.memberships.length > 1)">
       <span>Switch Account.. </span>
-      <button v-for="membership in dbUser?.dbUser.memberships" @click="store.changeActiveMembership(((membership as unknown) as MembershipWithAccount))"> <!-- This cast is infuriating -->
+      <button v-for="membership in dbUser?.dbUser.memberships" @click="authStore.changeActiveMembership(((membership as unknown) as MembershipWithAccount))"> <!-- This cast is infuriating -->
         {{ membership.account.name }}
         <span v-if="membership.account_id === activeMembership?.account_id">*</span>
       </button>
