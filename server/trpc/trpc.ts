@@ -39,7 +39,6 @@ const isAdminForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
   if (!result.success) throw new TRPCError({ code: 'BAD_REQUEST' });
   const { account_id } = result.data;
   const test_membership = ctx.dbUser.memberships.find(membership => membership.account_id == account_id);
-  console.log(`isAdminForInputAccountId  test_membership?.access:${test_membership?.access}`);
   if(!test_membership || (test_membership?.access !== ACCOUNT_ACCESS.ADMIN && test_membership?.access !== ACCOUNT_ACCESS.OWNER)) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }

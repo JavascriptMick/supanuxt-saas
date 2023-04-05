@@ -1,14 +1,15 @@
-import UserAccountService from '~~/lib/services/user.account.service';
 import { router, adminProcedure } from '../trpc'
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import { z } from 'zod';
+import AccountService from '~~/lib/services/account.service';
+import { MembershipWithAccount } from '~~/lib/services/service.types';
 
 export const accountRouter = router({
   changeAccountName: adminProcedure
     .input(z.object({ account_id: z.number(), new_name: z.string() }))
     .query(async ({ ctx, input }) => {
-      const uaService = new UserAccountService();
-      const account = await uaService.changeAccountName(input.account_id, input.new_name);
+      const accountService = new AccountService();
+      const account = await accountService.changeAccountName(input.account_id, input.new_name);
 
       return {
         account,
@@ -17,8 +18,8 @@ export const accountRouter = router({
   changeAccountPlan: adminProcedure
     .input(z.object({ account_id: z.number(), plan_id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const uaService = new UserAccountService();
-      const account = await uaService.changeAccountPlan(input.account_id, input.plan_id);
+      const accountService = new AccountService();
+      const account = await accountService.changeAccountPlan(input.account_id, input.plan_id);
 
       return {
         account,
@@ -27,8 +28,8 @@ export const accountRouter = router({
   joinUserToAccount: adminProcedure
     .input(z.object({ account_id: z.number(), user_id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const uaService = new UserAccountService();
-      const membership = (ctx.dbUser?.id)?await uaService.joinUserToAccount(input.user_id, input.account_id):null;
+      const accountService = new AccountService();
+      const membership: MembershipWithAccount| null = (ctx.dbUser?.id)?await accountService.joinUserToAccount(input.user_id, input.account_id):null;
       return {
         membership,
       }
@@ -36,8 +37,8 @@ export const accountRouter = router({
   changeUserAccessWithinAccount: adminProcedure
     .input(z.object({ user_id: z.number(), account_id: z.number(), access: z.enum([ACCOUNT_ACCESS.ADMIN, ACCOUNT_ACCESS.OWNER, ACCOUNT_ACCESS.READ_ONLY, ACCOUNT_ACCESS.READ_WRITE]) }))
     .query(async ({ ctx, input }) => {
-      const uaService = new UserAccountService();
-      const membership = await uaService.changeUserAccessWithinAccount(input.user_id, input.account_id, input.access);
+      const accountService = new AccountService();
+      const membership = await accountService.changeUserAccessWithinAccount(input.user_id, input.account_id, input.access);
       
       return {
         membership,
@@ -46,8 +47,8 @@ export const accountRouter = router({
     claimOwnershipOfAccount: adminProcedure
     .input(z.object({ account_id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const uaService = new UserAccountService();
-      const membership = await uaService.claimOwnershipOfAccount(ctx.dbUser.id, input.account_id);
+      const accountService = new AccountService();
+      const membership = await accountService.claimOwnershipOfAccount(ctx.dbUser.id, input.account_id);
 
       return {
         membership,
@@ -56,8 +57,8 @@ export const accountRouter = router({
     getAccountMembers: adminProcedure
     .input(z.object({ account_id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const uaService = new UserAccountService();
-      const memberships = await uaService.getAccountMembers(input.account_id);
+      const accountService = new AccountService();
+      const memberships = await accountService.getAccountMembers(input.account_id);
 
       return {
         memberships,

@@ -1,6 +1,7 @@
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import Stripe from 'stripe';
-import UserAccountService, { AccountWithMembers } from '~~/lib/services/user.account.service';
+import AccountService from '~~/lib/services/account.service';
+import { AccountWithMembers } from '~~/lib/services/service.types';
 
 const config = useRuntimeConfig();
 const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
@@ -11,8 +12,8 @@ export default defineEventHandler(async (event) => {
   account_id = +account_id
   console.log(`session.post.ts recieved price_id:${price_id}, account_id:${account_id}`);
 
-  const userService = new UserAccountService();
-  const account: AccountWithMembers = await userService.getAccountById(account_id);
+  const accountService = new AccountService();
+  const account: AccountWithMembers = await accountService.getAccountById(account_id);
   let customer_id: string
   if(!account.stripe_customer_id){
     // need to pre-emptively create a Stripe user for this account so we know who they are when the webhook comes back
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
     console.log(`Creating account with name ${account.name} and email ${owner?.user.email}`);
     const customer = await stripe.customers.create({ name: account.name, email: owner?.user.email });
     customer_id = customer.id;
-    userService.updateAccountStipeCustomerId(account_id, customer.id);
+    accountService.updateAccountStipeCustomerId(account_id, customer.id);
   } else {
     customer_id = account.stripe_customer_id;
   }

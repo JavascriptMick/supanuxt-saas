@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import UserAccountService from '~~/lib/services/user.account.service';
+import AccountService from '~~/lib/services/account.service';
 
 const config = useRuntimeConfig();
 const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
@@ -36,13 +36,13 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, statusMessage: `Error validating Webhook Event` });
       }
   
-      const userService = new UserAccountService();
+      const accountService = new AccountService();
       
       let current_period_ends: Date = new Date(subscription.current_period_end * 1000);
       current_period_ends.setDate(current_period_ends.getDate() + config.subscriptionGraceDays);
   
       console.log(`updating stripe sub details subscription.current_period_end:${subscription.current_period_end}, subscription.id:${subscription.id}, stripe_product_id:${stripe_product_id}`);
-      userService.updateStripeSubscriptionDetailsForAccount(subscription.customer.toString(), subscription.id, current_period_ends, stripe_product_id);
+      accountService.updateStripeSubscriptionDetailsForAccount(subscription.customer.toString(), subscription.id, current_period_ends, stripe_product_id);
     }
   }
   return `handled ${stripeEvent.type}.`;

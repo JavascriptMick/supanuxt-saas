@@ -1,41 +1,8 @@
-import { ACCOUNT_ACCESS, User, Membership, Account, Plan } from '@prisma/client';
+import { ACCOUNT_ACCESS } from '@prisma/client';
 import prisma_client from '~~/prisma/prisma.client';
-import { UtilService } from './util.service';
-const config = useRuntimeConfig();
+import { AccountWithMembers, MembershipWithAccount, MembershipWithUser } from './service.types';
 
-
-export type MembershipWithAccount = (Membership & {account: Account});
-export type FullDBUser = (User & { memberships: MembershipWithAccount[]; });
-export type MembershipWithUser = (Membership & { user: User});
-export type AccountWithMembers = (Account & {members: MembershipWithUser[]});
-export default class UserAccountService {
-  async getUserBySupabaseId(supabase_uid: string): Promise<FullDBUser | null> {
-    return prisma_client.user.findFirst({ 
-      where: { supabase_uid }, 
-      include: { memberships: {include: {
-        account: true
-      }}} 
-    });
-  }
-
-  async getFullUserBySupabaseId(supabase_uid: string): Promise<FullDBUser | null> {
-    return prisma_client.user.findFirst({ 
-      where: { supabase_uid }, 
-      include: { memberships: {include: {
-        account: true
-      }}}
-    });
-  }
-
-  async getUserById(user_id: number): Promise<FullDBUser | null> {
-    return prisma_client.user.findFirstOrThrow({ 
-      where: { id: user_id }, 
-      include: { memberships: {include: {
-        account: true
-      }}} 
-    });
-  }
-
+export default class AccountService {
   async getAccountById(account_id: number): Promise<AccountWithMembers> {
     return prisma_client.account.findFirstOrThrow({ 
       where: { id: account_id },
@@ -97,40 +64,6 @@ export default class UserAccountService {
       });
     }
 
-  }
-
-  async createUser( supabase_uid: string, display_name: string, email: string ): Promise<FullDBUser | null> {
-    const trialPlan = await prisma_client.plan.findFirstOrThrow({ where: { name: config.initialPlanName}});
-    return prisma_client.user.create({
-      data:{
-        supabase_uid: supabase_uid,
-        display_name: display_name,
-        email: email,
-        memberships: {
-          create: {
-            account: {
-              create: {
-                name: display_name,
-                current_period_ends: UtilService.addMonths(new Date(), config.initialPlanActiveMonths),
-                plan_id: trialPlan.id,  
-                features: trialPlan.features,
-                max_notes: trialPlan.max_notes,
-                max_members: trialPlan.max_members,
-                plan_name: trialPlan.name,
-              }
-            },
-            access: ACCOUNT_ACCESS.OWNER
-          }
-        }
-      },
-      include: { memberships: {include: {
-        account: true
-      }}}
-    });
-  }
-
-  async deleteUser(user_id: number) {
-    return prisma_client.user.delete({ where: { id: user_id } });
   }
 
   async joinUserToAccount(user_id: number, account_id: number): Promise<MembershipWithAccount> {

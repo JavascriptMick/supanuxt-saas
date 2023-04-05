@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { FullDBUser, MembershipWithAccount } from "~~/lib/services/user.account.service"
+import { FullDBUser, MembershipWithAccount } from "~~/lib/services/service.types";
 
 interface State {
   dbUser?: FullDBUser

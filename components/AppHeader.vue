@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import {  MembershipWithAccount } from '~~/lib/services/user.account.service';
   import { storeToRefs } from 'pinia';
+  import { MembershipWithAccount } from '~~/lib/services/service.types';
 
   const supabase = useSupabaseAuthClient();
   const user = useSupabaseUser();

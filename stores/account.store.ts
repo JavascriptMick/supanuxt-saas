@@ -1,6 +1,6 @@
 import { ACCOUNT_ACCESS } from ".prisma/client"
 import { defineStore } from "pinia"
-import { MembershipWithUser } from "~~/lib/services/user.account.service"
+import { MembershipWithUser } from "~~/lib/services/service.types";
 
 import { useAuthStore } from './auth.store'
 
