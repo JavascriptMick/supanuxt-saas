@@ -1,23 +1,19 @@
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import prisma_client from '~~/prisma/prisma.client';
-import { AccountWithMembers, MembershipWithAccount, MembershipWithUser } from './service.types';
+import { accountWithMembers, AccountWithMembers, membershipWithAccount, MembershipWithAccount, membershipWithUser, MembershipWithUser } from './service.types';
 
 export default class AccountService {
   async getAccountById(account_id: number): Promise<AccountWithMembers> {
     return prisma_client.account.findFirstOrThrow({ 
       where: { id: account_id },
-      include: { members: {include: {
-        user: true
-      }} }
+      ...accountWithMembers
     });
   }
 
   async getAccountMembers(account_id: number): Promise<MembershipWithUser[]> {
     return prisma_client.membership.findMany({ 
       where: { account_id },
-      include: {
-        user: true
-      }
+      ...membershipWithUser
     });
   }  
 
@@ -87,9 +83,7 @@ export default class AccountService {
         account_id,
         access: ACCOUNT_ACCESS.READ_ONLY
       },
-      include: {
-        account: true
-      }
+      ...membershipWithAccount
     });
   }
 

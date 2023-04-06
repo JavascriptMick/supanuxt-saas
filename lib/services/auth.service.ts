@@ -1,6 +1,6 @@
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import prisma_client from '~~/prisma/prisma.client';
-import { FullDBUser } from './service.types';
+import { fullDBUser, FullDBUser } from './service.types';
 import { UtilService } from './util.service';
 
 const config = useRuntimeConfig();
@@ -9,18 +9,14 @@ export default class AuthService {
   async getFullUserBySupabaseId(supabase_uid: string): Promise<FullDBUser | null> {
     return prisma_client.user.findFirst({ 
       where: { supabase_uid }, 
-      include: { memberships: {include: {
-        account: true
-      }}}
+      ...fullDBUser
     });
   }
 
   async getUserById(user_id: number): Promise<FullDBUser | null> {
     return prisma_client.user.findFirstOrThrow({ 
       where: { id: user_id }, 
-      include: { memberships: {include: {
-        account: true
-      }}} 
+      ...fullDBUser 
     });
   }
 
@@ -48,13 +44,14 @@ export default class AuthService {
           }
         }
       },
-      include: { memberships: {include: {
-        account: true
-      }}}
+      ...fullDBUser
     });
   }
 
-  async deleteUser(user_id: number) {
-    return prisma_client.user.delete({ where: { id: user_id } });
+  async deleteUser(user_id: number): Promise<FullDBUser> {
+    return prisma_client.user.delete({ 
+      where: { id: user_id },
+      ...fullDBUser
+    });
   }
 }
