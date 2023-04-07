@@ -5,6 +5,9 @@
   const authStore = useAuthStore()
   const { activeMembership } = storeToRefs(authStore);
 
+  onMounted(async () => {
+    await authStore.initUser();
+  });
 </script>
 <template>
   <div>

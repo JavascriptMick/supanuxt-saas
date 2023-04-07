@@ -10,6 +10,10 @@
   const config = useRuntimeConfig();
   const newAccountName = ref("");
 
+  onMounted(async () => {
+    await authStore.initUser();
+  });
+  
   watchEffect(async () => {
     if (activeMembership.value) {
       await accountStore.getActiveAccountMembers();

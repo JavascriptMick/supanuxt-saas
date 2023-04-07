@@ -11,6 +11,10 @@
   const notesStore = useNotesStore();
   const { notes } = storeToRefs(notesStore);  // ensure the notes list is reactive
 
+  onMounted(async () => {
+    await authStore.initUser();
+  });
+  
   watchEffect(async () => {
     if (activeMembership.value) {
       await notesStore.fetchNotesForCurrentUser();

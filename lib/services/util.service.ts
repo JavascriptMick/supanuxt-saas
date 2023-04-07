@@ -13,7 +13,7 @@ export class UtilService {
     return String(error)
   }
 
-  public static circleSafeStringify(obj: any) {
+  public static stringifySafely(obj: any) {
     let cache: any[] = [];
     let str = JSON.stringify(obj, function(key, value) {
       if (typeof value === "object" && value !== null) {
