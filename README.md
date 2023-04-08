@@ -38,8 +38,9 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] Allow users to upgrade their accounts fron individual accounts to multi-user accounts (Teams).
 - [x] Allow users to switch between Teams and view/edit data from the selected Team.
 - [x] All features, billing and limits is controlled at the Account (Team) level (not the user level)
-- [ ] Team administrators and owners can administer the permissions (roles) of other team members on the Accounts page
-- [ ] Gen/Regen an invite link to allow users to join a team
+- [x] Gen/Regen an invite link to allow users to join a team
+- [x] Team administrators and owners can accept pending invites
+- [x] Team administrators and owners can administer the permissions (roles) of other team members on the Accounts page
 
 ### Plans and Pricing
 - [x] Manage multiple Plans each with specific Feature flags and Plan limits

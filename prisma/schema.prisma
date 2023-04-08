@@ -35,6 +35,7 @@ model Membership {
   account                 Account     @relation(fields: [account_id], references: [id])
   user                    User        @relation(fields: [user_id], references: [id])
   access                  ACCOUNT_ACCESS    @default(READ_ONLY)
+  pending                 Boolean     @default(false)
 
   @@map("membership")
   @@unique([user_id, account_id])
@@ -54,6 +55,7 @@ model Account {
   stripe_subscription_id  String?
   stripe_customer_id      String?
   max_members             Int        @default(1)
+  join_password           String     @unique
 
   @@map("account")
 }

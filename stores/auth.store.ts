@@ -20,8 +20,9 @@ export const useAuthStore = defineStore('auth', {
 
         if(dbUser){
           this.dbUser = dbUser;
-          if(dbUser.memberships.length > 0){
-            this.activeMembership = dbUser.memberships[0];
+          const activeMemberships = dbUser.memberships.filter(m => !m.pending)
+          if(activeMemberships.length > 0){
+            this.activeMembership = activeMemberships[0];
           }
         }
       }

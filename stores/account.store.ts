@@ -33,11 +33,25 @@ export const useAccountStore = defineStore('account', {
         authStore.activeMembership.account = account.value.account;
       }
     },
-    async changeAccountPlan(plan_id: number){
+    async acceptPendingMembership(membership_id: number){
       const authStore = useAuthStore();
       if(!authStore.activeMembership) { return; }
       const { $client } = useNuxtApp();
-      const { data: account } = await $client.account.changeAccountPlan.useQuery({account_id: authStore.activeMembership.account_id, plan_id});
+      const { data: membership } = await $client.account.acceptPendingMembership.useQuery({account_id: authStore.activeMembership.account_id, membership_id});
+      
+      if(membership.value && membership.value.membership?.pending === false){
+        for(const m of this.activeAccountMembers){
+          if(m.id === membership_id){
+            m.pending = false;
+          }
+        }
+      }
+    },
+    async rotateJoinPassword(){
+      const authStore = useAuthStore();
+      if(!authStore.activeMembership) { return; }
+      const { $client } = useNuxtApp();
+      const { data: account } = await $client.account.rotateJoinPassword.useQuery({account_id: authStore.activeMembership.account_id});
       if(account.value?.account){
         authStore.activeMembership.account = account.value.account;
       }
@@ -57,7 +71,11 @@ export const useAccountStore = defineStore('account', {
       const { $client } = useNuxtApp();
       const { data: membership } = await $client.account.changeUserAccessWithinAccount.useQuery({account_id: authStore.activeMembership.account_id, user_id, access});
       if(membership.value?.membership){
-        authStore.activeMembership = membership.value.membership;
+        for(const m of this.activeAccountMembers){
+          if(m.id === membership.value?.membership.id){
+            m.access = membership.value?.membership.access;
+          }
+        }
       }
     },
     async claimOwnershipOfAccount(){
@@ -66,7 +84,12 @@ export const useAccountStore = defineStore('account', {
       const { $client } = useNuxtApp();
       const { data: membership } = await $client.account.claimOwnershipOfAccount.useQuery({account_id: authStore.activeMembership.account_id});
       if(membership.value?.membership){
-        authStore.activeMembership = membership.value.membership;
+        authStore.activeMembership.access = membership.value.membership.access;
+        for(const m of this.activeAccountMembers){
+          if(m.id === membership.value?.membership.id){
+            m.access = membership.value?.membership.access;
+          }
+        }
       }
     }
   }

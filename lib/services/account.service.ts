@@ -1,11 +1,19 @@
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import prisma_client from '~~/prisma/prisma.client';
 import { accountWithMembers, AccountWithMembers, membershipWithAccount, MembershipWithAccount, membershipWithUser, MembershipWithUser } from './service.types';
+import generator from 'generate-password-ts';
 
 export default class AccountService {
   async getAccountById(account_id: number): Promise<AccountWithMembers> {
     return prisma_client.account.findFirstOrThrow({ 
       where: { id: account_id },
+      ...accountWithMembers
+    });
+  }
+
+  async getAccountByJoinPassword(join_password: string): Promise<AccountWithMembers> {
+    return prisma_client.account.findFirstOrThrow({ 
+      where: { join_password },
       ...accountWithMembers
     });
   }
@@ -62,7 +70,29 @@ export default class AccountService {
 
   }
 
-  async joinUserToAccount(user_id: number, account_id: number): Promise<MembershipWithAccount> {
+  async acceptPendingMembership(account_id: number, membership_id: number): Promise<MembershipWithAccount> {
+    const membership = prisma_client.membership.findFirstOrThrow({
+      where: {
+        id: membership_id
+      }
+    });
+
+    if((await membership).account_id != account_id){
+      throw new Error(`Membership does not belong to current account`);
+    }
+
+    return await prisma_client.membership.update({
+      where: {
+        id: membership_id,
+      },
+      data: {
+        pending: false
+      },
+      ...membershipWithAccount
+    })
+  }
+
+  async joinUserToAccount(user_id: number, account_id: number, pending: boolean ): Promise<MembershipWithAccount> {
     const account = await prisma_client.account.findUnique({
         where: {
           id: account_id,
@@ -77,11 +107,20 @@ export default class AccountService {
       throw new Error(`Too Many Members, Account only permits ${account?.max_members} members.`);
     }
 
+    if(account?.members){
+      for(const member of account.members){
+        if(member.user_id === user_id){
+          throw new Error(`User is already a member`);
+        }
+      }
+    }
+
     return prisma_client.membership.create({
       data: {
         user_id: user_id,
         account_id,
-        access: ACCOUNT_ACCESS.READ_ONLY
+        access: ACCOUNT_ACCESS.READ_ONLY,
+        pending
       },
       ...membershipWithAccount
     });
@@ -108,6 +147,16 @@ export default class AccountService {
     });
   }
 
+  async rotateJoinPassword(account_id: number) {
+    const join_password: string = generator.generate({
+      length: 10,
+      numbers: true
+    });
+    return prisma_client.account.update({
+      where: { id: account_id},
+      data: { join_password }
+    });
+  }
 
   // Claim ownership of an account.  
   // User must already be an ADMIN for the Account

@@ -22,13 +22,6 @@ export async function createContext(event: H3Event){
     }
   }
 
-  if(!user || !dbUser) {
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: `Unable to fetch user data at this time. Missing ->[user:${(!user)},dbUser:${(!dbUser)}]`,
-    });
-  }
-  
   return {
     user,
     dbUser,

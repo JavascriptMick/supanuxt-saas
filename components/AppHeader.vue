@@ -37,8 +37,9 @@
     <!-- Account Switching -->
     <p v-if="(dbUser?.dbUser?.memberships) && (dbUser.dbUser.memberships.length > 1)">
       <span>Switch Account.. </span>
-      <button v-for="membership in dbUser?.dbUser.memberships" @click="authStore.changeActiveMembership(((membership as unknown) as MembershipWithAccount))"> <!-- This cast is infuriating -->
+      <button :disabled="membership.pending" v-for="membership in dbUser?.dbUser.memberships" @click="authStore.changeActiveMembership(((membership as unknown) as MembershipWithAccount))"> <!-- This cast is infuriating -->
         {{ membership.account.name }}
+        <span v-if="membership.pending">(pending)</span>
         <span v-if="membership.account_id === activeMembership?.account_id">*</span>
       </button>
     </p>

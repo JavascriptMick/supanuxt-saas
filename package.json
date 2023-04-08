@@ -23,6 +23,7 @@
     "@pinia/nuxt": "^0.4.6",
     "@trpc/client": "^10.9.0",
     "@trpc/server": "^10.9.0",
+    "generate-password-ts": "^1.6.3",
     "pinia": "^2.0.30",
     "stripe": "^11.12.0",
     "superjson": "^1.12.2",

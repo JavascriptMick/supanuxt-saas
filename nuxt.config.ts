@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     initialPlanActiveMonths: 1,
     public: {
       debugMode: true,
+      siteRootUrl: 'http://localhost:3000',
     }
   }
 })
