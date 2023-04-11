@@ -9,7 +9,6 @@
  */
 import { initTRPC, TRPCError } from '@trpc/server'
 import { Context } from './context';
-import { z } from 'zod';
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import superjson from 'superjson';
 
@@ -32,14 +31,11 @@ const isAuthed = t.middleware(({ next, ctx }) => {
 });
 
 const isAdminForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
-  if (!ctx.dbUser) {
+  if (!ctx.dbUser || !ctx.activeAccountId) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
-  const result = z.object({ account_id: z.number() }).safeParse(rawInput);
-  if (!result.success) throw new TRPCError({ code: 'BAD_REQUEST' });
-  const { account_id } = result.data;
-  const test_membership = ctx.dbUser.memberships.find(membership => membership.account_id == account_id);
-  if(!test_membership || (test_membership?.access !== ACCOUNT_ACCESS.ADMIN && test_membership?.access !== ACCOUNT_ACCESS.OWNER)) {
+  const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
+  if(!activeMembership || (activeMembership?.access !== ACCOUNT_ACCESS.ADMIN && activeMembership?.access !== ACCOUNT_ACCESS.OWNER)) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   

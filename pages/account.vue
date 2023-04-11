@@ -2,23 +2,15 @@
   import { storeToRefs } from 'pinia';
   import { ACCOUNT_ACCESS } from '@prisma/client';
 
-  const authStore = useAuthStore();
-  const { activeMembership } = storeToRefs(authStore);
   const accountStore = useAccountStore();
-  const { activeAccountMembers } = storeToRefs(accountStore)
+  const { activeMembership, activeAccountMembers } = storeToRefs(accountStore)
 
   const config = useRuntimeConfig();
   const newAccountName = ref("");
 
   onMounted(async () => {
-    await authStore.initUser();
+    await accountStore.init();
   });
-  
-  watchEffect(async () => {
-    if (activeMembership.value) {
-      await accountStore.getActiveAccountMembers();
-    }
-  })
 
   function formatDate(date: Date | undefined){
     if(!date){ return ""; }
@@ -50,8 +42,8 @@
         [{{ accountMember.access }}]
         <span v-if="accountMember.pending">(pending)</span>
         <span v-if="accountMember.pending && activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN)"><button @click.prevent="accountStore.acceptPendingMembership(accountMember.id)">Accept Pending Membership</button></span>
-        <span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN) && accountMember.access === ACCOUNT_ACCESS.READ_ONLY"><button @click.prevent="accountStore.changeUserAccessWithinAccount(accountMember.user.id, ACCOUNT_ACCESS.READ_WRITE)">Promote to Read/Write</button></span>
-        <span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN) && accountMember.access === ACCOUNT_ACCESS.READ_WRITE"><button @click.prevent="accountStore.changeUserAccessWithinAccount(accountMember.user.id, ACCOUNT_ACCESS.ADMIN)">Promote to Admin</button></span>
+        <span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN) && accountMember.access === ACCOUNT_ACCESS.READ_ONLY && !accountMember.pending"><button @click.prevent="accountStore.changeUserAccessWithinAccount(accountMember.user.id, ACCOUNT_ACCESS.READ_WRITE)">Promote to Read/Write</button></span>
+        <span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN) && accountMember.access === ACCOUNT_ACCESS.READ_WRITE && !accountMember.pending"><button @click.prevent="accountStore.changeUserAccessWithinAccount(accountMember.user.id, ACCOUNT_ACCESS.ADMIN)">Promote to Admin</button></span>
       </li>
     </ul>
     

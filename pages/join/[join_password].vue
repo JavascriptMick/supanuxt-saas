@@ -4,8 +4,9 @@
   const route = useRoute();
   const {join_password} : {join_password?: string} = route.params;
 
-  const { $client } = useNuxtApp();
+  const accountStore = useAccountStore();
 
+  const { $client } = useNuxtApp();
   // this could probably be an elegant destructure here but I lost patience
   let account: AccountWithMembers | undefined;
   if(join_password){
@@ -16,8 +17,8 @@
   const { data: dbUser } = await $client.auth.getDBUser.useQuery();
 
   async function doJoin(){
-    if(dbUser.value?.dbUser && account){
-      await $client.account.joinUserToAccountPending.useQuery({account_id: account.id, user_id: dbUser.value.dbUser.id});
+    if(account){
+      await accountStore.joinUserToAccountPending(account.id);
     } else {
       console.log(`Unable to Join`)
     }

@@ -4,10 +4,9 @@ import { z } from 'zod';
 
 export const notesRouter = router({
   getForCurrentUser: protectedProcedure
-    .input(z.object({ account_id: z.number() }))
     .query(async ({ ctx, input }) => {
       const notesService = new NotesService();
-      const notes = await notesService.getNotesForAccountId(input.account_id); 
+      const notes = (ctx.activeAccountId)?await notesService.getNotesForAccountId(ctx.activeAccountId):[]; 
       return {
         notes,
       }

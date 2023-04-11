@@ -1,18 +1,13 @@
 <script setup lang="ts">
   import { storeToRefs } from 'pinia';
-  import { MembershipWithAccount } from '~~/lib/services/service.types';
 
   const supabase = useSupabaseAuthClient();
   const user = useSupabaseUser();
-  const authStore = useAuthStore()
-  const { activeMembership } = storeToRefs(authStore);
-
-  const { $client } = useNuxtApp();
-
-  const { data: dbUser } = await $client.auth.getDBUser.useQuery();
+  const accountStore = useAccountStore()
+  const { dbUser, activeAccountId } = storeToRefs(accountStore);
 
   onMounted(async () => {
-    await authStore.initUser();
+    await accountStore.init()
   });
 
   async function signout() {
@@ -35,12 +30,12 @@
     </div>
 
     <!-- Account Switching -->
-    <p v-if="(dbUser?.dbUser?.memberships) && (dbUser.dbUser.memberships.length > 1)">
+    <p v-if="dbUser?.memberships && dbUser?.memberships.length > 1">
       <span>Switch Account.. </span>
-      <button :disabled="membership.pending" v-for="membership in dbUser?.dbUser.memberships" @click="authStore.changeActiveMembership(((membership as unknown) as MembershipWithAccount))"> <!-- This cast is infuriating -->
+      <button :disabled="membership.pending" v-for="membership in dbUser?.memberships" @click="accountStore.changeActiveAccount(membership.account_id)">
         {{ membership.account.name }}
         <span v-if="membership.pending">(pending)</span>
-        <span v-if="membership.account_id === activeMembership?.account_id">*</span>
+        <span v-if="membership.account_id === activeAccountId">*</span>
       </button>
     </p>
     <hr>
