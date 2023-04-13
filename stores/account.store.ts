@@ -1,4 +1,4 @@
-import { ACCOUNT_ACCESS } from ".prisma/client"
+import { ACCOUNT_ACCESS } from '@prisma/client';
 import { defineStore } from "pinia"
 import { FullDBUser, MembershipWithUser } from "~~/lib/services/service.types";
 
@@ -54,21 +54,26 @@ export const useAccountStore = defineStore('account', {
           this.activeAccountId = activeAccountId;
         }
       }
-      if(this.activeAccountMembers.length == 0){
-        await this.getActiveAccountMembers();
-      }
+    },
+    signout(){
+      this.dbUser = null;
+      this.activeAccountId = null;
+      this.activeAccountMembers = [];
     },
     async getActiveAccountMembers(){
-      const { $client } = useNuxtApp();
-      const { data: memberships } = await $client.account.getAccountMembers.useQuery();
-      if(memberships.value?.memberships){
-        this.activeAccountMembers = memberships.value?.memberships;
+      if(this.activeMembership && (this.activeMembership.access === ACCOUNT_ACCESS.ADMIN || this.activeMembership.access === ACCOUNT_ACCESS.OWNER)){
+        const { $client } = useNuxtApp();
+        const { data: memberships } = await $client.account.getAccountMembers.useQuery();
+        if(memberships.value?.memberships){
+          this.activeAccountMembers = memberships.value?.memberships;
+        }
       }
     },
     async changeActiveAccount(account_id: number){
       const { $client } = useNuxtApp();
-      this.activeAccountId = account_id;
       await $client.account.changeActiveAccount.mutate({account_id}); // sets active account on context for other routers and sets the preference in a cookie
+      
+      this.activeAccountId = account_id;    // because this is used as a trigger to some other components, NEEDS TO BE AFTER THE MUTATE CALL
       await this.getActiveAccountMembers(); // these relate to the active account and need to ber re-fetched
     },
     async changeAccountName(new_name: string){

@@ -2,11 +2,11 @@
   import { storeToRefs } from 'pinia';
   import { ACCOUNT_ACCESS } from '@prisma/client';
 
-  const authStore = useAuthStore()
-  const { activeMembership } = storeToRefs(authStore);
+  const accountStore = useAccountStore()
+  const { activeMembership } = storeToRefs(accountStore);
 
   onMounted(async () => {
-    await authStore.initUser();
+    await accountStore.init();
   });
 </script>
 <template>

@@ -36,7 +36,7 @@ const isAdminForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
   }
   const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
   if(!activeMembership || (activeMembership?.access !== ACCOUNT_ACCESS.ADMIN && activeMembership?.access !== ACCOUNT_ACCESS.OWNER)) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
+    throw new TRPCError({ code: 'UNAUTHORIZED', message:`activeMembership ${activeMembership?.id} is only ${activeMembership?.access}` });
   }
   
   return next({ ctx });

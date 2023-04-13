@@ -10,6 +10,7 @@
 
   onMounted(async () => {
     await accountStore.init();
+    await accountStore.getActiveAccountMembers();
   });
 
   function formatDate(date: Date | undefined){

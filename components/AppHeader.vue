@@ -12,6 +12,9 @@
 
   async function signout() {
     await supabase.auth.signOut();
+    if(accountStore){
+      accountStore.signout();
+    }
     navigateTo('/', {replace: true});
   }
 </script>

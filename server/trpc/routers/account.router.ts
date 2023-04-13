@@ -8,19 +8,19 @@ import { MembershipWithAccount } from '~~/lib/services/service.types';
   Note on proliferation of Bang syntax... adminProcedure throws if either the ctx.dbUser or the ctx.activeAccountId is not available but the compiler can't figure that out so bang quiesces the null warning
 */
 export const accountRouter = router({
-  getDBUser: protectedProcedure
+  getDBUser: publicProcedure
     .query(({ ctx }) => {
       return {
         dbUser: ctx.dbUser,
       }
     }),
-  getActiveAccountId: protectedProcedure
+  getActiveAccountId: publicProcedure
     .query(({ ctx }) => {
       return {
         activeAccountId: ctx.activeAccountId,
       }
     }),
-  changeActiveAccount: adminProcedure
+  changeActiveAccount: protectedProcedure
     .input(z.object({ account_id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       ctx.activeAccountId = input.account_id;
