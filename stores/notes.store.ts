@@ -26,10 +26,26 @@ export const useNotesStore = defineStore('notes', () => {
     }  
   }
 
+  async function createNote(note_text: string) {
+    const { $client } = useNuxtApp();
+    const { note } =  await $client.notes.createNote.mutate({note_text});
+    if(note){
+      _notes.value.push(note);
+    }
+  }
+
+  async function deleteNote(note_id: number) {
+    const { $client } = useNuxtApp();
+    const { note } =  await $client.notes.deleteNote.mutate({note_id});
+    if(note){
+      _notes.value = _notes.value.filter(n => n.id !== note.id);
+    }
+  }
+
   // if the active account changes, fetch notes again (i.e dynamic.. probabl overkill)
   watch(activeAccountId, async (val, oldVal)=> {
     await fetchNotesForCurrentUser()
   });
 
-  return { notes: _notes, fetchNotesForCurrentUser }
+  return { notes: _notes, fetchNotesForCurrentUser, createNote, deleteNote }
 });

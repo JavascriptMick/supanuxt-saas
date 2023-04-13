@@ -14,6 +14,15 @@ export default class NotesService {
   }
 
   async createNote( account_id: number, note_text: string ) {
+    const account = await prisma_client.account.findFirstOrThrow({
+      where: { id: account_id},
+      include: { notes: true}
+    });
+
+    if(account.notes.length>= account.max_notes){
+      throw new Error('Note Limit reached, no new notes can be added');
+    }
+    
     return prisma_client.note.create({ data: { account_id, note_text }});
   }
 

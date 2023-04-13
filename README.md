@@ -69,9 +69,8 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] Read only Notes Dashboard
 - [x] SSR Rendered (SEO Optimised) [Note](/pages/notes/[note_id].vue) Display
 - [x] Max Notes limit property on Plan 
-- [ ] Max Notes enforced
-- [ ] Optional public SSR Rendered public notes index page
-- [ ] Add, Delete, edit notes on Dashboard
+- [x] Max Notes enforced
+- [x] Add, Delete notes on Dashboard
 
 ### Mobile App
 - [ ] Flutter App Demo integrating with API endpoints, Auth etc
