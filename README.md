@@ -10,6 +10,7 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - TRPC (Server/Client communication with Strong types, SSR compatible)
 - Pinia (State Store.  I liked vuex a lot, in particular explicit mutations but gotta go with the cool crowd)
 - Stripe (Payments including Webhook integration)
+- Tailwind + daisyUI (Tailwind because everybody is using it, daisyUI because I suck at tailwind)
 
 ## Features
 ### User Management
@@ -61,7 +62,7 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 ### Look and Feel, Design System and Customisation
 - [x] Very Crap default UI
 - [ ] Not Crap UI
-- [ ] Integrated Design system (Bootstrap? Tailwind?)
+- [x] Integrated Design system including theming (Tailwind + daisyUI)
 - [ ] Branding options (logo, color scheme, etc.)
 
 ### Demo Software (Notes)
