@@ -17,6 +17,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "^18.15.11",
     "nuxt": "^3.1.1",
+    "nuxt-icon": "^0.3.3",
     "prisma": "^4.9.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.3"

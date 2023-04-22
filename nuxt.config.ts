@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   typescript: {
     shim: false
   },
-  modules: ['@nuxtjs/supabase', '@pinia/nuxt', '@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/supabase', '@pinia/nuxt', '@nuxtjs/tailwindcss', 'nuxt-icon'],
   imports: {
     dirs: ['./stores'],
   },

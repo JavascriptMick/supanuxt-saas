@@ -24,41 +24,68 @@
 
 </script>
 <template>
-  <div>
-    <h3>Account</h3>
-    <p>Name: {{ activeMembership?.account.name }}&nbsp;<span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN)"><input v-model="newAccountName" placeholder="Enter New Name"/><button @click.prevent="accountStore.changeAccountName(newAccountName)">Change Name</button></span></p>
-    <p>Current Period Ends: {{ formatDate(activeMembership?.account.current_period_ends) }}</p>
-    <p>Permitted Features: {{ activeMembership?.account.features }}</p>
-    <p>Maximum Notes: {{ activeMembership?.account.max_notes }}</p>
-    <p>Maximum Members: {{ activeMembership?.account.max_members }}</p>
-    <p>Access Level: {{ activeMembership?.access }} <span v-if="activeMembership && activeMembership.access === ACCOUNT_ACCESS.ADMIN"><button @click.prevent="accountStore.claimOwnershipOfAccount()">Claim Ownership of Account</button></span></p>
-    <p>Plan: {{ activeMembership?.account.plan_name }}</p>
-    <p>Join Link: <pre>{{ joinURL() }}</pre>&nbsp;<span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN)"><button @click.prevent="accountStore.rotateJoinPassword()">Generate New Join Link</button></span></p>
-
-    <h4>Members</h4>
-    <ul>
-      <li v-for="accountMember in activeAccountMembers">
-        {{ accountMember.user.display_name }}
-        ({{ accountMember.user.email }})
-        [{{ accountMember.access }}]
-        <span v-if="accountMember.pending">(pending)</span>
-        <span v-if="accountMember.pending && activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN)"><button @click.prevent="accountStore.acceptPendingMembership(accountMember.id)">Accept Pending Membership</button></span>
-        <span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN) && accountMember.access === ACCOUNT_ACCESS.READ_ONLY && !accountMember.pending"><button @click.prevent="accountStore.changeUserAccessWithinAccount(accountMember.user.id, ACCOUNT_ACCESS.READ_WRITE)">Promote to Read/Write</button></span>
-        <span v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN) && accountMember.access === ACCOUNT_ACCESS.READ_WRITE && !accountMember.pending"><button @click.prevent="accountStore.changeUserAccessWithinAccount(accountMember.user.id, ACCOUNT_ACCESS.ADMIN)">Promote to Admin</button></span>
-      </li>
-    </ul>
-    
-    <template v-if="config.public.debugMode">
-      <p>******* Debug *******</p>
-      <p>Account ID: {{ activeMembership?.account.id }}</p>
-      <p>Plan Id: {{ activeMembership?.account.plan_id }}</p>
-      <p>Stripe Subscription Id: {{ activeMembership?.account.stripe_subscription_id }}</p>
-      <p>Stripe Customer Id: {{ activeMembership?.account.stripe_customer_id }}</p>
-      <p>Membership Id: {{ activeMembership?.id }}</p>
-      <p>User Id: {{ activeMembership?.user_id }}</p>
-    </template>
-
-    
-    
+<div class="container mx-auto p-6">
+  <div class="text-center mb-12">
+    <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">Account Information</h2>
   </div>
+
+  <div class="flex flex-col gap-4">
+    <div class="flex gap-4 items-center">
+      <span class="font-bold w-32">Account Name:</span>
+      <span>{{ activeMembership?.account.name }}</span>
+      <template v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN)">
+        <input v-model="newAccountName" type="text" class="p-2 border border-gray-400 rounded w-1/3" placeholder="Enter new name">
+        <button @click.prevent="accountStore.changeAccountName(newAccountName)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Change Name</button>
+      </template>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      <span class="font-bold w-32">Current Period Ends:</span>
+      <span>{{ formatDate(activeMembership?.account.current_period_ends) }}</span>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      <span class="font-bold w-32">Permitted Features:</span>
+      <div class="flex flex-wrap gap-2">
+        <span v-for="feature in activeMembership?.account.features" class="bg-gray-200 text-gray-700 font-semibold py-1 px-2 rounded-full">{{ feature }}</span>
+      </div>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      <span class="font-bold w-32">Maximum Notes:</span>
+      <span>{{ activeMembership?.account.max_notes }}</span>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      <span class="font-bold w-32">Access Level:</span>
+      <span class="bg-green-500 text-white font-semibold py-1 px-2 rounded-full">{{ activeMembership?.access }}</span>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      <span class="font-bold w-32">Plan:</span>
+      <span>{{ activeMembership?.account.plan_name }}</span>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      <span class="font-bold w-32">Join Link:</span>
+      <div class="flex gap-2 items-center">
+        <input disabled type="text" class="p-2 border border-gray-400 rounded w-full" :value="joinURL()">
+        <button @click.prevent="accountStore.rotateJoinPassword()" v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN)" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">ReGen</button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <h2 class="text-lg font-bold">Members</h2>
+      <div class="flex flex-col gap-2">
+        <div v-for="accountMember in activeAccountMembers" class="flex gap-4 items-center">
+          <span>{{ accountMember.user.display_name }}</span>
+          <span class="bg-green-500 text-white font-semibold py-1 px-2 rounded-full">{{ accountMember.access }}</span>
+          <span class="text-gray-500">({{ accountMember.user.email }})</span>
+          <button @click.prevent="" v-if="activeMembership && activeMembership.access === ACCOUNT_ACCESS.OWNER && accountMember.access !== ACCOUNT_ACCESS.OWNER" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </template>

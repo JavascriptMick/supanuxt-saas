@@ -19,22 +19,27 @@
   });  
 </script>
 <template>
-  <div class="flex flex-col">
-    <h1 class="text-primary text-2xl">Notes Dashboard</h1>
-
-    <div class="flex flex-wrap">
-      <div class="card w-96 bg-base-100 shadow-xl" v-for="note in notes">
-        <div class="card-body">
-          <p>{{ note.note_text }}</p>
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary btn-sm" @click.prevent="notesStore.deleteNote(note.id)">Delete</button>
-          </div>
-        </div>
+  <div class="flex flex-col items-center max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">Notes Dashboard</h2>
+    </div>
+    
+    <div class="w-full max-w-md mb-8">
+      <div class="flex flex-row">
+        <input v-model="newNoteText" type="text" class="w-full rounded-l-md py-2 px-4 border-gray-400 border-2 focus:outline-none focus:border-blue-500" placeholder="Add a note...">
+        <button @click.prevent="addNote()" type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-r-md focus:outline-none focus:shadow-outline-blue">
+          Add
+        </button>
       </div>
     </div>
-    <div class="p-500">
-      <input type="text" class="input w-full max-w-xs" placeholder="Enter a Note" v-model="newNoteText"/>
-      <button @click.prevent="addNote()" class="btn btn-primary">Add</button>
+
+    <div class="w-full max-w-md">
+      <div v-for="note in notes" class="bg-white rounded-lg shadow-lg text-center px-6 py-8 md:mx-4 md:my-4">
+        <p class="text-gray-600 mb-4">{{ note.note_text }}</p>
+        <button @click.prevent="notesStore.deleteNote(note.id)" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+          Delete
+        </button>
+      </div>
     </div>
   </div>
 </template>

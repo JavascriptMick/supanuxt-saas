@@ -32,7 +32,7 @@
           <li v-if="!user"><NuxtLink to="/signin">Sign In</NuxtLink></li>
         </ul>
       </div>
-      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl">Nuxt3 SAAS Bootstrap</NuxtLink>
+      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl">Nuxt3 SAAS Boilerplate</NuxtLink>
     </div>
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1">

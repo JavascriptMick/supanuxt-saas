@@ -10,44 +10,75 @@
   });
 </script>
 <template>
-  <div>
-    <h3>Pricing</h3>
-    <p>Current Plan: {{ activeMembership?.account.plan_name }}</p>
-    <div>
-      <label for="submit">Free Trial (1 Month)</label>
-      <ul>
-        <li>10 Notes</li>
-        <li>Single User</li>
-      </ul>
-      <NuxtLink v-if="activeMembership && (activeMembership?.account.plan_name === 'Free Trial')" to="/dashboard">&nbsp;Continue to Dashboard</NuxtLink>
+  <div class="flex flex-col items-center max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">Flexible Pricing</h2>
+      <p class="text-xl text-gray-500">Get started with the best boiler for your SAAS plate</p>
     </div>
-
-    <form action="/create-checkout-session" method="POST">
-      <label for="submit">Individual Plan, Normal Price</label>
-      <ul>
-        <li>100 Notes</li>
-        <li>Single User</li>
-      </ul>
-
-      <input type="hidden" name="price_id" value="price_1MpOiwJfLn4RhYiLqfy6U8ZR" />
-      <input type="hidden" name="account_id" :value="activeMembership?.account_id" />
-      
-      <span v-if="!activeMembership">&nbsp;<NuxtLink to="/signup">Sign Up</NuxtLink>&nbsp;</span>
-      <button type="submit" v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access !== ACCOUNT_ACCESS.ADMIN) && (activeMembership?.account.plan_name !== 'Individual Plan')">Checkout</button>
-    </form>
-
-    <form action="/create-checkout-session" method="POST">
-      <label for="submit">Team Plan, Normal Price</label>
-      <ul>
-        <li>200 Notes</li>
-        <li>Up to 10 Team Members</li>
-      </ul>
-
-      <input type="hidden" name="price_id" value="price_1MpOjtJfLn4RhYiLsjzAso90" />
-      <input type="hidden" name="account_id" :value="activeMembership?.account_id" />
-
-      <span v-if="!activeMembership">&nbsp;<NuxtLink to="/signup">Sign Up</NuxtLink>&nbsp;</span>
-      <button type="submit" v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access === ACCOUNT_ACCESS.ADMIN) && (activeMembership?.account.plan_name !== 'Team Plan')">Checkout</button>
-    </form>
+    
+    <div class="flex flex-col md:flex-row justify-center items-center">
+      <!-- Free Plan -->
+      <div class="bg-white rounded-lg shadow-lg text-center px-6 py-8 md:mx-4 md:my-4 md:flex-1">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Free Plan</h3>
+        <p class="text-gray-600 mb-4">Single user, 10 notes</p>
+        <p class="text-3xl font-bold text-gray-900 mb-4">$0<span class="text-gray-600 text-lg">/mo</span></p>
+      </div>
+    
+      <!-- Personal Plan -->
+      <div class="bg-white rounded-lg shadow-lg text-center px-6 py-8 md:mx-4 md:my-4 md:flex-1">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Personal Plan</h3>
+        <p class="text-gray-600 mb-4">Single user, 100 notes</p>
+        <p class="text-3xl font-bold text-gray-900 mb-4">$15<span class="text-gray-600 text-lg">/mo</span></p>
+        
+        <!-- logged in user gets a subscribe button-->
+        <form 
+          action="/create-checkout-session" 
+          method="POST"
+          v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access !== ACCOUNT_ACCESS.ADMIN) && (activeMembership?.account.plan_name !== 'Individual Plan')">
+          <input type="hidden" name="price_id" value="price_1MpOiwJfLn4RhYiLqfy6U8ZR" />
+          <input type="hidden" name="account_id" :value="activeMembership?.account_id" />
+          <button 
+            type="submit" 
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            Subscribe
+          </button>
+        </form>
+        <!-- anon user gets a link to sign up -->
+        <button 
+            v-if="!activeMembership"
+            @click.prevent="navigateTo('/signup')"
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            Sign Up
+        </button>
+      </div>
+    
+      <!-- Team Plan -->
+      <div class="bg-white rounded-lg shadow-lg text-center px-6 py-8 md:mx-4 md:my-4 md:flex-1">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Team Plan</h3>
+        <p class="text-gray-600 mb-4">10 users, 200 notes</p>
+        <p class="text-3xl font-bold text-gray-900 mb-4">$25<span class="text-gray-600 text-lg">/mo</span></p>
+        
+        <!-- logged in user gets a subscribe button-->
+        <form 
+          action="/create-checkout-session" 
+          method="POST"
+          v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access !== ACCOUNT_ACCESS.ADMIN) && (activeMembership?.account.plan_name !== 'Individual Plan')">
+          <input type="hidden" name="price_id" value="price_1MpOjtJfLn4RhYiLsjzAso90" />
+          <input type="hidden" name="account_id" :value="activeMembership?.account_id" />
+          <button 
+            type="submit" 
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            Subscribe
+          </button>
+        </form>
+        <!-- anon user gets a link to sign up -->
+        <button 
+            v-if="!activeMembership"
+            @click.prevent="navigateTo('/signup')"
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            Sign Up
+        </button>
+      </div>
+    </div>
   </div>
 </template>
