@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="prose lg:prose-xl m-5">
     <h1>Terms of Service</h1>
 
     <p>These terms of service (the "Agreement") govern your use of our website and services (collectively, the

@@ -7,19 +7,6 @@
   const password = ref('')
   const confirmPassword = ref('')
 
-  const handleOtpLogin = async () => {
-    try {
-      loading.value = true
-      const { error } = await supabase.auth.signInWithOtp({ email: email.value })
-      if (error) throw error
-      alert('Check your email for the login link!')
-    } catch (error) {
-      alert(error)
-    } finally {
-      loading.value = false
-    }
-  }
-
   const handleStandardSignup = async () => {
     try {
       loading.value = true
@@ -34,35 +21,45 @@
 
   watchEffect(() => {
     if (user.value) {
-      navigateTo('/dashboard', {replace: true})
+      navigateTo('/dashboard', { replace: true })
     }
-  })  
+  })
 </script>
 <template>
-  <div>
-    <h3>Sign Up</h3>
-    <form @submit.prevent="handleStandardSignup">
-      <label for="email">Email:</label>
-      <input class="inputField" type="email" id="email" placeholder="Your email" v-model="email" />
-      <label for="password">Password:</label>
-      <input class="inputField" type="password" id="password" placeholder="Password" v-model="password" />
-      <label for="confirm_password">Confirm Password:</label>
-      <input class="inputField" type="password" id="convirm_password" placeholder="Confirm Password" v-model="confirmPassword" />
-      <p>By proceeding, I agree to the <NuxtLink to="/privacy">Privacy Statement</NuxtLink> and <NuxtLink to="/terms">Terms of Service</NuxtLink>.</p>
-      
-      <button type="submit" :disabled="loading || (confirmPassword !== password)">Sign Up</button>
-    </form>
-
-    <form @submit.prevent="handleOtpLogin">
-      <label for="email">Email:</label>
-      <input class="inputField" type="email" id="email" placeholder="Your email" v-model="email" />
-      <p>By proceeding, I agree to the <NuxtLink to="/privacy">Privacy Statement</NuxtLink> and <NuxtLink to="/terms">Terms of Service</NuxtLink>.</p>
-      
-      <button type="submit" :disabled="loading">Sign Up using Magic Link</button>
-    </form>
-
-    <p>or sign up with</p>
-
-    <button @click="supabase.auth.signInWithOAuth({provider: 'google'})">Google</button>
+  <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
+    <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-center">Sign up</h1>
+      <form @submit.prevent="handleStandardSignup" class="space-y-4">
+        <div>
+          <label for="email" class="block mb-2 font-bold">Email</label>
+          <input v-model="email" id="email" type="email" class="w-full p-2 border border-gray-400 rounded-md"
+            placeholder="Enter your email" required>
+        </div>
+        <div>
+          <label for="password" class="block mb-2 font-bold">Password</label>
+          <input v-model="password" id="password" type="password" class="w-full p-2 border border-gray-400 rounded-md"
+            placeholder="Enter your password" required>
+        </div>
+        <div>
+          <label for="confirmPassword" class="block mb-2 font-bold">Confirm Password</label>
+          <input v-model="confirmPassword" id="confirmPassword" type="password"
+            class="w-full p-2 border border-gray-400 rounded-md" placeholder="Confirm your password" required>
+        </div>
+        <button :disabled="loading || password === '' || (confirmPassword !== password)" type="submit"
+          class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Sign up</button>
+      </form>
+      <p class="text-center">or</p>
+      <button @click="supabase.auth.signInWithOAuth({ provider: 'google' })"
+        class="w-full py-2 text-white bg-red-600 rounded-md hover:bg-red-700">
+        <span class="flex items-center justify-center space-x-2">
+          <Icon name="fa-brands:google" class="w-5 h-5" />
+          <span>Sign up with Google</span>
+        </span>
+      </button>
+      <p class="mt-4 text-xs text-center text-gray-500">
+        By proceeding, I agree to the <NuxtLink to="/privacy">Privacy Statement</NuxtLink> and <NuxtLink to="/terms">Terms
+          of Service</NuxtLink>
+      </p>
+    </div>
   </div>
 </template>

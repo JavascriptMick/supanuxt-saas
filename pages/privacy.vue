@@ -1,6 +1,5 @@
 <template>
-  <div>
-
+  <div class="prose lg:prose-xl m-5">
     <h1>Privacy Statement</h1>
 
     <p>Your privacy is important to us. This privacy statement explains what personal data we collect from you and how we

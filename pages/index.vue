@@ -7,12 +7,12 @@ const user = useSupabaseUser()
   })
 </script>
 <template>
-  <div class="container mx-auto">
+  <div class="container mx-auto m-5">
     <!-- Hero section -->
     <section class="bg-gray-100 py-20">
       <div class="container mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-          <div>
+          <div class="m-5">
             <h1 class="text-5xl font-bold mb-4">
               Build Your Next SAAS Faster
             </h1>
@@ -22,7 +22,7 @@ const user = useSupabaseUser()
               industry leading features make it easy to get up and running in no time. Look! this guy is working so fast,
               his hands are just a blur.. you could be this fast.
             </p>
-            <a href="#" class="inline-block py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Get Started</a>
+            <NuxtLink to="/signup" class="inline-block py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Get Started</NuxtLink>
           </div>
           <div>
             <img src="~/assets/images/saas_landing_main.jpeg"
