@@ -4,10 +4,9 @@ const { $client } = useNuxtApp();
 const { data: note } = await $client.notes.getById.useQuery({note_id: +route.params.note_id});
 </script>
 <template>
-  <div>
+  <div class="prose lg:prose-xl m-5">
     <h3>Note Detail {{ route.params.note_id }}</h3>
-    <pre>{{ note?.note.note_text }}</pre>
+    <div class="prose lg:prose-xl m-5">{{ note?.note.note_text }}</div>
 
-    <NuxtLink to="/notes/1">Back to Note 1 via an internal link (should not reload page)</NuxtLink>
   </div>
 </template>

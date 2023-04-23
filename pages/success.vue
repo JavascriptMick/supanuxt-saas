@@ -13,10 +13,10 @@ try{
 </script>
 
 <template>
-  <div>
+  <div class="prose lg:prose-xl m-5">
     <p>
-      <span v-if="!customer.deleted">We appreciate your business {{customer.name}}!</span>
-      <span v-if="customer.deleted">It appears your stripe customer information has been deleted!</span>
+      <span v-if="customer && !customer.deleted">We appreciate your business {{customer.name}}!</span>
+      <span v-if="customer && customer.deleted">It appears your stripe customer information has been deleted!</span>
     </p>
     <p>Checkout our reasonable <NuxtLink to="/pricing">Pricing</NuxtLink></p>
   </div>
