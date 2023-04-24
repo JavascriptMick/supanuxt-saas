@@ -52,11 +52,12 @@
         <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
           <li v-if="user">{{ user.email }}</li>
           <li><NuxtLink to="/account">Account</NuxtLink></li>
-          <li><a href="#" @click.prevent="signout()">logout</a></li>
+          <li><a href="#" @click.prevent="signout()">Signout</a></li>
           <template v-if="dbUser?.memberships && dbUser?.memberships.length > 1">
           <li>Switch Account</li>
-          <li v-for="membership in dbUser?.memberships" :disabled="membership.pending">
-            <a v-if="membership.account_id !== activeAccountId" href="#" @click="accountStore.changeActiveAccount(membership.account_id)">{{ membership.account.name }}<span v-if="membership.pending">(pending)</span></a>
+          <li v-for="membership in dbUser?.memberships">
+            <a v-if="membership.account_id !== activeAccountId  && !membership.pending"  href="#" @click="accountStore.changeActiveAccount(membership.account_id)">{{ membership.account.name }}</a>
+            <span v-if="membership.pending">{{ membership.account.name }} (pending)</span>
           </li>
           </template>
         </ul>

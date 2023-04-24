@@ -96,6 +96,22 @@ export const useAccountStore = defineStore('account', {
         }
       }
     },
+    async rejectPendingMembership(membership_id: number){
+      const { $client } = useNuxtApp();
+      const { data: membership } = await $client.account.rejectPendingMembership.useQuery({ membership_id });
+      
+      if(membership.value){
+        this.activeAccountMembers = this.activeAccountMembers.filter(m => m.id !== membership_id);
+      }
+    },
+    async deleteMembership(membership_id: number){
+      const { $client } = useNuxtApp();
+      const { data: membership } = await $client.account.deleteMembership.useQuery({ membership_id });
+      
+      if(membership.value){
+        this.activeAccountMembers = this.activeAccountMembers.filter(m => m.id !== membership_id);
+      }
+    },
     async rotateJoinPassword(){
       const { $client } = useNuxtApp();
       const { account } = await $client.account.rotateJoinPassword.mutate();

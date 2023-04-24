@@ -92,6 +92,25 @@ export default class AccountService {
     })
   }
 
+  async deleteMembership(account_id: number, membership_id: number): Promise<MembershipWithAccount> {
+    const membership = prisma_client.membership.findFirstOrThrow({
+      where: {
+        id: membership_id
+      }
+    });
+
+    if((await membership).account_id != account_id){
+      throw new Error(`Membership does not belong to current account`);
+    }
+
+    return await prisma_client.membership.delete({
+      where: {
+        id: membership_id,
+      },
+      ...membershipWithAccount
+    })
+  }
+
   async joinUserToAccount(user_id: number, account_id: number, pending: boolean ): Promise<MembershipWithAccount> {
     const account = await prisma_client.account.findUnique({
         where: {

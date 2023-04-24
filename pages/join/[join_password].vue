@@ -19,6 +19,7 @@
   async function doJoin() {
     if (account) {
       await accountStore.joinUserToAccountPending(account.id);
+      navigateTo('/dashboard', {replace: true})
     } else {
       console.log(`Unable to Join`)
     }
@@ -27,7 +28,7 @@
 <template>
   <div class="py-10 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md mx-auto">
-      <h2 class="text-3xl font-extrabold text-gray-900">Request to Join Bob's Team</h2>
+      <h2 class="text-3xl font-extrabold text-gray-900">Request to Join {{ account?.name }}</h2>
       <template v-if="dbUser?.dbUser">
         <p class="mt-2 text-sm text-gray-500">
           Click below to request to Join the team. 

@@ -30,6 +30,18 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   });
 });
 
+const isMemberForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
+  if (!ctx.dbUser || !ctx.activeAccountId) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
+  if(!activeMembership || activeMembership.pending) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message:`membership ${activeMembership?.id} is not active` });
+  }
+  
+  return next({ ctx });
+});
+
 const isAdminForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
   if (!ctx.dbUser || !ctx.activeAccountId) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
@@ -42,11 +54,25 @@ const isAdminForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
   return next({ ctx });
 });
 
+const isOwnerForInputAccountId = t.middleware(({ next, rawInput, ctx }) => {
+  if (!ctx.dbUser || !ctx.activeAccountId) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
+  if(!activeMembership || activeMembership?.access !== ACCOUNT_ACCESS.OWNER) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message:`activeMembership ${activeMembership?.id} is only ${activeMembership?.access}` });
+  }
+  
+  return next({ ctx });
+});
+
 /**
  * Procedures
  **/
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
+export const memberProcedure = protectedProcedure.use(isMemberForInputAccountId);
 export const adminProcedure = protectedProcedure.use(isAdminForInputAccountId);
+export const ownerProcedure = protectedProcedure.use(isOwnerForInputAccountId);
 export const router = t.router;
 export const middleware = t.middleware;

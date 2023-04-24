@@ -42,7 +42,7 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] Gen/Regen an invite link to allow users to join a team
 - [x] Team administrators and owners can accept pending invites
 - [x] Team administrators and owners can administer the permissions (roles) of other team members on the Accounts page
-- [ ] Team owners can remove users from team
+- [x] Team owners can remove users from team
 
 ### Plans and Pricing
 - [x] Manage multiple Plans each with specific Feature flags and Plan limits
@@ -63,7 +63,6 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 ### Look and Feel, Design System and Customisation
 - [x] Default UI isn't too crap
 - [x] Integrated Design system including theming (Tailwind + daisyUI)
-- [ ] Branding options (logo, color scheme, etc.)
 
 ### Demo Software (Notes)
 - [x] Simple Text based Notes functionality
@@ -72,10 +71,6 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] Max Notes limit property on Plan 
 - [x] Max Notes enforced
 - [x] Add, Delete notes on Dashboard
-
-### Mobile App
-- [ ] Flutter App Demo integrating with API endpoints, Auth etc
-- [ ] Mobile-friendly web interface.
 
 ### Testing
 - [ ] Unit tests for server functions

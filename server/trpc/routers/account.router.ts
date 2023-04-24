@@ -1,4 +1,5 @@
-import { router, adminProcedure, publicProcedure, protectedProcedure } from '../trpc'
+import { TRPCError } from '@trpc/server';
+import { router, adminProcedure, publicProcedure, protectedProcedure, ownerProcedure } from '../trpc'
 import { ACCOUNT_ACCESS } from '@prisma/client';
 import { z } from 'zod';
 import AccountService from '~~/lib/services/account.service';
@@ -23,6 +24,10 @@ export const accountRouter = router({
   changeActiveAccount: protectedProcedure
     .input(z.object({ account_id: z.number() }))
     .mutation(async ({ ctx, input }) => {
+      const activeMembership = ctx.dbUser?.memberships.find(membership => membership.account_id == input.account_id);
+      if(activeMembership?.pending){
+        throw new TRPCError({ code: 'BAD_REQUEST', message:`membership ${activeMembership?.id} is not active so cannot be switched to` });
+      }
       ctx.activeAccountId = input.account_id;
       setCookie(ctx.event, 'preferred-active-account-id', input.account_id.toString(), {expires: new Date(Date.now() + 1000 * 60 * 60 * 24  * 365 * 10)});
     }),
@@ -66,6 +71,24 @@ export const accountRouter = router({
     .query(async ({ ctx, input }) => {
       const accountService = new AccountService();
       const membership: MembershipWithAccount = await accountService.acceptPendingMembership(ctx.activeAccountId!, input.membership_id);
+      return {
+        membership,
+      }
+    }),
+  rejectPendingMembership: adminProcedure
+    .input(z.object({ membership_id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const accountService = new AccountService();
+      const membership: MembershipWithAccount = await accountService.deleteMembership(ctx.activeAccountId!, input.membership_id);
+      return {
+        membership,
+      }
+    }),
+  deleteMembership: ownerProcedure
+    .input(z.object({ membership_id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const accountService = new AccountService();
+      const membership: MembershipWithAccount = await accountService.deleteMembership(ctx.activeAccountId!, input.membership_id);
       return {
         membership,
       }
