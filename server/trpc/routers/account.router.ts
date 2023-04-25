@@ -105,9 +105,9 @@ export const accountRouter = router({
   claimOwnershipOfAccount: adminProcedure
     .mutation(async ({ ctx }) => {
       const accountService = new AccountService();
-      const membership = await accountService.claimOwnershipOfAccount(ctx.dbUser!.id, ctx.activeAccountId!);
+      const memberships = await accountService.claimOwnershipOfAccount(ctx.dbUser!.id, ctx.activeAccountId!);
       return {
-        membership,
+        memberships,
       }
     }),
   getAccountMembers: adminProcedure

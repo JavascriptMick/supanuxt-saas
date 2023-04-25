@@ -1,9 +1,9 @@
 import NotesService from '~~/lib/services/notes.service';
-import { memberProcedure, protectedProcedure, publicProcedure, router } from '../trpc';
+import { adminProcedure, memberProcedure, protectedProcedure, publicProcedure, readWriteProcedure, router } from '../trpc';
 import { z } from 'zod';
 
 export const notesRouter = router({
-  getForCurrentUser: memberProcedure
+  getForActiveAccount: memberProcedure
     .query(async ({ ctx, input }) => {
       const notesService = new NotesService();
       const notes = (ctx.activeAccountId)?await notesService.getNotesForAccountId(ctx.activeAccountId):[]; 
@@ -20,7 +20,7 @@ export const notesRouter = router({
         note,
       }
     }),
-  createNote: memberProcedure
+  createNote: readWriteProcedure
     .input(z.object({ note_text: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const notesService = new NotesService();
@@ -29,7 +29,7 @@ export const notesRouter = router({
         note,
       }
     }),
-  deleteNote: memberProcedure
+  deleteNote: adminProcedure
     .input(z.object({ note_id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const notesService = new NotesService();

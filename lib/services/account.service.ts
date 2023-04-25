@@ -181,7 +181,7 @@ export default class AccountService {
   // User must already be an ADMIN for the Account
   // Existing OWNER memberships are downgraded to ADMIN
   // In future, some sort of Billing/Stripe tie in here e.g. changing email details on the Account, not sure.
-  async claimOwnershipOfAccount(user_id: number, account_id: number) {
+  async claimOwnershipOfAccount(user_id: number, account_id: number): Promise<MembershipWithUser[]> {
     const membership = await prisma_client.membership.findUniqueOrThrow({
       where: {
         user_id_account_id: {
@@ -192,7 +192,7 @@ export default class AccountService {
     });
 
     if (membership.access === ACCOUNT_ACCESS.OWNER) {
-      return; // already owner
+      throw new Error('BADREQUEST: user is already owner');
     } else if (membership.access !== ACCOUNT_ACCESS.ADMIN) {
       throw new Error('UNAUTHORISED: only Admins can claim ownership');
     }
@@ -219,7 +219,7 @@ export default class AccountService {
     }
 
     // finally update the ADMIN member to OWNER
-    return prisma_client.membership.update({
+    await prisma_client.membership.update({
       where: {
         user_id_account_id: {
           user_id: user_id,
@@ -229,10 +229,13 @@ export default class AccountService {
       data: {
         access: ACCOUNT_ACCESS.OWNER,
       },
-      include: {
-        account: true
-      }
     });
+
+    // return the full membership list because 2 members have changed.
+    return prisma_client.membership.findMany({ 
+      where: { account_id },
+      ...membershipWithUser
+    });    
   }
 
   // Upgrade access of a membership.  Cannot use this method to upgrade to or downgrade from OWNER access

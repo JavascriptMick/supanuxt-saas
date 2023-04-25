@@ -20,7 +20,7 @@ export const useNotesStore = defineStore('notes', () => {
 
   async function fetchNotesForCurrentUser() {
     const { $client } = useNuxtApp();
-    const { notes } = await $client.notes.getForCurrentUser.query();
+    const { notes } = await $client.notes.getForActiveAccount.query();
     if(notes){
       _notes.value = notes;
     }  

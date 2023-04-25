@@ -140,17 +140,10 @@ export const useAccountStore = defineStore('account', {
     },
     async claimOwnershipOfAccount(){
       const { $client } = useNuxtApp();
-      const { membership } = await $client.account.claimOwnershipOfAccount.mutate();
-      if(membership){
-        if(this.activeMembership){
-          this.activeMembership.access = membership.access;
-        }
-
-        for(const m of this.activeAccountMembers){
-          if(m.id === membership.id){
-            m.access = membership.access;
-          }
-        }
+      const { memberships } = await $client.account.claimOwnershipOfAccount.mutate();
+      if(memberships){
+        this.activeAccountMembers = memberships;
+        this.activeMembership!.access = ACCOUNT_ACCESS.OWNER
       }
     }
   }

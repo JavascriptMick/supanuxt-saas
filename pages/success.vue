@@ -18,6 +18,6 @@ try{
       <span v-if="customer && !customer.deleted">We appreciate your business {{customer.name}}!</span>
       <span v-if="customer && customer.deleted">It appears your stripe customer information has been deleted!</span>
     </p>
-    <p>Checkout our reasonable <NuxtLink to="/pricing">Pricing</NuxtLink></p>
+    <p>Go to Your <NuxtLink to="/dashboard">Dashboard</NuxtLink></p>
   </div>
 </template>

@@ -6,12 +6,18 @@
   const email = ref('')
   const password = ref('')
   const confirmPassword = ref('')
+  const signUpOk = ref(false)
 
   const handleStandardSignup = async () => {
     try {
       loading.value = true
       const { data, error } = await supabase.auth.signUp({ email: email.value, password: password.value })
-      if (error) throw error
+      if (error) {
+        throw error
+      }
+      else {
+        signUpOk.value = true;
+      }
     } catch (error) {
       alert(error)
     } finally {
@@ -47,6 +53,8 @@
         </div>
         <button :disabled="loading || password === '' || (confirmPassword !== password)" type="submit"
           class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Sign up</button>
+        
+          <p v-if="signUpOk" class="mt-4 text-lg text-center">You have successfully signed up.  Please check your email for a link to confirm your email address and proceed.</p>
       </form>
       <p class="text-center">or</p>
       <button @click="supabase.auth.signInWithOAuth({ provider: 'google' })"

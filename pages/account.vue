@@ -61,8 +61,18 @@
       </div>
 
       <div class="flex gap-4 items-center">
+        <span class="font-bold w-32">Maximum Members:</span>
+        <span>{{ activeMembership?.account.max_members }}</span>
+      </div>
+
+      <div class="flex gap-4 items-center">
         <span class="font-bold w-32">Access Level:</span>
         <span class="bg-green-500 text-white font-semibold py-1 px-2 rounded-full">{{ activeMembership?.access }}</span>
+        <button @click.prevent="accountStore.claimOwnershipOfAccount()"
+          v-if="activeMembership && activeMembership.access === ACCOUNT_ACCESS.ADMIN "
+          class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+          Claim Ownership
+        </button>
       </div>
 
       <div class="flex gap-4 items-center">
