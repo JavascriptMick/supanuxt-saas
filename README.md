@@ -73,8 +73,9 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] Add, Delete notes on Dashboard
 
 ### Testing
+- [x] Manual test scenario for auth and sub workflows passing
 - [ ] Unit tests for server functions
-- [ ] Integration tests around subscription scenarios
+- [ ] Integration tests for auth and sub workflows
 
 ## Special Mention
 This https://blog.checklyhq.com/building-a-multi-tenant-saas-data-model/ Article by https://twitter.com/tim_nolet was my inspiration for the user/account/subscription schema.  Tim was also generous with his time and answered some of my stoopid questions on the https://www.reddit.com/r/SaaS/ Subreddit.

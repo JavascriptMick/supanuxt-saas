@@ -35,12 +35,11 @@ const user = useSupabaseUser()
     <section class="py-12">
     <div class="container px-4 mx-auto">
         <div class="flex flex-col md:flex-row items-center justify-center md:justify-between mb-8">
-          <h2 class="text-3xl font-bold mb-4 md:mb-0">Features</h2>
+          <h2 class="text-3xl font-bold mb-4 md:mb-0">Tech Stack</h2>
         </div>
         <div class="flex flex-col md:flex-row items-center mb-16">
 
           <div class="md:w-full">
-            <h3 class="text-xl font-bold mb-4">Tech Stack</h3>
             <ul class="grid grid-cols-3 gap-10 list-none">
               <li>
                 <Icon name="skill-icons:nuxtjs-dark" class="h-12 w-12 mb-2" />
@@ -89,6 +88,9 @@ const user = useSupabaseUser()
               </li>
             </ul>
           </div>
+        </div>
+        <div class="flex flex-col md:flex-row items-center justify-center md:justify-between mb-8">
+          <h2 class="text-3xl font-bold mb-4 md:mb-0">Features</h2>
         </div>
         <!-- User Management (text left) -->
         <div class="flex flex-col md:flex-row-reverse items-center mb-16">
