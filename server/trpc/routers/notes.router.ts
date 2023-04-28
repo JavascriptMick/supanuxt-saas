@@ -38,4 +38,13 @@ export const notesRouter = router({
         note,
       }
     }),
+  generateAINoteFromPrompt: readWriteProcedure
+    .input(z.object({ user_prompt: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const notesService = new NotesService();
+      const noteText = (ctx.activeAccountId)?await notesService.generateAINoteFromPrompt(input.user_prompt):null; 
+      return {
+        noteText
+      }
+    }),
 })

@@ -54,7 +54,7 @@ const user = useSupabaseUser()
               <li>
                 <Icon name="skill-icons:postgresql-dark" class="h-12 w-12 mb-2" />
                 <h3 class="text-xl font-medium text-gray-900">PostgreSQL</h3>
-                <p class="mt-2 text-base text-gray-500">The Progressive JavaScript Framework</p>
+                <p class="mt-2 text-base text-gray-500">Relational Database</p>
               </li>
               <li>
                 <Icon name="logos:prisma" class="h-12 w-12 mb-2" />
@@ -85,6 +85,11 @@ const user = useSupabaseUser()
                 <Icon name="skill-icons:vuejs-dark" class="h-12 w-12 mb-2" />
                 <h3 class="text-xl font-medium text-gray-900">Vue.js</h3>
                 <p class="mt-2 text-base text-gray-500">The Progressive JavaScript Framework</p>
+              </li>
+              <li>
+                <Icon name="logos:openai-icon" class="h-12 w-12 mb-2" />
+                <h3 class="text-xl font-medium text-gray-900">OpenAI</h3>
+                <p class="mt-2 text-base text-gray-500">AI Completions including Note generation from prompt</p>
               </li>
             </ul>
           </div>

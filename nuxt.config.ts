@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     subscriptionGraceDays: 3,
     initialPlanName: 'Free Trial',
     initialPlanActiveMonths: 1,
+    openAIKey: process.env.OPENAI_API_KEY,
     public: {
       debugMode: true,
       siteRootUrl: 'http://localhost:3000',

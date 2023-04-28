@@ -11,6 +11,7 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - Pinia (State Store.  I liked vuex a lot, in particular explicit mutations but gotta go with the cool crowd)
 - Stripe (Payments including Webhook integration)
 - Tailwind + daisyUI (Tailwind because everybody is using it, daisyUI because I suck at tailwind)
+- OpenAI (text completions with AI)
 
 ## Features
 ### User Management
@@ -71,6 +72,7 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] Max Notes limit property on Plan 
 - [x] Max Notes enforced
 - [x] Add, Delete notes on Dashboard
+- [x] AI Note generation with OpenAI
 
 ### Testing
 - [x] Manual test scenario for auth and sub workflows passing

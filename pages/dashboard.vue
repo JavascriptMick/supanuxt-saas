@@ -17,6 +17,11 @@
     newNoteText.value = '';
   }
 
+  async function genNote(){
+    const genNoteText = await notesStore.generateAINoteFromPrompt(newNoteText.value)
+    newNoteText.value = genNoteText;
+  }
+
   onMounted(async () => {
     await accountStore.init();
     await notesStore.fetchNotesForCurrentUser();
@@ -28,12 +33,17 @@
       <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">Notes Dashboard</h2>
     </div>
     
-    <div class="w-full max-w-md mb-8">
-      <div v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.READ_WRITE || activeMembership.access === ACCOUNT_ACCESS.ADMIN || activeMembership.access === ACCOUNT_ACCESS.OWNER)" class="flex flex-row">
-        <input v-model="newNoteText" type="text" class="w-full rounded-l-md py-2 px-4 border-gray-400 border-2 focus:outline-none focus:border-blue-500" placeholder="Add a note...">
+    <div v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.READ_WRITE || activeMembership.access === ACCOUNT_ACCESS.ADMIN || activeMembership.access === ACCOUNT_ACCESS.OWNER)" class="w-full max-w-md mx-auto mb-3">
+      <textarea v-model="newNoteText" type="text" class="w-full rounded-l-md py-2 px-4 border-gray-400 border-2 focus:outline-none focus:border-blue-500" rows="5" placeholder="Add a note..."/>
+      <div class="flex justify-evenly">
         <button @click.prevent="addNote()" type="button"
-          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-r-md focus:outline-none focus:shadow-outline-blue">
+          class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
           Add
+        </button>
+        <button @click.prevent="genNote()" type="button"
+          class="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+          Gen
+          <Icon name="mdi:magic" class="h-6 w-6"/>
         </button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import prisma_client from '~~/prisma/prisma.client';
+import { openai } from './openai.client';
 
 export default class NotesService {
   async getAllNotes() {
@@ -32,5 +33,21 @@ export default class NotesService {
 
   async deleteNote(id: number) {
     return prisma_client.note.delete({ where: { id } });
+  }
+
+  async generateAINoteFromPrompt(userPrompt: string) {
+    const prompt = `
+    Write an interesting short note about ${userPrompt}.  
+    Restrict the note to a single paragraph.
+    `
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt,
+      temperature: 0.6,
+      stop: "\n\n",
+      max_tokens: 1000,
+      n: 1,
+    });
+    return completion.data.choices[0].text;
   }
 }

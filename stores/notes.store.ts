@@ -2,10 +2,6 @@ import { Note } from ".prisma/client"
 import { defineStore, storeToRefs } from "pinia"
 import { Ref } from "vue";
 
-interface State {
-  notes: Note[]
-}
-
 /*
 Note) the Notes Store needs to be a 'Setup Store' (https://pinia.vuejs.org/core-concepts/#setup-stores)
 because this enables the use of the watch on the Account Store
@@ -42,10 +38,16 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
+  async function generateAINoteFromPrompt(user_prompt: string) {
+    const { $client } = useNuxtApp();
+    const { noteText } =  await $client.notes.generateAINoteFromPrompt.query({user_prompt});
+    return noteText?noteText:'';
+  }
+
   // if the active account changes, fetch notes again (i.e dynamic.. probabl overkill)
   watch(activeAccountId, async (val, oldVal)=> {
     await fetchNotesForCurrentUser()
   });
 
-  return { notes: _notes, fetchNotesForCurrentUser, createNote, deleteNote }
+  return { notes: _notes, fetchNotesForCurrentUser, createNote, deleteNote, generateAINoteFromPrompt}
 });
