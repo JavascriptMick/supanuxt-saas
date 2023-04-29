@@ -30,82 +30,39 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   });
 });
 
-// Yes, these functions do look very repetitive and could be refactored.  If only I was smart enough to understand https://trpc.io/docs/server/procedures#reusable-base-procedures
-const isMemberForActiveAccountId = t.middleware(({ next, ctx }) => {
+
+const isMemberWithAccessesForActiveAccountId = (access: ACCOUNT_ACCESS[]) => t.middleware(({ next, ctx }) => {
   if (!ctx.dbUser || !ctx.activeAccountId) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'no user or active account information was found' });
   }
   const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
+
+  console.log(`isMemberWithAccessesForActiveAccountId(${access}) activeMembership?.access:${activeMembership?.access}`);
 
   if(!activeMembership) {
     throw new TRPCError({ code: 'UNAUTHORIZED', message:`user is not a member of the active account` });
   }
 
   if(activeMembership.pending) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`membership ${activeMembership?.id} is not active` });
-  }
-  
-  return next({ ctx });
-});
-
-const isReadWriteForActiveAccountId = t.middleware(({ next, ctx }) => {
-  if (!ctx.dbUser || !ctx.activeAccountId) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
-  }
-  const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
-
-  if(!activeMembership) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`user is not a member of the active account` });
+    throw new TRPCError({ code: 'UNAUTHORIZED', message:`membership ${activeMembership?.id} is pending approval` });
   }
 
-  if(activeMembership.pending) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`membership ${activeMembership?.id} is not active` });
-  }
-
-  if(activeMembership?.access !== ACCOUNT_ACCESS.READ_WRITE && activeMembership?.access !== ACCOUNT_ACCESS.ADMIN && activeMembership?.access !== ACCOUNT_ACCESS.OWNER) {
+  if(access.length > 0 && !access.includes(activeMembership.access)) {
     throw new TRPCError({ code: 'UNAUTHORIZED', message:`activeMembership ${activeMembership?.id} has insufficient access (${activeMembership?.access})` });
   }
   
   return next({ ctx });
 });
 
-const isAdminForActiveAccountId = t.middleware(({ next, ctx }) => {
+export const isAccountWithFeature = (feature: string) => t.middleware(({ next, ctx }) => {
   if (!ctx.dbUser || !ctx.activeAccountId) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
 
-  if(!activeMembership) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`user is not a member of the active account` });
-  }
-
-  if(activeMembership.pending) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`membership ${activeMembership?.id} is not active` });
-  }
-
-  if(activeMembership?.access !== ACCOUNT_ACCESS.ADMIN && activeMembership?.access !== ACCOUNT_ACCESS.OWNER) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`activeMembership ${activeMembership?.id} has insufficient access (${activeMembership?.access})` });
-  }
-  
-  return next({ ctx });
-});
-
-const isOwnerForActiveAccountId = t.middleware(({ next, ctx }) => {
-  if (!ctx.dbUser || !ctx.activeAccountId) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
-  }
-  const activeMembership = ctx.dbUser.memberships.find(membership => membership.account_id == ctx.activeAccountId);
-
-  if(!activeMembership) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`user is not a member of the active account` });
-  }
-
-  if(activeMembership.pending) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`membership ${activeMembership?.id} is not active` });
-  }
-
-  if(activeMembership?.access !== ACCOUNT_ACCESS.OWNER) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message:`activeMembership ${activeMembership?.id} has insufficient access (${activeMembership?.access})` });
+  console.log(`isAccountWithFeature(${feature}) activeMembership?.account.features:${activeMembership?.account.features}`);
+  if(!activeMembership?.account.features.includes(feature)){
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: `Account does not have the ${feature} feature` });
   }
   
   return next({ ctx });
@@ -116,9 +73,11 @@ const isOwnerForActiveAccountId = t.middleware(({ next, ctx }) => {
  **/
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
-export const memberProcedure = protectedProcedure.use(isMemberForActiveAccountId);
-export const readWriteProcedure = protectedProcedure.use(isReadWriteForActiveAccountId);
-export const adminProcedure = protectedProcedure.use(isAdminForActiveAccountId);
-export const ownerProcedure = protectedProcedure.use(isOwnerForActiveAccountId);
+export const memberProcedure = protectedProcedure.use(isMemberWithAccessesForActiveAccountId([]));
+export const readWriteProcedure = protectedProcedure.use(isMemberWithAccessesForActiveAccountId([ACCOUNT_ACCESS.READ_WRITE, ACCOUNT_ACCESS.ADMIN, ACCOUNT_ACCESS.OWNER]));
+export const adminProcedure = protectedProcedure.use(isMemberWithAccessesForActiveAccountId([ACCOUNT_ACCESS.ADMIN, ACCOUNT_ACCESS.OWNER]));
+export const ownerProcedure = protectedProcedure.use(isMemberWithAccessesForActiveAccountId([ACCOUNT_ACCESS.OWNER]));
+export const accountHasSpecialFeature = isAccountWithFeature('SPECIAL_FEATURE');
+
 export const router = t.router;
 export const middleware = t.middleware;

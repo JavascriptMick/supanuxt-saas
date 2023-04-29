@@ -40,7 +40,7 @@
           class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
           Add
         </button>
-        <button @click.prevent="genNote()" type="button"
+        <button v-if="activeMembership.account.features.includes('SPECIAL_FEATURE')"  @click.prevent="genNote()" type="button"
           class="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
           Gen
           <Icon name="mdi:magic" class="h-6 w-6"/>

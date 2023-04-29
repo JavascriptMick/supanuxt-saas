@@ -1,5 +1,5 @@
 import NotesService from '~~/lib/services/notes.service';
-import { adminProcedure, memberProcedure, protectedProcedure, publicProcedure, readWriteProcedure, router } from '../trpc';
+import { accountHasSpecialFeature, adminProcedure, memberProcedure, publicProcedure, readWriteProcedure, router } from '../trpc';
 import { z } from 'zod';
 
 export const notesRouter = router({
@@ -38,7 +38,7 @@ export const notesRouter = router({
         note,
       }
     }),
-  generateAINoteFromPrompt: readWriteProcedure
+  generateAINoteFromPrompt: readWriteProcedure.use(accountHasSpecialFeature)
     .input(z.object({ user_prompt: z.string() }))
     .query(async ({ ctx, input }) => {
       const notesService = new NotesService();

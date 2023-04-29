@@ -50,7 +50,8 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 - [x] Plan features copied to Accounts upon successfull subscription
 - [x] Loose coupling between Plan and Account Features to allow ad-hoc account tweaks without creating custom plans
 - [x] Pricing page appropriately reacts to users with/without account and current plan.
-- [ ] Plan features and Limits available in an object structure in Server methods and with method annotations or similar
+- [x] User Access level available at the router layer as procedures allowing restriction of access based on user access
+- [x] Account features available at the router layer as utility procedures allowing restriction of access based on account features
 
 ### Stripe (Payments) Integration
 - [x] Each plan is configured with Stripe Product ID so that multiple Stripe Prices can be created for each plan but subscriptions (via Webhook) will still activate the correct plan.
