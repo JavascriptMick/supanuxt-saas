@@ -1,8 +1,11 @@
 # Nuxt 3 (SAAS) Boilerplate
+[![Netlify Status](https://api.netlify.com/api/v1/badges/19d67f94-afdc-4b79-8490-600be26e85de/deploy-status)](https://app.netlify.com/sites/nuxt3-saas-boilerplate/deploys)
 
 ## Not Production Ready
 Please don't hitch your wagon to this star just yet... I'm coding this in the open and the TODO list is verrrrrry long.
 
+## Demo
+Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 ## Tech Stack
 - Nuxt 3 (I like it, shut up)
 - Supabase (Auth including OAuth + Postgresql instance)
@@ -15,8 +18,9 @@ Please don't hitch your wagon to this star just yet... I'm coding this in the op
 
 ## Features
 ### User Management
-- [x] User authentication via Supabase including Social Signon (e.g. google) Email/Password (TODO) and Magic Link
-- [x] Full list of available [providers](https://supabase.com/docs/guides/auth#providers)
+- [x] Social Signon (e.g. google) via Supabase, Full list of available [providers](https://supabase.com/docs/guides/auth#providers)
+- [x] Email/Password Signon via Supabase
+- [ ] Password recovery
 - [x] User roles and permissions (admin, regular user, etc. roles defined in the [Prisma Schema](/prisma/schema.prisma))
 - [x] User Email captured on initial login
 - [x] Initial plan and plan period controled via config to allow either a trial plan or a 'No Plan' for initial users
