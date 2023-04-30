@@ -39,6 +39,7 @@
         <li v-if="user"><NuxtLink to="/dashboard">Dashboard</NuxtLink></li>
         <li><NuxtLink to="/pricing">Pricing</NuxtLink></li>
         <li v-if="!user"><NuxtLink to="/signin">Sign In</NuxtLink></li>
+        <li v-if="!user"><a href="https://github.com/JavascriptMick/nuxt3-boilerplate"><Icon name="mdi:github"/></a></li>
       </ul>
     </div>
     <div class="navbar-end" v-if="user">

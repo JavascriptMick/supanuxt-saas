@@ -14,14 +14,13 @@ export default defineNuxtConfig({
   runtimeConfig:{
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     stripeEndpointSecret: process.env.STRIPE_ENDPOINT_SECRET,
-    stripeCallbackUrl: process.env.STRIPE_CALLBACK_URL,
     subscriptionGraceDays: 3,
     initialPlanName: 'Free Trial',
     initialPlanActiveMonths: 1,
     openAIKey: process.env.OPENAI_API_KEY,
     public: {
       debugMode: true,
-      siteRootUrl: 'http://localhost:3000',
+      siteRootUrl: process.env.URL || 'http://localhost:3000', // URL env variable is provided by netlify by default
     }
   }
 })

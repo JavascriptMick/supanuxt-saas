@@ -37,15 +37,15 @@ export default defineEventHandler(async (event) => {
     // {CHECKOUT_SESSION_ID} is a string literal; do not change it!
     // the actual Session ID is returned in the query parameter when your customer
     // is redirected to the success page.
-    success_url: `${config.stripeCallbackUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${config.stripeCallbackUrl}/cancel`,
+    success_url: `${config.public.siteRootUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${config.public.siteRootUrl}/cancel`,
     customer: customer_id
   });
 
   if(session?.url){
     return sendRedirect(event, session.url, 303);
   } else {
-    return sendRedirect(event, `${config.stripeCallbackUrl}/fail`, 303);
+    return sendRedirect(event, `${config.public.siteRootUrl}/fail`, 303);
   }
 });
 
