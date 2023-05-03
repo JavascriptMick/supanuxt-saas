@@ -179,3 +179,22 @@ npm run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
+### Deploy to Netlify
+Where you host your SAAS is 100% your problem however :-
+- A quick look at the vue.js discord indicates that netlify has the most mentions (2020) out of all the hosting providers beating out Firebase (1592), Vercel (973) and AWS (740)   
+- I was able to get my app up and running with ridiculously little effort
+
+Steps (Assumes your repo is in github)
+1) Go to [Netlify](https://www.netlify.com/)
+2) Log in with your github account (it's easier) and create an account (Free Tier is fine for now)
+3) Add a New Site -> Import from Existing Proect
+4) Choose your repo (You might need to Configure the Netlify app on GitHub) - Netlify auto-detects a nuxt app pretty good and the defaults it chooses seem to be fine.
+5) Setup environment variables per the .env_example file (SUPABASE_URL, SUPABASE_KEY....etc)
+6) Optionally change site name (e.g. mycoolsaas) or apply a domain name
+
+7) Go to (Supabase)[https://app.supabase.com/]
+8) Choose your project
+9) Go to URL Authentication -> URL Configuration -> Site URL
+10) enter your new netlify URL e.g. https://mycoolsaas.netlify.app/ and click 'save'
+
+
