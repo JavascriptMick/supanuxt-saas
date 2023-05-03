@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { router, adminProcedure, publicProcedure, protectedProcedure, ownerProcedure } from '../trpc'
-import { ACCOUNT_ACCESS } from '@prisma/client';
+import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import { z } from 'zod';
 import AccountService from '~~/lib/services/account.service';
 import { MembershipWithAccount } from '~~/lib/services/service.types';

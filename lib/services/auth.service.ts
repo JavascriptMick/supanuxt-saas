@@ -1,4 +1,4 @@
-import { ACCOUNT_ACCESS } from '@prisma/client';
+import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import prisma_client from '~~/prisma/prisma.client';
 import { fullDBUser, FullDBUser } from './service.types';
 import { UtilService } from './util.service';

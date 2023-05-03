@@ -9,7 +9,7 @@
  */
 import { initTRPC, TRPCError } from '@trpc/server'
 import { Context } from './context';
-import { ACCOUNT_ACCESS } from '@prisma/client';
+import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import superjson from 'superjson';
 
 const t = initTRPC.context<Context>().create({

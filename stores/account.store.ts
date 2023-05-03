@@ -1,4 +1,4 @@
-import { ACCOUNT_ACCESS } from '@prisma/client';
+import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import { defineStore } from "pinia"
 import { FullDBUser, MembershipWithUser } from "~~/lib/services/service.types";
 
