@@ -9,6 +9,7 @@
   const password = ref('')
 
   const handleStandardSignin = async () => {
+    console.log(`handleStandardSignin email.value:${email.value}, password.value:${password.value}`);
     try {
       loading.value = true
       const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value })
@@ -19,6 +20,20 @@
       loading.value = false
     }
   }
+
+  const handleGoogleSignin = async () => {
+    console.log('handleGoogleSignin');
+    try {
+      loading.value = true
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
+      if (error) throw error
+    } catch (error) {
+      alert(error)
+    } finally {
+      loading.value = false
+    }
+  }
+
 
   watchEffect(async () => {
     if (user.value) {
@@ -46,7 +61,7 @@
           class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Sign in</button>
       </form>
       <p class="text-center">or</p>
-      <button @click="supabase.auth.signInWithOAuth({ provider: 'google' })"
+      <button @click="handleGoogleSignin()"
         class="w-full py-2 text-white bg-red-600 rounded-md hover:bg-red-700">
         <span class="flex items-center justify-center space-x-2">
           <Icon name="fa-brands:google" class="w-5 h-5" />
