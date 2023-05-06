@@ -20,7 +20,7 @@ Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 ### User Management
 - [x] Social Signon (e.g. google) via Supabase, Full list of available [providers](https://supabase.com/docs/guides/auth#providers)
 - [x] Email/Password Signon via Supabase
-- [ ] Password recovery
+- [x] Password recovery
 - [x] User roles and permissions (admin, regular user, etc. roles defined in the [Prisma Schema](/prisma/schema.prisma))
 - [x] User Email captured on initial login
 - [x] Initial plan and plan period controled via config to allow either a trial plan or a 'No Plan' for initial users
@@ -69,6 +69,8 @@ Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 ### Look and Feel, Design System and Customisation
 - [x] Default UI isn't too crap
 - [x] Integrated Design system including theming (Tailwind + daisyUI)
+- [ ] Toasts for things like reset email sent
+- [ ] Modals, just because people like modals
 
 ### Demo Software (Notes)
 - [x] Simple Text based Notes functionality
@@ -99,7 +101,8 @@ This solution uses Supabase for Auth and to provide a DB.  In addition to Magic 
 
 1) Go to [Supabase](https://supabase.com/) and 'Start your Project'
 2) Setup your org and project (Free tier is fine to start)
-3) Update the project's email template
+3) Update the project's email template (Supabase -> Authentication -> Email Templates)
+Note that the default Supabase email templates are very generic and for some reason this can lead to your emails being sent to spam folders.  e.g. I to get my password reset emails to go to inbox, I needed to change the subject to "Password Reset for Nuxt 3 SAAS Boilerplate" and also the email body text.
 4) Choose an OAuth provider.  I have chosen Google using these [Instructions](https://supabase.com/docs/guides/auth/social-login/auth-google) for the purposes of demonstration but they all should work.
 5) Go to Project Settings -> API and copy Project URL and Project API Key to SUPABASE_URL and SUPABASE_KEY settings respectively in your [.env](/.env) file
 6) Go to Project Settings -> Database -> Connection String -> URI and copy the uri value into the DATABASE_URL setting in your [.env](/.env) file, remembering to replace ```[YOUR-PASSWORD]``` with the password you provided when you setup the project.
@@ -192,9 +195,13 @@ Steps (Assumes your repo is in github)
 5) Setup environment variables per the .env_example file (SUPABASE_URL, SUPABASE_KEY....etc)
 6) Optionally change site name (e.g. mycoolsaas) or apply a domain name
 
-7) Go to (Supabase)[https://app.supabase.com/]
+7) Go to [Supabase](https://app.supabase.com/)
 8) Choose your project
 9) Go to URL Authentication -> URL Configuration -> Site URL
 10) enter your new netlify URL e.g. https://mycoolsaas.netlify.app/ and click 'save'
+11) Add the following additional redirect URLs for local development and deployment previews:
+http://localhost:3000/**
+https://**--mycoolsaas.netlify.app/**
+12) If you haven't already done so, edit your Supabase Email templates as the generic ones tend to get blocked by GMail.
 
 

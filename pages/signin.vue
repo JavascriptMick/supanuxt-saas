@@ -57,6 +57,7 @@
           <input v-model="password" id="password" type="password" class="w-full p-2 border border-gray-400 rounded-md"
             placeholder="Enter your password" required>
         </div>
+        <NuxtLink id="forgotPasswordLink" to="/forgotpassword" class="text-right block">Forgot your password?</NuxtLink>
         <button :disabled="loading || password === ''" type="submit"
           class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Sign in</button>
       </form>
