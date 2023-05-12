@@ -3,6 +3,7 @@
   const supabase = useSupabaseAuthClient();
 
   const accountStore = useAccountStore()
+  const notifyStore = useNotifyStore();
 
   const loading = ref(false)
   const email = ref('')
@@ -15,7 +16,7 @@
       const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value })
       if (error) throw error
     } catch (error) {
-      alert(error)
+      notifyStore.notify(error, NotificationType.Error);
     } finally {
       loading.value = false
     }
@@ -28,7 +29,7 @@
       const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
       if (error) throw error
     } catch (error) {
-      alert(error)
+      notifyStore.notify(error, NotificationType.Error);
     } finally {
       loading.value = false
     }

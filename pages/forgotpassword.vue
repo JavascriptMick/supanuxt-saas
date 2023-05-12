@@ -1,6 +1,7 @@
 <script setup lang="ts">
   const supabase = useSupabaseAuthClient();
   const config = useRuntimeConfig();
+  const notifyStore = useNotifyStore();
 
   const loading = ref(false)
   const email = ref('')
@@ -12,9 +13,9 @@
         redirectTo: `${config.public.siteRootUrl}/resetpassword`,
       })
       if (error) throw error
-      else alert('Password Reset link sent, check your email.');
+      else notifyStore.notify("Password Reset link sent, check your email.", NotificationType.Success);
     } catch (error) {
-      alert(error)
+      notifyStore.notify(error, NotificationType.Error);
     } finally {
       loading.value = false
     }

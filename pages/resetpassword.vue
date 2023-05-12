@@ -1,6 +1,8 @@
 <script setup lang="ts">
   const supabase = useSupabaseAuthClient();
 
+  const notifyStore = useNotifyStore();
+
   const loading = ref(false)
   const password = ref('')
   const confirmPassword = ref('')
@@ -13,11 +15,11 @@
       });
       if (error) throw error
       else {
-        alert('password changed');
+        notifyStore.notify("password changed", NotificationType.Success);
         navigateTo('/signin', {replace: true}); // navigate to signin because it is best practice although the auth session seems to be valid so it immediately redirects to dashboard
       }
     } catch (error) {
-      alert(error)
+      notifyStore.notify(error, NotificationType.Error);
     } finally {
       loading.value = false
     }

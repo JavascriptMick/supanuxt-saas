@@ -2,6 +2,8 @@
   const user = useSupabaseUser()
   const supabase = useSupabaseAuthClient();
 
+  const notifyStore = useNotifyStore();
+
   const loading = ref(false)
   const email = ref('')
   const password = ref('')
@@ -19,7 +21,7 @@
         signUpOk.value = true;
       }
     } catch (error) {
-      alert(error)
+      notifyStore.notify(error, NotificationType.Error);
     } finally {
       loading.value = false
     }
