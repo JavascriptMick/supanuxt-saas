@@ -70,7 +70,7 @@ Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 - [x] Default UI isn't too crap
 - [x] Integrated Design system including theming (Tailwind + daisyUI)
 - [x] Toasts for things like reset email sent
-- [ ] Modals, just because people like modals
+- [x] Modals, just because people like modals
 
 ### Demo Software (Notes)
 - [x] Simple Text based Notes functionality
