@@ -22,6 +22,12 @@
         <h3 class="text-2xl font-bold text-gray-900 mb-4">Free Plan</h3>
         <p class="text-gray-600 mb-4">Single user, 10 notes</p>
         <p class="text-3xl font-bold text-gray-900 mb-4">$0<span class="text-gray-600 text-lg">/mo</span></p>
+        <button 
+            v-if="!activeMembership"
+            @click.prevent="navigateTo('/signup')"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            Start for free
+        </button>
       </div>
     
       <!-- Personal Plan -->
@@ -39,7 +45,7 @@
           <input type="hidden" name="account_id" :value="activeMembership?.account_id" />
           <button 
             type="submit" 
-            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
             Subscribe
           </button>
         </form>
@@ -47,8 +53,8 @@
         <button 
             v-if="!activeMembership"
             @click.prevent="navigateTo('/signup')"
-            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
-            Sign Up
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            Get started
         </button>
       </div>
     
@@ -67,7 +73,7 @@
           <input type="hidden" name="account_id" :value="activeMembership?.account_id" />
           <button 
             type="submit" 
-            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
             Subscribe
           </button>
         </form>
@@ -75,8 +81,8 @@
         <button 
             v-if="!activeMembership"
             @click.prevent="navigateTo('/signup')"
-            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
-            Sign Up
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+            Get started
         </button>
       </div>
     </div>

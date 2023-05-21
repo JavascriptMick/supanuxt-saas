@@ -56,15 +56,16 @@
         <li v-if="user"><NuxtLink to="/dashboard">Dashboard</NuxtLink></li>
         <li><NuxtLink to="/pricing">Pricing</NuxtLink></li>
         <li v-if="!user"><NuxtLink to="/signin">Sign In</NuxtLink></li>
-        <li v-if="!user"><a href="https://github.com/JavascriptMick/nuxt3-boilerplate"><Icon name="mdi:github"/></a></li>
+        <li v-if="!user"><NuxtLink to="/signup">Start for free</NuxtLink></li>
+        <li v-if="!user"><a title="github" href="https://github.com/JavascriptMick/nuxt3-boilerplate"><Icon name="mdi:github"/></a></li>
       </ul>
     </div>
     <div class="navbar-end" v-if="user">
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
-            <img v-if="user.user_metadata.avatar_url" :src="user.user_metadata.avatar_url" />
-            <img v-else src="~/assets/images/avatar.svg"/>
+            <img v-if="user.user_metadata.avatar_url" :src="user.user_metadata.avatar_url" alt="avatar image"/>
+            <img v-else src="~/assets/images/avatar.svg" alt="default avatar image"/>
           </div>
         </label>
         <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">

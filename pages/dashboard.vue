@@ -37,11 +37,11 @@
       <textarea v-model="newNoteText" type="text" class="w-full rounded-l-md py-2 px-4 border-gray-400 border-2 focus:outline-none focus:border-blue-500" rows="5" placeholder="Add a note..."/>
       <div class="flex justify-evenly">
         <button @click.prevent="addNote()" type="button"
-          class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+          class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50">
           Add
         </button>
         <button v-if="activeMembership.account.features.includes('SPECIAL_FEATURE')"  @click.prevent="genNote()" type="button"
-          class="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+          class="px-4 py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">
           Gen
           <Icon name="mdi:magic" class="h-6 w-6"/>
         </button>
@@ -53,7 +53,7 @@
         <p class="text-gray-600 mb-4">{{ note.note_text }}</p>
         <button @click.prevent="notesStore.deleteNote(note.id)" 
           v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.ADMIN || activeMembership.access === ACCOUNT_ACCESS.OWNER)"
-          class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
+          class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">
           Delete
         </button>
       </div>

@@ -11,6 +11,14 @@ export default defineNuxtConfig({
   imports: {
     dirs: ['./stores'],
   },
+  app:{
+    head: {
+      htmlAttrs: {
+        lang: 'en',
+      },
+      title: 'Nuxt 3 SAAS Boilerplate',
+    },
+  },
   runtimeConfig:{
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     stripeEndpointSecret: process.env.STRIPE_ENDPOINT_SECRET,
