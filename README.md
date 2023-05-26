@@ -1,11 +1,11 @@
 # Nuxt 3 (SAAS) Boilerplate
 [![Netlify Status](https://api.netlify.com/api/v1/badges/19d67f94-afdc-4b79-8490-600be26e85de/deploy-status)](https://app.netlify.com/sites/nuxt3-saas-boilerplate/deploys)
 
-## Not Production Ready
-Please don't hitch your wagon to this star just yet... I'm coding this in the open and the TODO list is verrrrrry long.
+## Demo Sites
+Boilerplate Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 
-## Demo
-Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
+Pottery Helper [here](https://potteryhelper.com/)
+
 ## Tech Stack
 - Nuxt 3 (I like it, shut up)
 - Supabase (Auth including OAuth + Postgresql instance)
@@ -124,6 +124,18 @@ This solution uses Stripe for Subscription payments.
 ``` html
 <input type="hidden" name="price_id" value="[Your Price ID from Stripe]" />
 ```
+5) go to the [API Keys](https://dashboard.stripe.com/test/apikeys) page find 'Secret Key' -> reveal test key.  click to copy and then replace the STRIPE_SECRET_KEY value in your .env
+
+6) install the stripe cli used to forward webhooks (macos)
+```
+brew install stripe/stripe-cli/stripe
+```
+
+7) log the CLI into your stripe account.
+```
+stripe login -i
+```
+provide the api key found in step 5) above
 
 ### Setup Database (Prisma)
 This solution uses Prisma to both manage changes and connect to the Postgresql database provided by Supabase.  Your Supabase DB will be empty by default so you need to hydrate the schema and re-generate the local prisma client.
@@ -160,6 +172,12 @@ This makes sure that you can debug subscription workflows locally
 stripe listen --forward-to localhost:3000/webhook
 ```
 
+If you haven't already done so look at the stripe cli output for this text
+```
+Your webhook signing secret is whsec_xxxxxxxxxxxxx (^C to quit)
+```
+take ths signing secret and update the STRIPE_ENDPOINT_SECRET value in .env
+
 Start the development server on http://localhost:3000
 
 ```bash
@@ -182,7 +200,7 @@ npm run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
-### Deploy to Netlify
+### Going Live on Netlify
 Where you host your SAAS is 100% your problem however :-
 - A quick look at the vue.js discord indicates that netlify has the most mentions (2020) out of all the hosting providers beating out Firebase (1592), Vercel (973) and AWS (740)   
 - I was able to get my app up and running with ridiculously little effort
@@ -200,8 +218,13 @@ Steps (Assumes your repo is in github)
 9) Go to URL Authentication -> URL Configuration -> Site URL
 10) enter your new netlify URL e.g. https://mycoolsaas.netlify.app/ and click 'save'
 11) Add the following additional redirect URLs for local development and deployment previews:
-http://localhost:3000/**
-https://**--mycoolsaas.netlify.app/**
+- http://localhost:3000/**
+- https://**--mycoolsaas.netlify.app/** (or https://mycustomdomain.com/**)
 12) If you haven't already done so, edit your Supabase Email templates as the generic ones tend to get blocked by GMail.
 
+### Netlify deployments and environment variables
+Netlify is a bit rubbish at updating environment variables so you may need to manually re-deploy your site in certain situations e.g.
+- If on initial load of the site you get a message along the lines of 'SUPABASE_URL is required'.. but you have set that environment variable correctly... try a manual deployment.
+- Changing the default domain e.g. setting to a custom domain - If you notice you are redirected to the wrong version of the site after signup to a stripe subscription, this means the URL env variable has not been reset by Netlify.  a manual deployment may fix it.
 
+To manually redeploy to to your Netlify dashboard and navigate to Deploys -> Trigger Deploy -> Deploy site
