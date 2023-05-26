@@ -68,7 +68,7 @@
         <form 
           action="/create-checkout-session" 
           method="POST"
-          v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access !== ACCOUNT_ACCESS.ADMIN) && (activeMembership?.account.plan_name !== 'Individual Plan')">
+          v-if="activeMembership && (activeMembership.access === ACCOUNT_ACCESS.OWNER || activeMembership.access !== ACCOUNT_ACCESS.ADMIN) && (activeMembership?.account.plan_name !== 'Team Plan')">
           <input type="hidden" name="price_id" value="price_1MpOjtJfLn4RhYiLsjzAso90" />
           <input type="hidden" name="account_id" :value="activeMembership?.account_id" />
           <button 
