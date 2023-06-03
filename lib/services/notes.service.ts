@@ -1,5 +1,6 @@
 import prisma_client from '~~/prisma/prisma.client';
 import { openai } from './openai.client';
+import { AccountLimitError } from './errors';
 
 export default class NotesService {
   async getAllNotes() {
@@ -21,7 +22,7 @@ export default class NotesService {
     });
 
     if(account.notes.length>= account.max_notes){
-      throw new Error('Note Limit reached, no new notes can be added');
+      throw new AccountLimitError('Note Limit reached, no new notes can be added');
     }
     
     return prisma_client.note.create({ data: { account_id, note_text }});

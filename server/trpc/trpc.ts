@@ -11,9 +11,24 @@ import { initTRPC, TRPCError } from '@trpc/server'
 import { Context } from './context';
 import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import superjson from 'superjson';
+import { AccountLimitError } from '~~/lib/services/errors';
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
+  errorFormatter: (opts)=> {
+    const { shape, error } = opts;
+    if (!(error.cause instanceof AccountLimitError)) {
+      return shape;
+    }
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        httpStatus: 401,
+        code: 'UNAUTHORIZED'
+      },
+    };
+  }
 })
 
 /**
