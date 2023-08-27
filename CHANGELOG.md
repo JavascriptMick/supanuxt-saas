@@ -1,6 +1,22 @@
 # Changelog
 
-## Version 0.0.0
+## Version 1.1.0
+- Upgrade Prisma to version 5 to improve performance (https://www.prisma.io/docs/guides/upgrade-guides/upgrading-versions/upgrading-to-prisma-5)
+```
+npm install @prisma/client@5
+npm install -D prisma@5
+npx prisma generate
+```
+
+- Upgrade Nuxt to 3.7.0
+```
+npx nuxi upgrade --force
+```
+
+## Version 1.0.0
+First Release version.  If your package.json does not have a version attribute, this is the version you have.
+
+## Project Creation (for interest only)
 This is what I did to create the project including all the extra fiddly stuff.  Putting this here so I don't forget.
 
 ### Setup Nuxt
