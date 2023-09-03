@@ -16,7 +16,7 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'en',
       },
-      title: 'Nuxt 3 SAAS Boilerplate',
+      title: 'SupaNuxt SaaS',
     },
   },
   runtimeConfig:{

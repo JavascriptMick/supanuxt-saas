@@ -49,7 +49,7 @@
           <li v-if="!user"><NuxtLink to="/signin">Sign In</NuxtLink></li>
         </ul>
       </div>
-      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl">Nuxt3 SAAS Boilerplate</NuxtLink>
+      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl">SupaNuxt SAAS</NuxtLink>
     </div>
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1">
@@ -57,7 +57,7 @@
         <li><NuxtLink to="/pricing">Pricing</NuxtLink></li>
         <li v-if="!user"><NuxtLink to="/signin">Sign In</NuxtLink></li>
         <li v-if="!user"><NuxtLink to="/signup">Start for free</NuxtLink></li>
-        <li v-if="!user"><a title="github" href="https://github.com/JavascriptMick/nuxt3-boilerplate"><Icon name="mdi:github"/></a></li>
+        <li v-if="!user"><a title="github" href="https://github.com/JavascriptMick/supanuxt-saas"><Icon name="mdi:github"/></a></li>
       </ul>
     </div>
     <div class="navbar-end" v-if="user">

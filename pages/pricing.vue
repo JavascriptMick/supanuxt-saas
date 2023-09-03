@@ -13,7 +13,7 @@
   <div class="flex flex-col items-center max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
     <div class="text-center mb-12">
       <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">Flexible Pricing</h2>
-      <p class="text-xl text-gray-500">Get started with the best boiler for your SAAS plate</p>
+      <p class="text-xl text-gray-500">SupaNuxt SaaS is completely free and open source but you can price your own SaaS like this</p>
     </div>
     
     <div class="flex flex-col md:flex-row justify-center items-center">

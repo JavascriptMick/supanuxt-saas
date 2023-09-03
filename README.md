@@ -1,19 +1,21 @@
-# Nuxt 3 (SAAS) Boilerplate
+![SupaNuxt SaaS](assets/images/supanuxt_logo_200.png)
+
+# SupaNuxt SaaS
 [![Netlify Status](https://api.netlify.com/api/v1/badges/19d67f94-afdc-4b79-8490-600be26e85de/deploy-status)](https://app.netlify.com/sites/nuxt3-saas-boilerplate/deploys)
 
 ## Demo Sites
-Boilerplate Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
+Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 
 Pottery Helper [here](https://potteryhelper.com/)
 
 ## Tech Stack
-- Nuxt 3 (I like it, shut up)
-- Supabase (Auth including OAuth + Postgresql instance)
-- Prisma (Schema management + Strongly typed client)
-- TRPC (Server/Client communication with Strong types, SSR compatible)
-- Pinia (State Store.  I liked vuex a lot, in particular explicit mutations but gotta go with the cool crowd)
-- Stripe (Payments including Webhook integration)
-- Tailwind + daisyUI (Tailwind because everybody is using it, daisyUI because I suck at tailwind)
+- Nuxt 3
+- Supabase (auth including OAuth + Postgresql instance)
+- Prisma (schema management + Strongly typed client)
+- TRPC (server/client communication with Strong types, SSR compatible)
+- Pinia (state Store)
+- Stripe (payments including webhook integration)
+- Tailwind + daisyUI (styling and components)
 - OpenAI (text completions with AI)
 
 ## Features
@@ -102,7 +104,7 @@ This solution uses Supabase for Auth and to provide a DB.  In addition to Magic 
 1) Go to [Supabase](https://supabase.com/) and 'Start your Project'
 2) Setup your org and project (Free tier is fine to start)
 3) Update the project's email template (Supabase -> Authentication -> Email Templates)
-Note that the default Supabase email templates are very generic and for some reason this can lead to your emails being sent to spam folders.  e.g. I to get my password reset emails to go to inbox, I needed to change the subject to "Password Reset for Nuxt 3 SAAS Boilerplate" and also the email body text.
+Note that the default Supabase email templates are very generic and for some reason this can lead to your emails being sent to spam folders.  e.g. I to get my password reset emails to go to inbox, I needed to change the subject to "Password Reset for ..." and also the email body text.
 4) Choose an OAuth provider.  I have chosen Google using these [Instructions](https://supabase.com/docs/guides/auth/social-login/auth-google) for the purposes of demonstration but they all should work.
 5) Go to Project Settings -> API and copy Project URL and Project API Key to SUPABASE_URL and SUPABASE_KEY settings respectively in your [.env](/.env) file
 6) Go to Project Settings -> Database -> Connection String -> URI and copy the uri value into the DATABASE_URL setting in your [.env](/.env) file, remembering to replace ```[YOUR-PASSWORD]``` with the password you provided when you setup the project.

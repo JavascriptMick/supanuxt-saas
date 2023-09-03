@@ -20,7 +20,7 @@ First Release version.  If your package.json does not have a version attribute, 
 This is what I did to create the project including all the extra fiddly stuff.  Putting this here so I don't forget.
 
 ### Setup Nuxt
-Follow instructions from here https://nuxt.com/docs/getting-started/installation
+I Followed instructions from here https://nuxt.com/docs/getting-started/installation
 
 ```bash
 # install node

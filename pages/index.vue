@@ -14,10 +14,10 @@ const user = useSupabaseUser()
         <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
           <div class="m-5">
             <h1 class="text-5xl font-bold mb-4">
-              Build Your Next SAAS Faster
+              Build Your Next SaaS Faster
             </h1>
             <p class="text-gray-700 text-lg mb-8">
-              With Nuxt 3 SAAS Boilerplate, you can easily get started building your
+              With SupaNuxt SaaS, you can easily get started building your
               next web application. Our pre-configured tech stack and
               industry leading features make it easy to get up and running in no time. Look! this guy is working so fast,
               his hands are just a blur.. you could be this fast.
@@ -25,8 +25,7 @@ const user = useSupabaseUser()
             <NuxtLink to="/signup" class="inline-block py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Get Started</NuxtLink>
           </div>
           <div>
-            <img src="~/assets/images/saas_landing_main.jpeg"
-              alt="Hero Image" />
+            <img src="~/assets/images/supanuxt_logo_200.png" alt="SupaNuxt SaaS Logo"/>
           </div>
         </div>
       </div>
@@ -105,7 +104,7 @@ const user = useSupabaseUser()
           </div>
           <div class="md:w-1/2">
             <h3 class="text-xl font-bold mb-4">User Management</h3>
-            <p class="mb-4">Our Nuxt 3 SAAS Boilerplate project includes robust user management features, including
+            <p class="mb-4">SupaNuxt SaaS includes robust user management features, including
               authentication with social login (oauth) or email/password, management of user roles and permissions, and
               multi-user/team accounts that permit multiple users to share plan features including a team administration
               facility and user roles within team. This is a great feature for businesses or community groups who want to
@@ -134,7 +133,7 @@ const user = useSupabaseUser()
           </div>
           <div class="md:w-1/2">
             <h3 class="text-xl font-bold mb-4">Config and Environment</h3>
-            <p class="mb-4">Nuxt 3 SAAS Boilerplate includes an approach to config and environment 
+            <p class="mb-4">SupaNuxt SaaS includes an approach to config and environment 
               management that enables customisation and management of api keys.</p>
           </div>
         </div>
@@ -146,7 +145,7 @@ const user = useSupabaseUser()
           </div>
           <div class="md:w-1/2">
             <h3 class="text-xl font-bold mb-4">State Management</h3>
-            <p class="mb-4">Nuxt 3 SAAS Boilerplate includes multi modal state management that supports both Single Page Application (SPA) 
+            <p class="mb-4">SupaNuxt SaaS includes multi modal state management that supports both Single Page Application (SPA) 
               pages such as dashboards and Server Side Rendered (SSR) style pages for public content that are crawlable by Search 
               engines like google and facilitate excellent Search Engine Optimisation (SEO).</p>
           </div>
@@ -159,7 +158,7 @@ const user = useSupabaseUser()
           </div>
           <div class="md:w-1/2">
             <h3 class="text-xl font-bold mb-4">Stripe Integration</h3>
-            <p class="mb-4">Nuxt 3 SAAS Boilerplate includes Stripe integration for subscription payments including 
+            <p class="mb-4">SupaNuxt SaaS includes Stripe integration for subscription payments including 
               Subscription based support for multi pricing and multiple plans.</p>
           </div>
         </div>
@@ -171,7 +170,7 @@ const user = useSupabaseUser()
           </div>
           <div class="md:w-1/2">
             <h3 class="text-xl font-bold mb-4">Style System</h3>
-            <p class="mb-4">Nuxt 3 SAAS Boilerplate includes Tailwind integration for site styling including a themable UI components with daisyUI</p>
+            <p class="mb-4">SupaNuxt SaaS includes Tailwind integration for site styling including a themable UI components with daisyUI</p>
           </div>
         </div>
       </div>
