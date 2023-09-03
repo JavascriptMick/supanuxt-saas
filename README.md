@@ -8,6 +8,9 @@ Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 
 Pottery Helper [here](https://potteryhelper.com/)
 
+## Community
+Discord [here](https://discord.gg/3hWPDTA4kD)
+
 ## Tech Stack
 - Nuxt 3
 - Supabase (auth including OAuth + Postgresql instance)
