@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.2.0
+- 'Lift' auth context into server middleware to support authenticated api (rest) endpoints for alternate clients while still supporting fully typed Trpc context.
+
 ## Version 1.1.0
 - Upgrade Prisma to version 5 to improve performance (https://www.prisma.io/docs/guides/upgrade-guides/upgrading-versions/upgrading-to-prisma-5)
 ```
