@@ -42,7 +42,7 @@ export const notesRouter = router({
     .input(z.object({ user_prompt: z.string() }))
     .query(async ({ ctx, input }) => {
       const notesService = new NotesService();
-      const noteText = (ctx.activeAccountId)?await notesService.generateAINoteFromPrompt(input.user_prompt):null; 
+      const noteText = (ctx.activeAccountId)?await notesService.generateAINoteFromPrompt(input.user_prompt, ctx.activeAccountId):null; 
       return {
         noteText
       }

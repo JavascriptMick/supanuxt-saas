@@ -9,6 +9,7 @@ async function main() {
       features: ['ADD_NOTES', 'EDIT_NOTES', 'VIEW_NOTES'],
       max_notes: 10,
       max_members: 1,
+      ai_gen_max_pm: 7,
     },
   });
   const individualPlan = await prisma.plan.upsert({
@@ -19,6 +20,7 @@ async function main() {
       features: ['ADD_NOTES', 'EDIT_NOTES', 'VIEW_NOTES', 'SPECIAL_FEATURE'],
       max_notes: 100,
       max_members: 1,
+      ai_gen_max_pm: 50,
       stripe_product_id: 'prod_NQR7vwUulvIeqW'
     },
   });
@@ -30,6 +32,7 @@ async function main() {
       features: ['ADD_NOTES', 'EDIT_NOTES', 'VIEW_NOTES', 'SPECIAL_FEATURE', 'SPECIAL_TEAM_FEATURE'],
       max_notes: 200,
       max_members: 10,
+      ai_gen_max_pm: 500,
       stripe_product_id: 'prod_NQR8IkkdhqBwu2'
     },
   });

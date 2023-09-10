@@ -56,6 +56,8 @@ model Account {
   stripe_customer_id      String?
   max_members             Int        @default(1)
   join_password           String     @unique
+  ai_gen_max_pm           Int        @default(7)
+  ai_gen_count            Int        @default(0)
 
   @@map("account")
 }
@@ -68,6 +70,7 @@ model Plan {
   max_notes               Int         @default(100)
   stripe_product_id       String?
   max_members             Int        @default(1)
+  ai_gen_max_pm           Int        @default(7)
 
   @@map("plan")
 }

@@ -85,6 +85,7 @@ Discord [here](https://discord.gg/3hWPDTA4kD)
 - [x] Max Notes enforced
 - [x] Add, Delete notes on Dashboard
 - [x] AI Note generation with OpenAI
+- [x] Per Account, Per Month Useage Limits on AI Access
 
 ### Testing
 - [x] Manual test scenario for auth and sub workflows passing

@@ -1,6 +1,7 @@
 import prisma_client from '~~/prisma/prisma.client';
 import { openai } from './openai.client';
 import { AccountLimitError } from './errors';
+import AccountService from './account.service';
 
 export default class NotesService {
   async getAllNotes() {
@@ -36,7 +37,10 @@ export default class NotesService {
     return prisma_client.note.delete({ where: { id } });
   }
 
-  async generateAINoteFromPrompt(userPrompt: string) {
+  async generateAINoteFromPrompt(userPrompt: string, account_id: number) {
+    const accountService = new AccountService();
+    const account = await accountService.checkAIGenCount(account_id);
+
     const prompt = `
     Write an interesting short note about ${userPrompt}.  
     Restrict the note to a single paragraph.
@@ -49,6 +53,9 @@ export default class NotesService {
       max_tokens: 1000,
       n: 1,
     });
+
+    await accountService.incrementAIGenCount(account);
+
     return completion.data.choices[0].text;
   }
 }

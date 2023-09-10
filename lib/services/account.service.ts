@@ -2,6 +2,10 @@ import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import prisma_client from '~~/prisma/prisma.client';
 import { accountWithMembers, AccountWithMembers, membershipWithAccount, MembershipWithAccount, membershipWithUser, MembershipWithUser } from './service.types';
 import generator from 'generate-password-ts';
+import { UtilService } from './util.service';
+import { AccountLimitError } from './errors';
+
+const config = useRuntimeConfig();
 
 export default class AccountService {
   async getAccountById(account_id: number): Promise<AccountWithMembers> {
@@ -50,6 +54,7 @@ export default class AccountService {
         data: {
           stripe_subscription_id,
           current_period_ends,
+          ai_gen_count:0,
         }
       });
     } else {
@@ -64,6 +69,8 @@ export default class AccountService {
           max_notes: paid_plan.max_notes,
           max_members: paid_plan.max_members,
           plan_name: paid_plan.name,
+          ai_gen_max_pm: paid_plan.ai_gen_max_pm,
+          ai_gen_count:0, // I did vacillate on this point ultimately easier to just reset, discussion here https://www.reddit.com/r/SaaS/comments/16e9bew/should_i_reset_usage_counts_on_plan_upgrade/
         }
       });
     }
@@ -269,6 +276,65 @@ export default class AccountService {
       },
       include: {
         account: true
+      }
+    });
+  }
+
+  /*
+  **** Usage Limit Checking *****
+  This is trickier than you might think at first.  Free plan users don't get a webhook from Stripe
+  that we can use to tick over their period end date and associated usage counts.  I also didn't 
+  want to require an additional background thread to do the rollover processing.
+
+  getAccountWithPeriodRollover: retrieves an account record and does the rollover checking returning up to date account info
+  checkAIGenCount: retrieves the account using getAccountWithPeriodRollover, checks the count and returns the account
+  incrementAIGenCount: increments the counter using the account.  Note that passing in the account avoids another db fetch for the account.
+  
+  Note.. for each usage limit, you will need another pair of check/increment methods and of course the count and max limit in the account schema
+
+  How to use in a service method....
+  async someServiceMethod(account_id: number, .....etc) {
+    const accountService = new AccountService();
+    const account = await accountService.checkAIGenCount(account_id);
+    ... User is under the limit so do work
+    await accountService.incrementAIGenCount(account);
+  }
+  */
+
+  async getAccountWithPeriodRollover (account_id: number){
+    const account = await prisma_client.account.findFirstOrThrow({ 
+      where: { id: account_id }
+    });
+
+    if(account.plan_name === config.initialPlanName && account.current_period_ends < new Date()){
+      return await prisma_client.account.update({
+        where: { id: account.id },
+        data: {
+          current_period_ends: UtilService.addMonths(account.current_period_ends,1),
+          // reset anything that is affected by the rollover
+          ai_gen_count: 0,
+        },
+      });
+    };
+
+    return account;
+  }
+  
+  async checkAIGenCount(account_id: number){
+    const account = await this.getAccountWithPeriodRollover(account_id);
+    
+    if(account.ai_gen_count >= account.ai_gen_max_pm){
+      throw new AccountLimitError('Monthly AI gen limit reached, no new AI Generations can be made');
+    }
+
+    return account;
+  }
+
+  async incrementAIGenCount (account: any){
+    return await prisma_client.account.update({
+      where: { id: account.id },
+      data: {
+        ai_gen_count: account.ai_gen_count + 1,
       }
     });
   }

@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.3.0
+- Add an example of usage limits (Notes AI Gen).
+- Includes non-destructive schema changes
+```npx prisma db push```
+
 ## Version 1.2.0
 - 'Lift' auth context into server middleware to support authenticated api (rest) endpoints for alternate clients while still supporting fully typed Trpc context.
 

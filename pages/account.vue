@@ -61,6 +61,11 @@
       </div>
 
       <div class="flex gap-4 items-center">
+        <span class="font-bold w-32">AI Gens for this Month/Max:</span>
+        <span>{{ activeMembership?.account.ai_gen_count }} / {{ activeMembership?.account.ai_gen_max_pm }}</span>
+      </div>
+
+      <div class="flex gap-4 items-center">
         <span class="font-bold w-32">Maximum Members:</span>
         <span>{{ activeMembership?.account.max_members }}</span>
       </div>
