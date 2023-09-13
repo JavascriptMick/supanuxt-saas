@@ -41,6 +41,7 @@
     "stripe": "^11.12.0",
     "superjson": "^1.12.2",
     "trpc-nuxt": "^0.8.0",
+    "vanilla-cookieconsent": "^2.9.2",
     "zod": "^3.20.2"
   },
   "overrides": {
