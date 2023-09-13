@@ -77,6 +77,9 @@ Discord [here](https://discord.gg/3hWPDTA4kD)
 - [x] Toasts for things like reset email sent
 - [x] Modals, just because people like modals
 
+### GDPR
+- [x] Cookie Consent
+
 ### Demo Software (Notes)
 - [x] Simple Text based Notes functionality
 - [x] Read only Notes Dashboard

@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.4.0
+- Cookie Consent
+```npm i vanilla-cookieconsent```
+
 ## Version 1.3.0
 - Add an example of usage limits (Notes AI Gen).
 - Includes non-destructive schema changes
