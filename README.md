@@ -8,6 +8,9 @@ Demo site [here](https://nuxt3-saas-boilerplate.netlify.app/)
 
 Pottery Helper [here](https://potteryhelper.com/)
 
+## Sister Project using React + Next 13
+Sick of Vue.js/Nuxt3, why not checkout React/Next sister project [SupaNext SaaS](https://github.com/JavascriptMick/supanext-saas)
+
 ## Community
 Discord [here](https://discord.gg/3hWPDTA4kD)
 

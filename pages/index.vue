@@ -175,4 +175,5 @@ const user = useSupabaseUser()
         </div>
       </div>
     </section>
-  </div></template>
+  </div>
+</template>

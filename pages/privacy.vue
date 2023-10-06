@@ -36,18 +36,19 @@
 
     <h2>Security of your information</h2>
 
-  <p>We take reasonable measures to protect your personal information from unauthorized access, use, or disclosure.
-    However, no data transmission over the internet or electronic storage is completely secure, so we cannot guarantee
-    the absolute security of your information.</p>
+    <p>We take reasonable measures to protect your personal information from unauthorized access, use, or disclosure.
+      However, no data transmission over the internet or electronic storage is completely secure, so we cannot guarantee
+      the absolute security of your information.</p>
 
-  <h2>Changes to this privacy statement</h2>
+    <h2>Changes to this privacy statement</h2>
 
-  <p>We may update this privacy statement from time to time. Any changes will be posted on this page, so please check
-    back periodically to review the most current version of the statement.</p>
+    <p>We may update this privacy statement from time to time. Any changes will be posted on this page, so please check
+      back periodically to review the most current version of the statement.</p>
 
-  <h2>Contact us</h2>
+    <h2>Contact us</h2>
 
-  <p>If you have any questions or concerns about our privacy practices, please contact us at [insert contact
-    information].</p>
+    <p>If you have any questions or concerns about our privacy practices, please contact us at [insert contact
+      information].</p>
 
-</div></template>
+  </div>
+</template>

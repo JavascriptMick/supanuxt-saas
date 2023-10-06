@@ -11,10 +11,10 @@ export interface Notification{
 }
 
 export enum NotificationType{
-  Info = "alert alert-info",
-  Success = "alert alert-success",
-  Warning = "alert alert-warning",
-  Error = "alert alert-error",
+  Info,
+  Success,
+  Warning,
+  Error,
 }
 
 interface State {
