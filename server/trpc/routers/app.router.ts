@@ -1,12 +1,12 @@
-import { router } from "~/server/trpc/trpc";
-import { notesRouter } from "./notes.router";
-import { authRouter } from "./auth.router";
-import { accountRouter } from "./account.router";
+import { router } from '~/server/trpc/trpc';
+import { notesRouter } from './notes.router';
+import { authRouter } from './auth.router';
+import { accountRouter } from './account.router';
 
 export const appRouter = router({
   notes: notesRouter,
   auth: authRouter,
-  account: accountRouter,
+  account: accountRouter
 });
 
 // export only the type definition of the API

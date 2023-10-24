@@ -1,6 +1,6 @@
 import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
-import { defineStore } from "pinia"
-import { FullDBUser, MembershipWithUser } from "~~/lib/services/service.types";
+import { defineStore } from 'pinia';
+import { FullDBUser, MembershipWithUser } from '~~/lib/services/service.types';
 
 /*
 This store manages User and Account state including the ActiveAccount
@@ -23,9 +23,9 @@ so that other routers can use them to filter results to the active user and acco
                     account       account        acccount*
 */
 interface State {
-  dbUser: FullDBUser | null,
-  activeAccountId: number | null,
-  activeAccountMembers: MembershipWithUser[]
+  dbUser: FullDBUser | null;
+  activeAccountId: number | null;
+  activeAccountMembers: MembershipWithUser[];
 }
 
 export const useAccountStore = defineStore('account', {
@@ -33,117 +33,155 @@ export const useAccountStore = defineStore('account', {
     return {
       dbUser: null,
       activeAccountId: null,
-      activeAccountMembers: [],
-    }
+      activeAccountMembers: []
+    };
   },
   getters: {
-    activeMembership: (state) => state.dbUser?.memberships.find(m => m.account_id === state.activeAccountId)
+    activeMembership: state =>
+      state.dbUser?.memberships.find(
+        m => m.account_id === state.activeAccountId
+      )
   },
   actions: {
-    async init(){
+    async init() {
       const { $client } = useNuxtApp();
-      if(!this.dbUser){
+      if (!this.dbUser) {
         const { dbUser } = await $client.auth.getDBUser.query();
-        if(dbUser){
+        if (dbUser) {
           this.dbUser = dbUser;
         }
       }
-      if(!this.activeAccountId){
-        const { activeAccountId } = await $client.account.getActiveAccountId.query();
-        if(activeAccountId){
+      if (!this.activeAccountId) {
+        const { activeAccountId } =
+          await $client.account.getActiveAccountId.query();
+        if (activeAccountId) {
           this.activeAccountId = activeAccountId;
         }
       }
     },
-    signout(){
+    signout() {
       this.dbUser = null;
       this.activeAccountId = null;
       this.activeAccountMembers = [];
     },
-    async getActiveAccountMembers(){
-      if(this.activeMembership && (this.activeMembership.access === ACCOUNT_ACCESS.ADMIN || this.activeMembership.access === ACCOUNT_ACCESS.OWNER)){
+    async getActiveAccountMembers() {
+      if (
+        this.activeMembership &&
+        (this.activeMembership.access === ACCOUNT_ACCESS.ADMIN ||
+          this.activeMembership.access === ACCOUNT_ACCESS.OWNER)
+      ) {
         const { $client } = useNuxtApp();
-        const { data: memberships } = await $client.account.getAccountMembers.useQuery();
-        if(memberships.value?.memberships){
+        const { data: memberships } =
+          await $client.account.getAccountMembers.useQuery();
+        if (memberships.value?.memberships) {
           this.activeAccountMembers = memberships.value?.memberships;
         }
       }
     },
-    async changeActiveAccount(account_id: number){
+    async changeActiveAccount(account_id: number) {
       const { $client } = useNuxtApp();
-      await $client.account.changeActiveAccount.mutate({account_id}); // sets active account on context for other routers and sets the preference in a cookie
-      
-      this.activeAccountId = account_id;    // because this is used as a trigger to some other components, NEEDS TO BE AFTER THE MUTATE CALL
+      await $client.account.changeActiveAccount.mutate({ account_id }); // sets active account on context for other routers and sets the preference in a cookie
+
+      this.activeAccountId = account_id; // because this is used as a trigger to some other components, NEEDS TO BE AFTER THE MUTATE CALL
       await this.getActiveAccountMembers(); // these relate to the active account and need to ber re-fetched
     },
-    async changeAccountName(new_name: string){
-      if(!this.activeMembership){ return; }
+    async changeAccountName(new_name: string) {
+      if (!this.activeMembership) {
+        return;
+      }
       const { $client } = useNuxtApp();
-      const { account } = await $client.account.changeAccountName.mutate({ new_name });
-      if(account){
+      const { account } = await $client.account.changeAccountName.mutate({
+        new_name
+      });
+      if (account) {
         this.activeMembership.account.name = account.name;
       }
     },
-    async acceptPendingMembership(membership_id: number){
+    async acceptPendingMembership(membership_id: number) {
       const { $client } = useNuxtApp();
-      const { data: membership } = await $client.account.acceptPendingMembership.useQuery({ membership_id });
-      
-      if(membership.value && membership.value.membership?.pending === false){
-        for(const m of this.activeAccountMembers){
-          if(m.id === membership_id){
+      const { data: membership } =
+        await $client.account.acceptPendingMembership.useQuery({
+          membership_id
+        });
+
+      if (membership.value && membership.value.membership?.pending === false) {
+        for (const m of this.activeAccountMembers) {
+          if (m.id === membership_id) {
             m.pending = false;
           }
         }
       }
     },
-    async rejectPendingMembership(membership_id: number){
+    async rejectPendingMembership(membership_id: number) {
       const { $client } = useNuxtApp();
-      const { data: membership } = await $client.account.rejectPendingMembership.useQuery({ membership_id });
-      
-      if(membership.value){
-        this.activeAccountMembers = this.activeAccountMembers.filter(m => m.id !== membership_id);
+      const { data: membership } =
+        await $client.account.rejectPendingMembership.useQuery({
+          membership_id
+        });
+
+      if (membership.value) {
+        this.activeAccountMembers = this.activeAccountMembers.filter(
+          m => m.id !== membership_id
+        );
       }
     },
-    async deleteMembership(membership_id: number){
+    async deleteMembership(membership_id: number) {
       const { $client } = useNuxtApp();
-      const { data: membership } = await $client.account.deleteMembership.useQuery({ membership_id });
-      
-      if(membership.value){
-        this.activeAccountMembers = this.activeAccountMembers.filter(m => m.id !== membership_id);
+      const { data: membership } =
+        await $client.account.deleteMembership.useQuery({ membership_id });
+
+      if (membership.value) {
+        this.activeAccountMembers = this.activeAccountMembers.filter(
+          m => m.id !== membership_id
+        );
       }
     },
-    async rotateJoinPassword(){
+    async rotateJoinPassword() {
       const { $client } = useNuxtApp();
       const { account } = await $client.account.rotateJoinPassword.mutate();
-      if(account && this.activeMembership){
+      if (account && this.activeMembership) {
         this.activeMembership.account = account;
       }
     },
-    async joinUserToAccountPending(account_id: number){
-      if(!this.dbUser) { return; }
+    async joinUserToAccountPending(account_id: number) {
+      if (!this.dbUser) {
+        return;
+      }
       const { $client } = useNuxtApp();
-      const { membership } = await $client.account.joinUserToAccountPending.mutate({account_id, user_id: this.dbUser.id});
-      if(membership && this.activeMembership){
+      const { membership } =
+        await $client.account.joinUserToAccountPending.mutate({
+          account_id,
+          user_id: this.dbUser.id
+        });
+      if (membership && this.activeMembership) {
         this.dbUser?.memberships.push(membership);
       }
     },
-    async changeUserAccessWithinAccount(user_id: number, access: ACCOUNT_ACCESS){
+    async changeUserAccessWithinAccount(
+      user_id: number,
+      access: ACCOUNT_ACCESS
+    ) {
       const { $client } = useNuxtApp();
-      const { membership } = await $client.account.changeUserAccessWithinAccount.mutate({ user_id, access });
-      if(membership){
-        for(const m of this.activeAccountMembers){
-          if(m.id === membership.id){
+      const { membership } =
+        await $client.account.changeUserAccessWithinAccount.mutate({
+          user_id,
+          access
+        });
+      if (membership) {
+        for (const m of this.activeAccountMembers) {
+          if (m.id === membership.id) {
             m.access = membership.access;
           }
         }
       }
     },
-    async claimOwnershipOfAccount(){
+    async claimOwnershipOfAccount() {
       const { $client } = useNuxtApp();
-      const { memberships } = await $client.account.claimOwnershipOfAccount.mutate();
-      if(memberships){
+      const { memberships } =
+        await $client.account.claimOwnershipOfAccount.mutate();
+      if (memberships) {
         this.activeAccountMembers = memberships;
-        this.activeMembership!.access = ACCOUNT_ACCESS.OWNER
+        this.activeMembership!.access = ACCOUNT_ACCESS.OWNER;
       }
     }
   }

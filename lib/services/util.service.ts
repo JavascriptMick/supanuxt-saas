@@ -9,14 +9,14 @@ export class UtilService {
   }
 
   public static getErrorMessage(error: unknown) {
-    if (error instanceof Error) return error.message
-    return String(error)
+    if (error instanceof Error) return error.message;
+    return String(error);
   }
 
   public static stringifySafely(obj: any) {
     let cache: any[] = [];
-    let str = JSON.stringify(obj, function(key, value) {
-      if (typeof value === "object" && value !== null) {
+    let str = JSON.stringify(obj, function (key, value) {
+      if (typeof value === 'object' && value !== null) {
         if (cache.indexOf(value) !== -1) {
           // Circular reference found, discard key
           return;
@@ -28,5 +28,5 @@ export class UtilService {
     });
     cache = []; // reset the cache
     return str;
-  }  
+  }
 }

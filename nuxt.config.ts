@@ -7,19 +7,24 @@ export default defineNuxtConfig({
   typescript: {
     shim: false
   },
-  modules: ['@nuxtjs/supabase', '@pinia/nuxt', '@nuxtjs/tailwindcss', 'nuxt-icon'],
+  modules: [
+    '@nuxtjs/supabase',
+    '@pinia/nuxt',
+    '@nuxtjs/tailwindcss',
+    'nuxt-icon'
+  ],
   imports: {
-    dirs: ['./stores'],
+    dirs: ['./stores']
   },
-  app:{
+  app: {
     head: {
       htmlAttrs: {
-        lang: 'en',
+        lang: 'en'
       },
-      title: 'SupaNuxt SaaS',
-    },
+      title: 'SupaNuxt SaaS'
+    }
   },
-  runtimeConfig:{
+  runtimeConfig: {
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     stripeEndpointSecret: process.env.STRIPE_ENDPOINT_SECRET,
     subscriptionGraceDays: 3,
@@ -28,7 +33,7 @@ export default defineNuxtConfig({
     openAIKey: process.env.OPENAI_API_KEY,
     public: {
       debugMode: true,
-      siteRootUrl: process.env.URL || 'http://localhost:3000', // URL env variable is provided by netlify by default
+      siteRootUrl: process.env.URL || 'http://localhost:3000' // URL env variable is provided by netlify by default
     }
   }
-})
+});

@@ -21,18 +21,18 @@
 
   // props for which buttons to show
   interface Props {
-    showOk?: boolean
-    showCancel?: boolean
+    showOk?: boolean;
+    showCancel?: boolean;
   }
   const props = withDefaults(defineProps<Props>(), {
     showOk: true,
-    showCancel: false,
-  })
+    showCancel: false
+  });
 
   // open event (exposed to parent)
   const open = () => {
     modalIsVisible.value = true;
-  }
+  };
   defineExpose({ open });
 
   // close events emitted on modal close
@@ -40,16 +40,20 @@
   const closeOk = () => {
     emit('closeOk');
     modalIsVisible.value = false;
-  }
+  };
   const closeCancel = () => {
     emit('closeCancel');
     modalIsVisible.value = false;
-  }
+  };
 </script>
 
 <template>
   <!-- the input controls the visibility of the modal (css shenanigans) the v-model allows me to control it in turn from the wrapper component -->
-  <input type="checkbox" id="my-modal" class="modal-toggle" v-model="modalIsVisible" />
+  <input
+    type="checkbox"
+    id="my-modal"
+    class="modal-toggle"
+    v-model="modalIsVisible" />
   <div class="modal">
     <div class="modal-box">
       <slot />

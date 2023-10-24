@@ -1,4 +1,4 @@
-import { EventHandler, EventHandlerRequest, H3Event, eventHandler } from "h3";
+import { EventHandler, EventHandlerRequest, H3Event, eventHandler } from 'h3';
 
 export const defineProtectedEventHandler = <T extends EventHandlerRequest>(
   handler: EventHandler<T>
@@ -8,7 +8,7 @@ export const defineProtectedEventHandler = <T extends EventHandlerRequest>(
   return eventHandler((event: H3Event) => {
     const user = event.context.user;
     if (!user) {
-      throw createError({ statusCode: 401, statusMessage: "Unauthenticated" });
+      throw createError({ statusCode: 401, statusMessage: 'Unauthenticated' });
     }
     return handler(event);
   });

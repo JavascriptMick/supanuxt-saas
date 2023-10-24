@@ -4,10 +4,10 @@ import NotesService from '~/lib/services/notes.service';
 
 // Example API Route with query params ... /api/note?note_id=41
 export default defineProtectedEventHandler(async (event: H3Event) => {
-  const queryParams = getQuery(event)
+  const queryParams = getQuery(event);
   let note_id: string = '';
-  if(queryParams.note_id){
-    if (Array.isArray( queryParams.note_id)) {
+  if (queryParams.note_id) {
+    if (Array.isArray(queryParams.note_id)) {
       note_id = queryParams.note_id[0];
     } else {
       note_id = queryParams.note_id.toString();
@@ -15,9 +15,9 @@ export default defineProtectedEventHandler(async (event: H3Event) => {
   }
 
   const notesService = new NotesService();
-  const note = await notesService.getNoteById(+note_id); 
+  const note = await notesService.getNoteById(+note_id);
 
   return {
-    note,
-  }  
-})
+    note
+  };
+});

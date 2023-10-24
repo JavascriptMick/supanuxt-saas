@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 async function main() {
   const freeTrial = await prisma.plan.upsert({
     where: { name: 'Free Trial' },
@@ -9,8 +9,8 @@ async function main() {
       features: ['ADD_NOTES', 'EDIT_NOTES', 'VIEW_NOTES'],
       max_notes: 10,
       max_members: 1,
-      ai_gen_max_pm: 7,
-    },
+      ai_gen_max_pm: 7
+    }
   });
   const individualPlan = await prisma.plan.upsert({
     where: { name: 'Individual Plan' },
@@ -22,29 +22,35 @@ async function main() {
       max_members: 1,
       ai_gen_max_pm: 50,
       stripe_product_id: 'prod_NQR7vwUulvIeqW'
-    },
+    }
   });
   const teamPlan = await prisma.plan.upsert({
     where: { name: 'Team Plan' },
     update: {},
     create: {
       name: 'Team Plan',
-      features: ['ADD_NOTES', 'EDIT_NOTES', 'VIEW_NOTES', 'SPECIAL_FEATURE', 'SPECIAL_TEAM_FEATURE'],
+      features: [
+        'ADD_NOTES',
+        'EDIT_NOTES',
+        'VIEW_NOTES',
+        'SPECIAL_FEATURE',
+        'SPECIAL_TEAM_FEATURE'
+      ],
       max_notes: 200,
       max_members: 10,
       ai_gen_max_pm: 500,
       stripe_product_id: 'prod_NQR8IkkdhqBwu2'
-    },
+    }
   });
 
-  console.log({ freeTrial, individualPlan, teamPlan })
+  console.log({ freeTrial, individualPlan, teamPlan });
 }
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+  .catch(async e => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

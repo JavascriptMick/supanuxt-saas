@@ -1,18 +1,17 @@
-
 <script setup lang="ts">
   const supabase = useSupabaseAuthClient();
   const accountStore = useAccountStore();
 
   onMounted(async () => {
-    await accountStore.init()
+    await accountStore.init();
   });
 
   async function signout() {
     await supabase.auth.signOut();
-    if(accountStore){
+    if (accountStore) {
       accountStore.signout();
     }
-    navigateTo('/', {replace: true});
+    navigateTo('/', { replace: true });
   }
 </script>
 <template>

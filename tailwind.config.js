@@ -1,5 +1,5 @@
 export default {
-  plugins:[require("@tailwindcss/typography"), require("daisyui")],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
     styled: true,
     themes: ["acid", "night"],
@@ -9,5 +9,5 @@ export default {
     rtl: false,
     prefix: "",
     darkTheme: "night",
-  },  
+  },
 }
