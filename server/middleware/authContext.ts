@@ -15,6 +15,12 @@ declare module 'h3' {
 }
 
 export default defineEventHandler(async event => {
+  if (
+    !(event.path.startsWith('/api/trpc') || event.path.startsWith('/api/note'))
+  ) {
+    return; // only apply middleware to working routes
+  }
+
   const cookies = parseCookies(event);
   if (cookies && cookies['sb-access-token']) {
     const user = await serverSupabaseUser(event);
