@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  const supabase = useSupabaseAuthClient();
+  const supabase = useSupabaseClient();
 
   const notifyStore = useNotifyStore();
 

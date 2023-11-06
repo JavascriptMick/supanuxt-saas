@@ -1,6 +1,6 @@
 <script setup lang="ts">
   const user = useSupabaseUser();
-  const supabase = useSupabaseAuthClient();
+  const supabase = useSupabaseClient();
 
   const accountStore = useAccountStore();
   const notifyStore = useNotifyStore();
@@ -8,6 +8,7 @@
   const loading = ref(false);
   const email = ref('');
   const password = ref('');
+  const config = useRuntimeConfig();
 
   const handleStandardSignin = async () => {
     console.log(
@@ -32,7 +33,10 @@
     try {
       loading.value = true;
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google'
+        provider: 'google',
+        options: {
+          redirectTo: `${config.public.siteRootUrl}/confirm`
+        }
       });
       if (error) throw error;
     } catch (error) {

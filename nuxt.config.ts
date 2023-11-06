@@ -35,5 +35,12 @@ export default defineNuxtConfig({
       debugMode: true,
       siteRootUrl: process.env.URL || 'http://localhost:3000' // URL env variable is provided by netlify by default
     }
+  },
+  supabase: {
+    redirect: false,
+    redirectOptions: {
+      login: '/signin',
+      callback: '/confirm'
+    }
   }
 });
