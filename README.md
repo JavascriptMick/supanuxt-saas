@@ -109,7 +109,7 @@ Discord [here](https://discord.gg/3hWPDTA4kD)
 ### Testing
 
 - [x] Manual test scenario for auth and sub workflows passing
-- [ ] Unit tests for server functions
+- [x] Unit test framework (vitest)
 - [ ] Integration tests for auth and sub workflows
 
 ## Special Mention
@@ -120,7 +120,21 @@ This https://blog.checklyhq.com/building-a-multi-tenant-saas-data-model/ Article
 
 The focus is on separation of concerns and avoiding vendor lock in.
 
+### Diagram
+
 <img src="assets/images/technical_architecture.png">
+
+### Walkthrough
+
+[<img src="https://img.youtube.com/vi/AFfbGuJYRqI/hqdefault.jpg">](https://www.youtube.com/watch?v=AFfbGuJYRqI)
+
+### Tricky Decisions
+
+_Composition over options API_ - I have decided to use composition api and setup functions accross the board including components, pages and Pinia stores. I was resistant at first, especially with the stores as I was used to Vuex but have come to the conclusion that it is easier to go one approach all over. It's also the latest and greatest and folks don't like to use a starter that starts behind the cutting edge.
+
+_Prisma over Supabase API_ - I went with Prisma for direct DB access rather than use the Supabase client. This is Primarily to avoid lock-in with Supabase too much. Supabase is great but I thought burdening my users with a future situation where it's difficult to move off it wouldn't be very cool. Also, I really like how Prisma handles schema changes and updates to the client layer and types with just two bash commands, after using other approaches, I find this super smooth.
+
+_Trpc over REST_ - Primarily for full thickness types without duplication on the client. Also I think the remote procedure call paradigm works well. Note however that I still include a [REST endpoint example](/server/api/note.ts) for flexibility. My preference for mobile is Flutter and there is not a Trpc client for Flutter that i'm aware off so it was important for me to make sure REST works also.
 
 ## Externals Setup
 
@@ -224,10 +238,20 @@ Your webhook signing secret is whsec_xxxxxxxxxxxxx (^C to quit)
 
 take ths signing secret and update the STRIPE_ENDPOINT_SECRET value in .env
 
+### Start the Server
+
 Start the development server on http://localhost:3000
 
 ```bash
 npm run dev
+```
+
+### Running the Tests
+
+There are a few unit tests, just for the stores because I needed to refactor. Feel free to extend the tests for your use cases, or not, it's your SaaS, not mine.
+
+```bash
+npm run test
 ```
 
 ## Production

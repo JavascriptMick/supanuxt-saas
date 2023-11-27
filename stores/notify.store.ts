@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 /*
 This store manages User and Account state including the ActiveAccount
@@ -17,35 +18,33 @@ export enum NotificationType {
   Error
 }
 
-interface State {
-  notifications: Notification[];
-  notificationsArchive: Notification[];
-}
+export const useNotifyStore = defineStore('notify', () => {
+  const notifications = ref<Notification[]>([]);
+  const notificationsArchive = ref<Notification[]>([]);
 
-export const useNotifyStore = defineStore('notify', {
-  state: (): State => {
-    return {
-      notifications: [],
-      notificationsArchive: []
+  const notify = (messageOrError: unknown, type: NotificationType) => {
+    let message: string = '';
+    if (messageOrError instanceof Error) message = messageOrError.message;
+    if (typeof messageOrError === 'string') message = messageOrError;
+    const notification: Notification = {
+      message,
+      type,
+      notifyTime: Date.now()
     };
-  },
-  actions: {
-    notify(messageOrError: unknown, type: NotificationType) {
-      let message: string = '';
-      if (messageOrError instanceof Error) message = messageOrError.message;
-      if (typeof messageOrError === 'string') message = messageOrError;
-      const notification: Notification = {
-        message,
-        type,
-        notifyTime: Date.now()
-      };
-      this.notifications.push(notification);
-      setTimeout(this.removeNotification.bind(this), 5000, notification);
-    },
-    removeNotification(notification: Notification) {
-      this.notifications = this.notifications.filter(
-        n => n.notifyTime != notification.notifyTime
-      );
-    }
-  }
+    notifications.value.push(notification);
+    setTimeout(removeNotification.bind(this), 5000, notification);
+  };
+
+  const removeNotification = (notification: Notification) => {
+    notifications.value = notifications.value.filter(
+      n => n.notifyTime != notification.notifyTime
+    );
+  };
+
+  return {
+    notifications,
+    notificationsArchive,
+    notify,
+    removeNotification
+  };
 });
