@@ -1,6 +1,6 @@
 import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import Stripe from 'stripe';
-import AccountService from '~~/lib/services/account.service';
+import { AccountService } from '~~/lib/services/account.service';
 import { AccountWithMembers } from '~~/lib/services/service.types';
 
 const config = useRuntimeConfig();
@@ -14,8 +14,7 @@ export default defineEventHandler(async event => {
     `session.post.ts recieved price_id:${price_id}, account_id:${account_id}`
   );
 
-  const accountService = new AccountService();
-  const account: AccountWithMembers = await accountService.getAccountById(
+  const account: AccountWithMembers = await AccountService.getAccountById(
     account_id
   );
   let customer_id: string;
@@ -32,7 +31,7 @@ export default defineEventHandler(async event => {
       email: owner?.user.email
     });
     customer_id = customer.id;
-    accountService.updateAccountStipeCustomerId(account_id, customer.id);
+    AccountService.updateAccountStipeCustomerId(account_id, customer.id);
   } else {
     customer_id = account.stripe_customer_id;
   }

@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import AccountService from '~~/lib/services/account.service';
+import { AccountService } from '~~/lib/services/account.service';
 
 const config = useRuntimeConfig();
 const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
@@ -56,8 +56,6 @@ export default defineEventHandler(async event => {
         });
       }
 
-      const accountService = new AccountService();
-
       let current_period_ends: Date = new Date(
         subscription.current_period_end * 1000
       );
@@ -68,7 +66,7 @@ export default defineEventHandler(async event => {
       console.log(
         `updating stripe sub details subscription.current_period_end:${subscription.current_period_end}, subscription.id:${subscription.id}, stripe_product_id:${stripe_product_id}`
       );
-      accountService.updateStripeSubscriptionDetailsForAccount(
+      AccountService.updateStripeSubscriptionDetailsForAccount(
         subscription.customer.toString(),
         subscription.id,
         current_period_ends,

@@ -6,8 +6,8 @@ import generator from 'generate-password-ts';
 
 const config = useRuntimeConfig();
 
-export default class AuthService {
-  async getFullUserBySupabaseId(
+export namespace AuthService {
+  export async function getFullUserBySupabaseId(
     supabase_uid: string
   ): Promise<FullDBUser | null> {
     return prisma_client.user.findFirst({
@@ -16,14 +16,16 @@ export default class AuthService {
     });
   }
 
-  async getUserById(user_id: number): Promise<FullDBUser | null> {
+  export async function getUserById(
+    user_id: number
+  ): Promise<FullDBUser | null> {
     return prisma_client.user.findFirstOrThrow({
       where: { id: user_id },
       ...fullDBUser
     });
   }
 
-  async createUser(
+  export async function createUser(
     supabase_uid: string,
     display_name: string,
     email: string
@@ -65,7 +67,7 @@ export default class AuthService {
     });
   }
 
-  async deleteUser(user_id: number): Promise<FullDBUser> {
+  export async function deleteUser(user_id: number): Promise<FullDBUser> {
     return prisma_client.user.delete({
       where: { id: user_id },
       ...fullDBUser

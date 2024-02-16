@@ -1,22 +1,22 @@
 import prisma_client from '~~/prisma/prisma.client';
 import { openai } from './openai.client';
 import { AccountLimitError } from './errors';
-import AccountService from './account.service';
+import { AccountService } from './account.service';
 
-export default class NotesService {
-  async getAllNotes() {
+export namespace NotesService {
+  export async function getAllNotes() {
     return prisma_client.note.findMany();
   }
 
-  async getNoteById(id: number) {
+  export async function getNoteById(id: number) {
     return prisma_client.note.findUniqueOrThrow({ where: { id } });
   }
 
-  async getNotesForAccountId(account_id: number) {
+  export async function getNotesForAccountId(account_id: number) {
     return prisma_client.note.findMany({ where: { account_id } });
   }
 
-  async createNote(account_id: number, note_text: string) {
+  export async function createNote(account_id: number, note_text: string) {
     const account = await prisma_client.account.findFirstOrThrow({
       where: { id: account_id },
       include: { notes: true }
@@ -31,17 +31,19 @@ export default class NotesService {
     return prisma_client.note.create({ data: { account_id, note_text } });
   }
 
-  async updateNote(id: number, note_text: string) {
+  export async function updateNote(id: number, note_text: string) {
     return prisma_client.note.update({ where: { id }, data: { note_text } });
   }
 
-  async deleteNote(id: number) {
+  export async function deleteNote(id: number) {
     return prisma_client.note.delete({ where: { id } });
   }
 
-  async generateAINoteFromPrompt(userPrompt: string, account_id: number) {
-    const accountService = new AccountService();
-    const account = await accountService.checkAIGenCount(account_id);
+  export async function generateAINoteFromPrompt(
+    userPrompt: string,
+    account_id: number
+  ) {
+    const account = await AccountService.checkAIGenCount(account_id);
 
     const prompt = `
     Write an interesting short note about ${userPrompt}.  
@@ -56,7 +58,7 @@ export default class NotesService {
       n: 1
     });
 
-    await accountService.incrementAIGenCount(account);
+    await AccountService.incrementAIGenCount(account);
 
     return completion.data.choices[0].text;
   }

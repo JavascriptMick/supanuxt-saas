@@ -14,15 +14,17 @@ import { AccountLimitError } from './errors';
 
 const config = useRuntimeConfig();
 
-export default class AccountService {
-  async getAccountById(account_id: number): Promise<AccountWithMembers> {
+export namespace AccountService {
+  export async function getAccountById(
+    account_id: number
+  ): Promise<AccountWithMembers> {
     return prisma_client.account.findFirstOrThrow({
       where: { id: account_id },
       ...accountWithMembers
     });
   }
 
-  async getAccountByJoinPassword(
+  export async function getAccountByJoinPassword(
     join_password: string
   ): Promise<AccountWithMembers> {
     return prisma_client.account.findFirstOrThrow({
@@ -31,14 +33,16 @@ export default class AccountService {
     });
   }
 
-  async getAccountMembers(account_id: number): Promise<MembershipWithUser[]> {
+  export async function getAccountMembers(
+    account_id: number
+  ): Promise<MembershipWithUser[]> {
     return prisma_client.membership.findMany({
       where: { account_id },
       ...membershipWithUser
     });
   }
 
-  async updateAccountStipeCustomerId(
+  export async function updateAccountStipeCustomerId(
     account_id: number,
     stripe_customer_id: string
   ) {
@@ -50,7 +54,7 @@ export default class AccountService {
     });
   }
 
-  async updateStripeSubscriptionDetailsForAccount(
+  export async function updateStripeSubscriptionDetailsForAccount(
     stripe_customer_id: string,
     stripe_subscription_id: string,
     current_period_ends: Date,
@@ -93,7 +97,7 @@ export default class AccountService {
     }
   }
 
-  async acceptPendingMembership(
+  export async function acceptPendingMembership(
     account_id: number,
     membership_id: number
   ): Promise<MembershipWithAccount> {
@@ -118,7 +122,7 @@ export default class AccountService {
     });
   }
 
-  async deleteMembership(
+  export async function deleteMembership(
     account_id: number,
     membership_id: number
   ): Promise<MembershipWithAccount> {
@@ -140,7 +144,7 @@ export default class AccountService {
     });
   }
 
-  async joinUserToAccount(
+  export async function joinUserToAccount(
     user_id: number,
     account_id: number,
     pending: boolean
@@ -179,7 +183,10 @@ export default class AccountService {
     });
   }
 
-  async changeAccountName(account_id: number, new_name: string) {
+  export async function changeAccountName(
+    account_id: number,
+    new_name: string
+  ) {
     return prisma_client.account.update({
       where: { id: account_id },
       data: {
@@ -188,7 +195,7 @@ export default class AccountService {
     });
   }
 
-  async changeAccountPlan(account_id: number, plan_id: number) {
+  export async function changeAccountPlan(account_id: number, plan_id: number) {
     const plan = await prisma_client.plan.findFirstOrThrow({
       where: { id: plan_id }
     });
@@ -202,7 +209,7 @@ export default class AccountService {
     });
   }
 
-  async rotateJoinPassword(account_id: number) {
+  export async function rotateJoinPassword(account_id: number) {
     const join_password: string = generator.generate({
       length: 10,
       numbers: true
@@ -217,7 +224,7 @@ export default class AccountService {
   // User must already be an ADMIN for the Account
   // Existing OWNER memberships are downgraded to ADMIN
   // In future, some sort of Billing/Stripe tie in here e.g. changing email details on the Account, not sure.
-  async claimOwnershipOfAccount(
+  export async function claimOwnershipOfAccount(
     user_id: number,
     account_id: number
   ): Promise<MembershipWithUser[]> {
@@ -278,7 +285,7 @@ export default class AccountService {
   }
 
   // Upgrade access of a membership.  Cannot use this method to upgrade to or downgrade from OWNER access
-  async changeUserAccessWithinAccount(
+  export async function changeUserAccessWithinAccount(
     user_id: number,
     account_id: number,
     access: ACCOUNT_ACCESS
@@ -333,15 +340,14 @@ export default class AccountService {
   Note.. for each usage limit, you will need another pair of check/increment methods and of course the count and max limit in the account schema
 
   How to use in a service method....
-  async someServiceMethod(account_id: number, .....etc) {
-    const accountService = new AccountService();
-    const account = await accountService.checkAIGenCount(account_id);
+  export async function someServiceMethod(account_id: number, .....etc) {
+    const account = await AccountService.checkAIGenCount(account_id);
     ... User is under the limit so do work
-    await accountService.incrementAIGenCount(account);
+    await AccountService.incrementAIGenCount(account);
   }
   */
 
-  async getAccountWithPeriodRollover(account_id: number) {
+  export async function getAccountWithPeriodRollover(account_id: number) {
     const account = await prisma_client.account.findFirstOrThrow({
       where: { id: account_id }
     });
@@ -366,8 +372,8 @@ export default class AccountService {
     return account;
   }
 
-  async checkAIGenCount(account_id: number) {
-    const account = await this.getAccountWithPeriodRollover(account_id);
+  export async function checkAIGenCount(account_id: number) {
+    const account = await getAccountWithPeriodRollover(account_id);
 
     if (account.ai_gen_count >= account.ai_gen_max_pm) {
       throw new AccountLimitError(
@@ -378,7 +384,7 @@ export default class AccountService {
     return account;
   }
 
-  async incrementAIGenCount(account: any) {
+  export async function incrementAIGenCount(account: any) {
     return await prisma_client.account.update({
       where: { id: account.id },
       data: {

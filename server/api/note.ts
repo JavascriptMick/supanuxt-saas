@@ -1,6 +1,6 @@
 import { H3Event, getQuery } from 'h3';
 import { defineProtectedEventHandler } from '../defineProtectedEventHandler';
-import NotesService from '~/lib/services/notes.service';
+import { NotesService } from '~/lib/services/notes.service';
 
 // Example API Route with query params ... /api/note?note_id=41
 export default defineProtectedEventHandler(async (event: H3Event) => {
@@ -14,8 +14,7 @@ export default defineProtectedEventHandler(async (event: H3Event) => {
     }
   }
 
-  const notesService = new NotesService();
-  const note = await notesService.getNoteById(+note_id);
+  const note = await NotesService.getNoteById(+note_id);
 
   return {
     note
