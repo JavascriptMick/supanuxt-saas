@@ -49,9 +49,9 @@ export namespace NotesService {
     Write an interesting short note about ${userPrompt}.  
     Restrict the note to a single paragraph.
     `;
-    const completion = await openai.createCompletion({
-      model: 'text-davinci-003',
-      prompt,
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }],
       temperature: 0.6,
       stop: '\n\n',
       max_tokens: 1000,
@@ -60,6 +60,6 @@ export namespace NotesService {
 
     await AccountService.incrementAIGenCount(account);
 
-    return completion.data.choices[0].text;
+    return completion.choices?.[0]?.message.content?.trim();
   }
 }
