@@ -9,7 +9,7 @@ import {
 import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import { z } from 'zod';
 import { AccountService } from '~~/lib/services/account.service';
-import { MembershipWithAccount } from '~~/lib/services/service.types';
+import type { MembershipWithAccount } from '~~/lib/services/service.types';
 
 /*
   Note on proliferation of Bang syntax... adminProcedure throws if either the ctx.dbUser or the ctx.activeAccountId is not available but the compiler can't figure that out so bang quiesces the null warning

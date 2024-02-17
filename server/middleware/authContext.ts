@@ -2,8 +2,8 @@ import { defineEventHandler, parseCookies, setCookie, getCookie } from 'h3';
 import { serverSupabaseUser } from '#supabase/server';
 import { AuthService } from '~/lib/services/auth.service';
 
-import { User } from '@supabase/supabase-js';
-import { FullDBUser } from '~~/lib/services/service.types';
+import type { User } from '@supabase/supabase-js';
+import type { FullDBUser } from '~~/lib/services/service.types';
 
 // Explicitly type our context by 'Merging' our custom types with the H3EventContext (https://stackoverflow.com/a/76349232/95242)
 declare module 'h3' {

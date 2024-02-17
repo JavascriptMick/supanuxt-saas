@@ -2,11 +2,11 @@ import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import prisma_client from '~~/prisma/prisma.client';
 import {
   accountWithMembers,
-  AccountWithMembers,
+  type AccountWithMembers,
   membershipWithAccount,
-  MembershipWithAccount,
+  type MembershipWithAccount,
   membershipWithUser,
-  MembershipWithUser
+  type MembershipWithUser
 } from './service.types';
 import generator from 'generate-password-ts';
 import { UtilService } from './util.service';

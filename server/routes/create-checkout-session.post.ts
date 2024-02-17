@@ -1,7 +1,7 @@
 import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import Stripe from 'stripe';
 import { AccountService } from '~~/lib/services/account.service';
-import { AccountWithMembers } from '~~/lib/services/service.types';
+import type { AccountWithMembers } from '~~/lib/services/service.types';
 
 const config = useRuntimeConfig();
 const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
