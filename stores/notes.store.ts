@@ -1,6 +1,6 @@
-import { Note } from '.prisma/client';
+import type { Note } from '.prisma/client';
 import { defineStore, storeToRefs } from 'pinia';
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 
 export const useNotesStore = defineStore('notes', () => {
   const accountStore = useAccountStore();

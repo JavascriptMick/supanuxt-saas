@@ -1,7 +1,10 @@
 import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { FullDBUser, MembershipWithUser } from '~~/lib/services/service.types';
+import type {
+  FullDBUser,
+  MembershipWithUser
+} from '~~/lib/services/service.types';
 
 /*
 This store manages User and Account state including the ActiveAccount

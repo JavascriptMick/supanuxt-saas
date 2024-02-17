@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { setCookie } from 'h3';
 import {
   router,
   adminProcedure,

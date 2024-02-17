@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { AccountWithMembers } from '~~/lib/services/service.types';
+  import { type AccountWithMembers } from '~~/lib/services/service.types';
 
   const route = useRoute();
   const { join_password }: { join_password?: string } = route.params;
