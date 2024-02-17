@@ -2,7 +2,7 @@ import { describe, expect, afterEach, beforeEach, it, vi } from 'vitest';
 import { useAccountStore } from '../stores/account.store';
 import { setActivePinia, createPinia } from 'pinia';
 
-import { FullDBUser } from '~/lib/services/service.types';
+import type { FullDBUser } from '~/lib/services/service.types';
 
 const fakeInitAccountStoreAdmin = (accountStore: any) => {
   const dbUser: FullDBUser = {
