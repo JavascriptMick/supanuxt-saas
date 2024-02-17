@@ -20,32 +20,32 @@
     "test": "vitest"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^3.8.1",
+    "@nuxt/test-utils": "^3.11.0",
     "@nuxtjs/supabase": "^1.1.6",
-    "@nuxtjs/tailwindcss": "^6.6.8",
-    "@prisma/client": "^5.2.0",
+    "@nuxtjs/tailwindcss": "^6.11.4",
+    "@prisma/client": "^5.9.1",
     "@tailwindcss/typography": "^0.5.10",
-    "@types/node": "^18.15.13",
-    "nuxt": "^3.7.4",
-    "nuxt-icon": "^0.3.3",
-    "prisma": "^5.2.0",
+    "@types/node": "^18.19.17",
+    "nuxt": "^3.10.2",
+    "nuxt-icon": "^0.6.8",
+    "prisma": "^5.9.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.0.4",
-    "vitest": "^0.33.0"
+    "typescript": "^5.3.3",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.11",
-    "@trpc/client": "^10.9.1",
-    "@trpc/server": "^10.9.1",
-    "daisyui": "^2.51.6",
+    "@pinia/nuxt": "^0.5.1",
+    "@trpc/client": "^10.45.1",
+    "@trpc/server": "^10.45.1",
+    "daisyui": "^2.52.0",
     "generate-password-ts": "^1.6.5",
     "openai": "^4.28.0",
-    "pinia": "^2.0.36",
-    "stripe": "^11.12.0",
-    "superjson": "^1.12.4",
-    "trpc-nuxt": "^0.8.0",
+    "pinia": "^2.1.7",
+    "stripe": "^11.18.0",
+    "superjson": "^1.13.3",
+    "trpc-nuxt": "^0.10.19",
     "vanilla-cookieconsent": "^2.9.2",
-    "zod": "^3.20.6"
+    "zod": "^3.22.4"
   },
   "overrides": {
     "vue": "latest"
