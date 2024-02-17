@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 1.4.2
+- Added Favicons and web manifest and referenced in nuxt.config (I used https://favicon.io/favicon-converter/ to generate the icon assets, seems to work well)
+- Added patch folder to hold patch files, should make it easier to update repos based on earlier versions
+- Refactor service classes into namespaces to avoid pointless service instantiation (1_4_2-service-refactor-to-namespaces_authcontextremoved.patch or 1_4_2-service-refactor-to-namespaces.patch)
+- Added an Acount Deletion page - you will need to show you have one of these (along with privacy and terms pages) for several signups e.g. Facebook login
+- Added seoMeta - required for Facebook login
+
 ## Version 1.4.1
 
 - Refactor some components and explicitly split out client only components

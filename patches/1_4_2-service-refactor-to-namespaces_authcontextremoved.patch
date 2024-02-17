@@ -1,0 +1,588 @@
+From 32ac5e68868d66c04cc7918d18e2988b66214519 Mon Sep 17 00:00:00 2001
+From: Michael Dausmann <mdausmann@gmail.com>
+Date: Sat, 17 Feb 2024 10:29:45 +1100
+Subject: [PATCH] service refactor to namespaces
+
+---
+ lib/services/account.service.ts               | 50 +++++++++++--------
+ lib/services/auth.service.ts                  | 12 +++--
+ lib/services/notes.service.ts                 | 26 +++++-----
+ lib/services/util.service.ts                  |  8 +--
+ server/api/note.ts                            |  5 +-
+ server/routes/create-checkout-session.post.ts |  7 ++-
+ server/routes/webhook.post.ts                 |  6 +--
+ server/trpc/routers/account.router.ts         | 32 ++++--------
+ server/trpc/routers/notes.router.ts           | 17 +++----
+ 10 files changed, 80 insertions(+), 90 deletions(-)
+
+diff --git a/lib/services/account.service.ts b/lib/services/account.service.ts
+index f60c15a..e934c8c 100644
+--- a/lib/services/account.service.ts
++++ b/lib/services/account.service.ts
+@@ -14,15 +14,17 @@ import { AccountLimitError } from './errors';
+ 
+ const config = useRuntimeConfig();
+ 
+-export default class AccountService {
+-  async getAccountById(account_id: number): Promise<AccountWithMembers> {
++export namespace AccountService {
++  export async function getAccountById(
++    account_id: number
++  ): Promise<AccountWithMembers> {
+     return prisma_client.account.findFirstOrThrow({
+       where: { id: account_id },
+       ...accountWithMembers
+     });
+   }
+ 
+-  async getAccountByJoinPassword(
++  export async function getAccountByJoinPassword(
+     join_password: string
+   ): Promise<AccountWithMembers> {
+     return prisma_client.account.findFirstOrThrow({
+@@ -31,14 +33,16 @@ export default class AccountService {
+     });
+   }
+ 
+-  async getAccountMembers(account_id: number): Promise<MembershipWithUser[]> {
++  export async function getAccountMembers(
++    account_id: number
++  ): Promise<MembershipWithUser[]> {
+     return prisma_client.membership.findMany({
+       where: { account_id },
+       ...membershipWithUser
+     });
+   }
+ 
+-  async updateAccountStipeCustomerId(
++  export async function updateAccountStipeCustomerId(
+     account_id: number,
+     stripe_customer_id: string
+   ) {
+@@ -50,7 +54,7 @@ export default class AccountService {
+     });
+   }
+ 
+-  async updateStripeSubscriptionDetailsForAccount(
++  export async function updateStripeSubscriptionDetailsForAccount(
+     stripe_customer_id: string,
+     stripe_subscription_id: string,
+     current_period_ends: Date,
+@@ -93,7 +97,7 @@ export default class AccountService {
+     }
+   }
+ 
+-  async acceptPendingMembership(
++  export async function acceptPendingMembership(
+     account_id: number,
+     membership_id: number
+   ): Promise<MembershipWithAccount> {
+@@ -118,7 +122,7 @@ export default class AccountService {
+     });
+   }
+ 
+-  async deleteMembership(
++  export async function deleteMembership(
+     account_id: number,
+     membership_id: number
+   ): Promise<MembershipWithAccount> {
+@@ -140,7 +144,7 @@ export default class AccountService {
+     });
+   }
+ 
+-  async joinUserToAccount(
++  export async function joinUserToAccount(
+     user_id: number,
+     account_id: number,
+     pending: boolean
+@@ -179,7 +183,10 @@ export default class AccountService {
+     });
+   }
+ 
+-  async changeAccountName(account_id: number, new_name: string) {
++  export async function changeAccountName(
++    account_id: number,
++    new_name: string
++  ) {
+     return prisma_client.account.update({
+       where: { id: account_id },
+       data: {
+@@ -188,7 +195,7 @@ export default class AccountService {
+     });
+   }
+ 
+-  async changeAccountPlan(account_id: number, plan_id: number) {
++  export async function changeAccountPlan(account_id: number, plan_id: number) {
+     const plan = await prisma_client.plan.findFirstOrThrow({
+       where: { id: plan_id }
+     });
+@@ -202,7 +209,7 @@ export default class AccountService {
+     });
+   }
+ 
+-  async rotateJoinPassword(account_id: number) {
++  export async function rotateJoinPassword(account_id: number) {
+     const join_password: string = generator.generate({
+       length: 10,
+       numbers: true
+@@ -217,7 +224,7 @@ export default class AccountService {
+   // User must already be an ADMIN for the Account
+   // Existing OWNER memberships are downgraded to ADMIN
+   // In future, some sort of Billing/Stripe tie in here e.g. changing email details on the Account, not sure.
+-  async claimOwnershipOfAccount(
++  export async function claimOwnershipOfAccount(
+     user_id: number,
+     account_id: number
+   ): Promise<MembershipWithUser[]> {
+@@ -278,7 +285,7 @@ export default class AccountService {
+   }
+ 
+   // Upgrade access of a membership.  Cannot use this method to upgrade to or downgrade from OWNER access
+-  async changeUserAccessWithinAccount(
++  export async function changeUserAccessWithinAccount(
+     user_id: number,
+     account_id: number,
+     access: ACCOUNT_ACCESS
+@@ -333,15 +340,14 @@ export default class AccountService {
+   Note.. for each usage limit, you will need another pair of check/increment methods and of course the count and max limit in the account schema
+ 
+   How to use in a service method....
+-  async someServiceMethod(account_id: number, .....etc) {
+-    const accountService = new AccountService();
+-    const account = await accountService.checkAIGenCount(account_id);
++  export async function someServiceMethod(account_id: number, .....etc) {
++    const account = await AccountService.checkAIGenCount(account_id);
+     ... User is under the limit so do work
+-    await accountService.incrementAIGenCount(account);
++    await AccountService.incrementAIGenCount(account);
+   }
+   */
+ 
+-  async getAccountWithPeriodRollover(account_id: number) {
++  export async function getAccountWithPeriodRollover(account_id: number) {
+     const account = await prisma_client.account.findFirstOrThrow({
+       where: { id: account_id }
+     });
+@@ -366,8 +372,8 @@ export default class AccountService {
+     return account;
+   }
+ 
+-  async checkAIGenCount(account_id: number) {
+-    const account = await this.getAccountWithPeriodRollover(account_id);
++  export async function checkAIGenCount(account_id: number) {
++    const account = await getAccountWithPeriodRollover(account_id);
+ 
+     if (account.ai_gen_count >= account.ai_gen_max_pm) {
+       throw new AccountLimitError(
+@@ -378,7 +384,7 @@ export default class AccountService {
+     return account;
+   }
+ 
+-  async incrementAIGenCount(account: any) {
++  export async function incrementAIGenCount(account: any) {
+     return await prisma_client.account.update({
+       where: { id: account.id },
+       data: {
+diff --git a/lib/services/auth.service.ts b/lib/services/auth.service.ts
+index 350b6d2..da275ef 100644
+--- a/lib/services/auth.service.ts
++++ b/lib/services/auth.service.ts
+@@ -6,8 +6,8 @@ import generator from 'generate-password-ts';
+ 
+ const config = useRuntimeConfig();
+ 
+-export default class AuthService {
+-  async getFullUserBySupabaseId(
++export namespace AuthService {
++  export async function getFullUserBySupabaseId(
+     supabase_uid: string
+   ): Promise<FullDBUser | null> {
+     return prisma_client.user.findFirst({
+@@ -16,14 +16,16 @@ export default class AuthService {
+     });
+   }
+ 
+-  async getUserById(user_id: number): Promise<FullDBUser | null> {
++  export async function getUserById(
++    user_id: number
++  ): Promise<FullDBUser | null> {
+     return prisma_client.user.findFirstOrThrow({
+       where: { id: user_id },
+       ...fullDBUser
+     });
+   }
+ 
+-  async createUser(
++  export async function createUser(
+     supabase_uid: string,
+     display_name: string,
+     email: string
+@@ -65,7 +67,7 @@ export default class AuthService {
+     });
+   }
+ 
+-  async deleteUser(user_id: number): Promise<FullDBUser> {
++  export async function deleteUser(user_id: number): Promise<FullDBUser> {
+     return prisma_client.user.delete({
+       where: { id: user_id },
+       ...fullDBUser
+diff --git a/lib/services/notes.service.ts b/lib/services/notes.service.ts
+index c3b19ab..370e38e 100644
+--- a/lib/services/notes.service.ts
++++ b/lib/services/notes.service.ts
+@@ -1,22 +1,22 @@
+ import prisma_client from '~~/prisma/prisma.client';
+ import { openai } from './openai.client';
+ import { AccountLimitError } from './errors';
+-import AccountService from './account.service';
++import { AccountService } from './account.service';
+ 
+-export default class NotesService {
+-  async getAllNotes() {
++export namespace NotesService {
++  export async function getAllNotes() {
+     return prisma_client.note.findMany();
+   }
+ 
+-  async getNoteById(id: number) {
++  export async function getNoteById(id: number) {
+     return prisma_client.note.findUniqueOrThrow({ where: { id } });
+   }
+ 
+-  async getNotesForAccountId(account_id: number) {
++  export async function getNotesForAccountId(account_id: number) {
+     return prisma_client.note.findMany({ where: { account_id } });
+   }
+ 
+-  async createNote(account_id: number, note_text: string) {
++  export async function createNote(account_id: number, note_text: string) {
+     const account = await prisma_client.account.findFirstOrThrow({
+       where: { id: account_id },
+       include: { notes: true }
+@@ -31,17 +31,19 @@ export default class NotesService {
+     return prisma_client.note.create({ data: { account_id, note_text } });
+   }
+ 
+-  async updateNote(id: number, note_text: string) {
++  export async function updateNote(id: number, note_text: string) {
+     return prisma_client.note.update({ where: { id }, data: { note_text } });
+   }
+ 
+-  async deleteNote(id: number) {
++  export async function deleteNote(id: number) {
+     return prisma_client.note.delete({ where: { id } });
+   }
+ 
+-  async generateAINoteFromPrompt(userPrompt: string, account_id: number) {
+-    const accountService = new AccountService();
+-    const account = await accountService.checkAIGenCount(account_id);
++  export async function generateAINoteFromPrompt(
++    userPrompt: string,
++    account_id: number
++  ) {
++    const account = await AccountService.checkAIGenCount(account_id);
+ 
+     const prompt = `
+     Write an interesting short note about ${userPrompt}.  
+@@ -56,7 +58,7 @@ export default class NotesService {
+       n: 1
+     });
+ 
+-    await accountService.incrementAIGenCount(account);
++    await AccountService.incrementAIGenCount(account);
+ 
+     return completion.data.choices[0].text;
+   }
+diff --git a/lib/services/util.service.ts b/lib/services/util.service.ts
+index b9bd697..2e3760e 100644
+--- a/lib/services/util.service.ts
++++ b/lib/services/util.service.ts
+@@ -1,5 +1,5 @@
+-export class UtilService {
+-  public static addMonths(date: Date, months: number): Date {
++export namespace UtilService {
++  export function addMonths(date: Date, months: number): Date {
+     const d = date.getDate();
+     date.setMonth(date.getMonth() + +months);
+     if (date.getDate() != d) {
+@@ -8,12 +8,12 @@ export class UtilService {
+     return date;
+   }
+ 
+-  public static getErrorMessage(error: unknown) {
++  export function getErrorMessage(error: unknown) {
+     if (error instanceof Error) return error.message;
+     return String(error);
+   }
+ 
+-  public static stringifySafely(obj: any) {
++  export function stringifySafely(obj: any) {
+     let cache: any[] = [];
+     let str = JSON.stringify(obj, function (key, value) {
+       if (typeof value === 'object' && value !== null) {
+diff --git a/server/api/note.ts b/server/api/note.ts
+index 19e0edb..c570dae 100644
+--- a/server/api/note.ts
++++ b/server/api/note.ts
+@@ -1,6 +1,6 @@
+ import { H3Event, getQuery } from 'h3';
+ import { defineProtectedEventHandler } from '../defineProtectedEventHandler';
+-import NotesService from '~/lib/services/notes.service';
++import { NotesService } from '~/lib/services/notes.service';
+ 
+ // Example API Route with query params ... /api/note?note_id=41
+ export default defineProtectedEventHandler(async (event: H3Event) => {
+@@ -14,8 +14,7 @@ export default defineProtectedEventHandler(async (event: H3Event) => {
+     }
+   }
+ 
+-  const notesService = new NotesService();
+-  const note = await notesService.getNoteById(+note_id);
++  const note = await NotesService.getNoteById(+note_id);
+ 
+   return {
+     note
+diff --git a/server/routes/create-checkout-session.post.ts b/server/routes/create-checkout-session.post.ts
+index aafe408..63de03a 100644
+--- a/server/routes/create-checkout-session.post.ts
++++ b/server/routes/create-checkout-session.post.ts
+@@ -1,6 +1,6 @@
+ import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
+ import Stripe from 'stripe';
+-import AccountService from '~~/lib/services/account.service';
++import { AccountService } from '~~/lib/services/account.service';
+ import { AccountWithMembers } from '~~/lib/services/service.types';
+ 
+ const config = useRuntimeConfig();
+@@ -14,8 +14,7 @@ export default defineEventHandler(async event => {
+     `session.post.ts recieved price_id:${price_id}, account_id:${account_id}`
+   );
+ 
+-  const accountService = new AccountService();
+-  const account: AccountWithMembers = await accountService.getAccountById(
++  const account: AccountWithMembers = await AccountService.getAccountById(
+     account_id
+   );
+   let customer_id: string;
+@@ -32,7 +31,7 @@ export default defineEventHandler(async event => {
+       email: owner?.user.email
+     });
+     customer_id = customer.id;
+-    accountService.updateAccountStipeCustomerId(account_id, customer.id);
++    AccountService.updateAccountStipeCustomerId(account_id, customer.id);
+   } else {
+     customer_id = account.stripe_customer_id;
+   }
+diff --git a/server/routes/webhook.post.ts b/server/routes/webhook.post.ts
+index ca226b8..4f14c44 100644
+--- a/server/routes/webhook.post.ts
++++ b/server/routes/webhook.post.ts
+@@ -1,5 +1,5 @@
+ import Stripe from 'stripe';
+-import AccountService from '~~/lib/services/account.service';
++import { AccountService } from '~~/lib/services/account.service';
+ 
+ const config = useRuntimeConfig();
+ const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
+@@ -56,8 +56,6 @@ export default defineEventHandler(async event => {
+         });
+       }
+ 
+-      const accountService = new AccountService();
+-
+       let current_period_ends: Date = new Date(
+         subscription.current_period_end * 1000
+       );
+@@ -68,7 +66,7 @@ export default defineEventHandler(async event => {
+       console.log(
+         `updating stripe sub details subscription.current_period_end:${subscription.current_period_end}, subscription.id:${subscription.id}, stripe_product_id:${stripe_product_id}`
+       );
+-      accountService.updateStripeSubscriptionDetailsForAccount(
++      AccountService.updateStripeSubscriptionDetailsForAccount(
+         subscription.customer.toString(),
+         subscription.id,
+         current_period_ends,
+diff --git a/server/trpc/routers/account.router.ts b/server/trpc/routers/account.router.ts
+index eb03b6b..e8c52db 100644
+--- a/server/trpc/routers/account.router.ts
++++ b/server/trpc/routers/account.router.ts
+@@ -8,7 +8,7 @@ import {
+ } from '../trpc';
+ import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
+ import { z } from 'zod';
+-import AccountService from '~~/lib/services/account.service';
++import { AccountService } from '~~/lib/services/account.service';
+ import { MembershipWithAccount } from '~~/lib/services/service.types';
+ 
+ /*
+@@ -48,8 +48,7 @@ export const accountRouter = router({
+   changeAccountName: adminProcedure
+     .input(z.object({ new_name: z.string() }))
+     .mutation(async ({ ctx, input }) => {
+-      const accountService = new AccountService();
+-      const account = await accountService.changeAccountName(
++      const account = await AccountService.changeAccountName(
+         ctx.activeAccountId!,
+         input.new_name
+       );
+@@ -58,8 +57,7 @@ export const accountRouter = router({
+       };
+     }),
+   rotateJoinPassword: adminProcedure.mutation(async ({ ctx }) => {
+-    const accountService = new AccountService();
+-    const account = await accountService.rotateJoinPassword(
++    const account = await AccountService.rotateJoinPassword(
+       ctx.activeAccountId!
+     );
+     return {
+@@ -69,8 +67,7 @@ export const accountRouter = router({
+   getAccountByJoinPassword: publicProcedure
+     .input(z.object({ join_password: z.string() }))
+     .query(async ({ input }) => {
+-      const accountService = new AccountService();
+-      const account = await accountService.getAccountByJoinPassword(
++      const account = await AccountService.getAccountByJoinPassword(
+         input.join_password
+       );
+       return {
+@@ -80,9 +77,8 @@ export const accountRouter = router({
+   joinUserToAccountPending: publicProcedure // this uses a passed account id rather than using the active account because user is usually active on their personal or some other account when they attempt to join a new account
+     .input(z.object({ account_id: z.number(), user_id: z.number() }))
+     .mutation(async ({ input }) => {
+-      const accountService = new AccountService();
+       const membership: MembershipWithAccount =
+-        await accountService.joinUserToAccount(
++        await AccountService.joinUserToAccount(
+           input.user_id,
+           input.account_id,
+           true
+@@ -94,9 +90,8 @@ export const accountRouter = router({
+   acceptPendingMembership: adminProcedure
+     .input(z.object({ membership_id: z.number() }))
+     .query(async ({ ctx, input }) => {
+-      const accountService = new AccountService();
+       const membership: MembershipWithAccount =
+-        await accountService.acceptPendingMembership(
++        await AccountService.acceptPendingMembership(
+           ctx.activeAccountId!,
+           input.membership_id
+         );
+@@ -107,9 +102,8 @@ export const accountRouter = router({
+   rejectPendingMembership: adminProcedure
+     .input(z.object({ membership_id: z.number() }))
+     .query(async ({ ctx, input }) => {
+-      const accountService = new AccountService();
+       const membership: MembershipWithAccount =
+-        await accountService.deleteMembership(
++        await AccountService.deleteMembership(
+           ctx.activeAccountId!,
+           input.membership_id
+         );
+@@ -120,9 +114,8 @@ export const accountRouter = router({
+   deleteMembership: ownerProcedure
+     .input(z.object({ membership_id: z.number() }))
+     .query(async ({ ctx, input }) => {
+-      const accountService = new AccountService();
+       const membership: MembershipWithAccount =
+-        await accountService.deleteMembership(
++        await AccountService.deleteMembership(
+           ctx.activeAccountId!,
+           input.membership_id
+         );
+@@ -143,8 +136,7 @@ export const accountRouter = router({
+       })
+     )
+     .mutation(async ({ ctx, input }) => {
+-      const accountService = new AccountService();
+-      const membership = await accountService.changeUserAccessWithinAccount(
++      const membership = await AccountService.changeUserAccessWithinAccount(
+         input.user_id,
+         ctx.activeAccountId!,
+         input.access
+@@ -154,8 +146,7 @@ export const accountRouter = router({
+       };
+     }),
+   claimOwnershipOfAccount: adminProcedure.mutation(async ({ ctx }) => {
+-    const accountService = new AccountService();
+-    const memberships = await accountService.claimOwnershipOfAccount(
++    const memberships = await AccountService.claimOwnershipOfAccount(
+       ctx.dbUser!.id,
+       ctx.activeAccountId!
+     );
+@@ -164,8 +155,7 @@ export const accountRouter = router({
+     };
+   }),
+   getAccountMembers: adminProcedure.query(async ({ ctx }) => {
+-    const accountService = new AccountService();
+-    const memberships = await accountService.getAccountMembers(
++    const memberships = await AccountService.getAccountMembers(
+       ctx.activeAccountId!
+     );
+     return {
+diff --git a/server/trpc/routers/notes.router.ts b/server/trpc/routers/notes.router.ts
+index 44f7d28..34fa4f4 100644
+--- a/server/trpc/routers/notes.router.ts
++++ b/server/trpc/routers/notes.router.ts
+@@ -1,4 +1,4 @@
+-import NotesService from '~~/lib/services/notes.service';
++import { NotesService } from '~~/lib/services/notes.service';
+ import {
+   accountHasSpecialFeature,
+   adminProcedure,
+@@ -11,9 +11,8 @@ import { z } from 'zod';
+ 
+ export const notesRouter = router({
+   getForActiveAccount: memberProcedure.query(async ({ ctx, input }) => {
+-    const notesService = new NotesService();
+     const notes = ctx.activeAccountId
+-      ? await notesService.getNotesForAccountId(ctx.activeAccountId)
++      ? await NotesService.getNotesForAccountId(ctx.activeAccountId)
+       : [];
+     return {
+       notes
+@@ -22,8 +21,7 @@ export const notesRouter = router({
+   getById: publicProcedure
+     .input(z.object({ note_id: z.number() }))
+     .query(async ({ ctx, input }) => {
+-      const notesService = new NotesService();
+-      const note = await notesService.getNoteById(input.note_id);
++      const note = await NotesService.getNoteById(input.note_id);
+       return {
+         note
+       };
+@@ -31,9 +29,8 @@ export const notesRouter = router({
+   createNote: readWriteProcedure
+     .input(z.object({ note_text: z.string() }))
+     .mutation(async ({ ctx, input }) => {
+-      const notesService = new NotesService();
+       const note = ctx.activeAccountId
+-        ? await notesService.createNote(ctx.activeAccountId, input.note_text)
++        ? await NotesService.createNote(ctx.activeAccountId, input.note_text)
+         : null;
+       return {
+         note
+@@ -42,9 +39,8 @@ export const notesRouter = router({
+   deleteNote: adminProcedure
+     .input(z.object({ note_id: z.number() }))
+     .mutation(async ({ ctx, input }) => {
+-      const notesService = new NotesService();
+       const note = ctx.activeAccountId
+-        ? await notesService.deleteNote(input.note_id)
++        ? await NotesService.deleteNote(input.note_id)
+         : null;
+       return {
+         note
+@@ -54,9 +50,8 @@ export const notesRouter = router({
+     .use(accountHasSpecialFeature)
+     .input(z.object({ user_prompt: z.string() }))
+     .query(async ({ ctx, input }) => {
+-      const notesService = new NotesService();
+       const noteText = ctx.activeAccountId
+-        ? await notesService.generateAINoteFromPrompt(
++        ? await NotesService.generateAINoteFromPrompt(
+             input.user_prompt,
+             ctx.activeAccountId
+           )
+-- 
+2.32.0
+
