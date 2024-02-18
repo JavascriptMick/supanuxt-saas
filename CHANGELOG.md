@@ -1,5 +1,18 @@
 # Changelog
 
+## Version 1.4.3
+### Update All Dependencies to latest
+- openai (3.3.0 -> 4.28.0)
+- superjson (1.12.2 -> 2.2.1)
+- node types (18.15.11 -> 20.11.19)
+- stripe lib (11.12.0 -> 14.17.0)
+- stripe api version (2022-11-15 -> 2023-10-16)
+- cookie consent (2.9.2 -> 3.0.0)
+- daisyui (2.51.5 -> 4.7.2)
+- vitest (0.33.0 -> 1.3.0)
+- other minor and patch versions
+
+
 ## Version 1.4.2
 - Added Favicons and web manifest and referenced in nuxt.config (I used https://favicon.io/favicon-converter/ to generate the icon assets, seems to work well)
 - Added patch folder to hold patch files, should make it easier to update repos based on earlier versions
