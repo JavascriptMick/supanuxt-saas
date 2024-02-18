@@ -37,7 +37,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@trpc/client": "^10.45.1",
     "@trpc/server": "^10.45.1",
-    "daisyui": "^2.52.0",
+    "daisyui": "^4.7.2",
     "generate-password-ts": "^1.6.5",
     "openai": "^4.28.0",
     "pinia": "^2.1.7",
