@@ -4,7 +4,7 @@ import { AccountService } from '~~/lib/services/account.service';
 import type { AccountWithMembers } from '~~/lib/services/service.types';
 
 const config = useRuntimeConfig();
-const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
+const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2023-10-16' });
 
 export default defineEventHandler(async event => {
   const body = await readBody(event);

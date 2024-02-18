@@ -2,7 +2,7 @@
   import Stripe from 'stripe';
   const config = useRuntimeConfig();
   const stripe = new Stripe(config.stripeSecretKey, {
-    apiVersion: '2022-11-15'
+    apiVersion: '2023-10-16'
   });
   const route = useRoute();
   let customer: Stripe.Response<Stripe.Customer | Stripe.DeletedCustomer>;

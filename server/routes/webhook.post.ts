@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import { AccountService } from '~~/lib/services/account.service';
 
 const config = useRuntimeConfig();
-const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2022-11-15' });
+const stripe = new Stripe(config.stripeSecretKey, { apiVersion: '2023-10-16' });
 
 export default defineEventHandler(async event => {
   const stripeSignature = getRequestHeader(event, 'stripe-signature');
@@ -34,6 +34,12 @@ export default defineEventHandler(async event => {
       statusCode: 400,
       statusMessage: `Error validating Webhook Event`
     });
+  }
+
+  if(stripeEvent.type){
+    console.log(`stripeEvent.type=${stripeEvent.type}`)
+  } else {
+    console.log(`wtf no stripe event type ${stripeEvent}`);
   }
 
   if (

@@ -41,7 +41,7 @@
     "generate-password-ts": "^1.6.5",
     "openai": "^4.28.0",
     "pinia": "^2.1.7",
-    "stripe": "^11.18.0",
+    "stripe": "^14.17.0",
     "superjson": "^2.2.1",
     "trpc-nuxt": "^0.10.19",
     "vanilla-cookieconsent": "^2.9.2",
