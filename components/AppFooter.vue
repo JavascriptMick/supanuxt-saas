@@ -4,6 +4,8 @@
     <span class="px-2">|</span>
     <NuxtLink to="/privacy">Privacy</NuxtLink>
     <span class="px-2">|</span>
-    <button type="button" data-cc="c-settings">Cookie settings</button>
+    <NuxtLink to="/contact">Contact Us</NuxtLink>
+    <span class="px-2">|</span>
+    <button type="button" data-cc="show-preferencesModal">Cookie settings</button>
   </div>
 </template>
