@@ -101,13 +101,13 @@ export namespace AccountService {
     account_id: number,
     membership_id: number
   ): Promise<MembershipWithAccount> {
-    const membership = prisma_client.membership.findFirstOrThrow({
+    const membership = await prisma_client.membership.findFirstOrThrow({
       where: {
         id: membership_id
       }
     });
 
-    if ((await membership).account_id != account_id) {
+    if (membership.account_id != account_id) {
       throw new Error(`Membership does not belong to current account`);
     }
 
@@ -126,13 +126,13 @@ export namespace AccountService {
     account_id: number,
     membership_id: number
   ): Promise<MembershipWithAccount> {
-    const membership = prisma_client.membership.findFirstOrThrow({
+    const membership = await prisma_client.membership.findFirstOrThrow({
       where: {
         id: membership_id
       }
     });
 
-    if ((await membership).account_id != account_id) {
+    if (membership.account_id != account_id) {
       throw new Error(`Membership does not belong to current account`);
     }
 
@@ -214,7 +214,7 @@ export namespace AccountService {
       length: 10,
       numbers: true
     });
-    return prisma_client.account.update({
+    return await prisma_client.account.update({
       where: { id: account_id },
       data: { join_password }
     });

@@ -4,10 +4,6 @@ import { AccountLimitError } from './errors';
 import { AccountService } from './account.service';
 
 export namespace NotesService {
-  export async function getAllNotes() {
-    return prisma_client.note.findMany();
-  }
-
   export async function getNoteById(id: number) {
     return prisma_client.note.findUniqueOrThrow({ where: { id } });
   }
