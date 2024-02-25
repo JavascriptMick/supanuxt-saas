@@ -36,12 +36,6 @@ export default defineEventHandler(async event => {
     });
   }
 
-  if(stripeEvent.type){
-    console.log(`stripeEvent.type=${stripeEvent.type}`)
-  } else {
-    console.log(`wtf no stripe event type ${stripeEvent}`);
-  }
-
   if (
     stripeEvent.type &&
     stripeEvent.type.startsWith('customer.subscription')
