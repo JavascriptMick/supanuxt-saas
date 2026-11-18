@@ -254,6 +254,10 @@ There are a few unit tests, just for the stores because I needed to refactor. Fe
 npm run test
 ```
 
+### Webhook concurrency test
+
+Stripe can deliver webhook events late, twice, or out of order. `npm run test:race` runs the Stripe webhook's database writes in every possible order on a real Postgres with [VibeRaven](https://viberaven.dev) (`npx -y viberaven race`), and fails if any order breaks the rule in `prisma/race/webhook.race.json`. It also runs in `npm test`. Add a rule there when you add a webhook handler.
+
 ## Production
 
 Build the application for production:
