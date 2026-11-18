@@ -70,8 +70,9 @@ export namespace AccountService {
 
     if (paid_plan.id == account.plan_id) {
       // only update sub and period info
-      return await prisma_client.account.update({
-        where: { id: account.id },
+      // Stripe can deliver events out of order: never move the period end backwards.
+      return await prisma_client.account.updateMany({
+        where: { id: account.id, current_period_ends: { lte: current_period_ends } },
         data: {
           stripe_subscription_id,
           current_period_ends,
