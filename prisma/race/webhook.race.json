@@ -1,0 +1,21 @@
+{
+  "rule": "An older customer.subscription.updated (period end 2026-01-01) must not roll back the period end set by the newer one (2026-02-01)",
+  "setup": "INSERT INTO account(id,plan_id,stripe_customer_id,stripe_subscription_id,current_period_ends,ai_gen_count) VALUES (1,2,'cus_1','sub_1','2025-12-01',5)",
+  "invariant": "SELECT current_period_ends <> '2026-01-01' FROM account WHERE id=1",
+  "isolation": [
+    "read committed"
+  ],
+  "notes": "SQL transliteration of the webhook handler; covers bounded SQL orders only, not HTTP or Stripe.",
+  "requests": [
+    {
+      "statements": [
+        "UPDATE account SET stripe_subscription_id='sub_1',current_period_ends='2026-01-01',ai_gen_count=0 WHERE id=1 AND current_period_ends<='2026-01-01'"
+      ]
+    },
+    {
+      "statements": [
+        "UPDATE account SET stripe_subscription_id='sub_1',current_period_ends='2026-02-01',ai_gen_count=0 WHERE id=1 AND current_period_ends<='2026-02-01'"
+      ]
+    }
+  ]
+}

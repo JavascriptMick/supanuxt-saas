@@ -17,7 +17,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "prisma generate && nuxt prepare",
-    "test": "vitest"
+    "test": "vitest run && npm run test:race",
+    "test:race": "npx -y viberaven@1.10.0 race . --spec prisma/race/webhook.race.json --migrations prisma/race"
   },
   "devDependencies": {
     "@nuxt/test-utils": "^3.11.0",
